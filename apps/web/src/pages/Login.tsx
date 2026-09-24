@@ -1,3 +1,4 @@
+import { BrandMark } from '../components/ui/BrandMark';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
@@ -48,7 +49,7 @@ export function Login() {
     <div className="hz-login">
       <aside className="hz-login-brand" aria-hidden="true">
         <div className="d-flex align-items-center gap-3">
-          <span className="mark"><i className="bi bi-scissors" /></span>
+          <BrandMark size={48} inverse />
           <span className="name">Hilanzapp</span>
         </div>
         <div className="d-flex flex-column gap-3">
@@ -60,7 +61,7 @@ export function Login() {
 
       <main className="hz-login-form">
         <div className="d-lg-none d-flex flex-column gap-2 mb-2">
-          <div className="hz-brand-mark" style={{ width: 56, height: 56, borderRadius: 16 }}><i className="bi bi-scissors" style={{ fontSize: 26 }} /></div>
+          <BrandMark size={56} />
           <h1 className="hz-brand-name mt-3" style={{ fontSize: 44, letterSpacing: '-.02em' }}>Hilanzapp</h1>
           <p className="mb-0 fs-6 text-secondary">Tu taller de vestuario, a mano.</p>
         </div>

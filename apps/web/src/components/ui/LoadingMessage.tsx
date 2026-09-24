@@ -1,3 +1,4 @@
+import { BrandMark } from './BrandMark';
 import { useEffect, useState } from 'react';
 
 export const SEWING_MESSAGES = [
@@ -27,7 +28,7 @@ export function LoadingScreen({ note = 'Un momento, estamos preparando tu taller
   return (
     <div className="hz-loading-screen" role="status" aria-live="polite">
       <div className="d-flex align-items-center gap-2">
-        <span className="hz-brand-mark" aria-hidden="true"><i className="bi bi-scissors" /></span>
+        <BrandMark size={40} />
         <span className="hz-brand-name">Hilanzapp</span>
       </div>
       <span className="hz-spinner" aria-hidden="true" />

@@ -1,3 +1,4 @@
+import { BrandMark } from './ui/BrandMark';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import { useOnboarding } from './onboarding/Onboarding';
@@ -9,7 +10,7 @@ export function Sidebar() {
   return (
     <nav className="hz-sidebar hz-no-print" aria-label="Navegación principal">
       <div className="hz-brand">
-        <span className="hz-brand-mark"><i className="bi bi-scissors" /></span>
+        <BrandMark />
         <span className="hz-brand-name">Hilanzapp</span>
       </div>
       {sidebarItems.map((it) => (
