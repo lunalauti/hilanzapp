@@ -131,7 +131,7 @@ Convenciones: TypeScript estricto, Vitest en todos los paquetes, un test primero
   - Test: expansión, recálculo tras cambiar un talle, pendientes.
   - _Reqs: 7.1, 7.2, 7.3, 7.4_
 
-- [ ] 23. Configuración de despliegue
+- [x] 23. Configuración de despliegue
   - `render.yaml` (build `tsc`, start `node dist`, health check), `apps/web/vercel.json` (rewrite SPA), `.env.example` de cada app, script de verificación de variables al arrancar la API.
   - Test: la API falla con mensaje claro si falta una variable; CORS acepta solo el origen configurado.
   - _Reqs: 8.2_
