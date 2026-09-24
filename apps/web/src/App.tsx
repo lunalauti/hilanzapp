@@ -7,6 +7,7 @@ import { DesignsList } from './pages/designs/DesignsList';
 import { FormulaEditor } from './pages/formulas/FormulaEditor';
 import { GroupDancers } from './pages/GroupDancers';
 import { GroupLayout } from './pages/GroupLayout';
+import { GettingStarted } from './pages/GettingStarted';
 import { Home } from './pages/Home';
 import { Inventory } from './pages/inventory/Inventory';
 import { Login } from './pages/Login';
@@ -34,6 +35,7 @@ export function App() {
           <Route path="inventario" element={<Inventory />} />
           <Route path="formulas" element={<FormulaEditor />} />
           <Route path="tablas" element={<SizeTables />} />
+          <Route path="empezar" element={<GettingStarted />} />
           <Route path="ajustes" element={<Settings />} />
         </Route>
       </Route>

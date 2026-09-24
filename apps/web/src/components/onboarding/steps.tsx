@@ -74,7 +74,7 @@ export const STEPS: OnboardingStep[] = [
       <>
         <p>En la pestaña <strong>Producción</strong> de cada grupo ves cuántas prendas de cada talle hay que cortar.</p>
         <p>Tocá un talle para ver <strong>quiénes son</strong> y cortarlas juntas. Las bailarinas sin prenda o sin medidas quedan como pendientes.</p>
-        <p className="text-secondary mb-0">Podés volver a ver este tutorial cuando quieras desde Ajustes.</p>
+        <p className="text-secondary mb-0">Al terminar te llevamos a “Primeros pasos”, una lista para dejar tu taller listo. La podés retomar cuando quieras desde el menú.</p>
       </>
     ),
   },

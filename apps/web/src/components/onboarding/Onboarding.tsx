@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import { Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { getCookie, setCookie } from '../../lib/cookies';
 import { STEPS } from './steps';
 
@@ -13,6 +14,7 @@ export const useOnboarding = () => useContext(OnboardingContext);
 export function OnboardingProvider({ children }: { children: ReactNode }) {
   const [show, setShow] = useState(() => getCookie(ONBOARDING_COOKIE) === null);
   const [step, setStep] = useState(0);
+  const navigate = useNavigate();
 
   const close = useCallback(() => {
     setCookie(ONBOARDING_COOKIE, '1', COOKIE_DAYS);
@@ -46,7 +48,7 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
             <div className="d-flex gap-2">
               {step > 0 && <button type="button" className="hz-btn" onClick={() => setStep(step - 1)}>Anterior</button>}
               {last
-                ? <button type="button" className="hz-btn primary" onClick={close}>Empezar</button>
+                ? <button type="button" className="hz-btn primary" onClick={() => { close(); navigate('/empezar'); }}>Empezar con los primeros pasos</button>
                 : <button type="button" className="hz-btn primary" onClick={() => setStep(step + 1)}>Siguiente</button>}
             </div>
           </div>

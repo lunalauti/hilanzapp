@@ -6,4 +6,6 @@ import { deleteCookie, setCookie } from '../lib/cookies';
 beforeEach(() => {
   deleteCookie('hz_onboarding_done');
   setCookie('hz_onboarding_done', '1', 365);
+  setCookie('hz_setup_dismissed', '1', 365);
+  deleteCookie('hz_setup_done');
 });

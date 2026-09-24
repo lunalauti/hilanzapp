@@ -6,6 +6,8 @@ vi.mock('../lib/apiClient', () => ({ api: { post: vi.fn().mockResolvedValue({}) 
 
 import { AppShell } from './AppShell';
 
+vi.mock('../auth/AuthProvider', () => ({ useAuth: () => ({ signOut: vi.fn() }) }));
+
 describe('AppShell', () => {
   it('muestra barra lateral y navegación inferior con la ruta activa marcada', () => {
     render(
@@ -22,5 +24,20 @@ describe('AppShell', () => {
     expect(activos).toHaveLength(2);
     activos.forEach((a) => expect(a).toHaveClass('active'));
     expect(screen.getAllByLabelText('Navegación principal')).toHaveLength(2);
+  });
+});
+
+describe('AppShell · salir', () => {
+  it('la barra lateral ofrece cerrar sesión', () => {
+    render(
+      <MemoryRouter>
+        <Routes>
+          <Route element={<AppShell />}>
+            <Route index element={<div>inicio</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole('button', { name: 'Salir' })).toBeInTheDocument();
   });
 });

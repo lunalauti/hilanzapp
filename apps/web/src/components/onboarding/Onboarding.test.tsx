@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { deleteCookie, getCookie } from '../../lib/cookies';
 import { ONBOARDING_COOKIE, OnboardingProvider, useOnboarding } from './Onboarding';
@@ -9,7 +10,7 @@ function Reopen() {
   const { open } = useOnboarding();
   return <button type="button" onClick={open}>Ver tutorial</button>;
 }
-const view = () => render(<OnboardingProvider><Reopen /></OnboardingProvider>);
+const view = () => render(<MemoryRouter><OnboardingProvider><Reopen /></OnboardingProvider></MemoryRouter>);
 
 describe('Tutorial de bienvenida', () => {
   beforeEach(() => deleteCookie(ONBOARDING_COOKIE));
@@ -50,7 +51,7 @@ describe('Tutorial de bienvenida', () => {
     await screen.findByRole('dialog');
     for (let i = 1; i < STEPS.length; i++) await userEvent.click(screen.getByRole('button', { name: 'Siguiente' }));
     expect(screen.queryByRole('button', { name: 'Saltar' })).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Empezar' }));
+    await userEvent.click(screen.getByRole('button', { name: /Empezar/ }));
     expect(getCookie(ONBOARDING_COOKIE)).toBe('1');
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });

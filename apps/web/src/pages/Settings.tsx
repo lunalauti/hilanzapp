@@ -9,6 +9,7 @@ export function Settings() {
     <div className="d-flex flex-column gap-4">
       <h1 className="hz-page-title">Ajustes</h1>
       <div className="d-flex flex-column gap-2">
+        <Link to="/empezar" className="hz-nav-link"><i className="bi bi-flag" />Primeros pasos</Link>
         <Link to="/formulas" className="hz-nav-link"><i className="bi bi-calculator" />Fórmulas</Link>
         <Link to="/tablas" className="hz-nav-link"><i className="bi bi-table" />Tablas de talles</Link>
         <button type="button" className="hz-nav-link border-0 bg-transparent text-start" onClick={onboarding.open}><i className="bi bi-question-circle" />Ver tutorial</button>

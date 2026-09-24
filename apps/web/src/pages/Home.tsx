@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SetupBanner } from '../components/SetupBanner';
 import { GroupFormModal } from '../components/GroupFormModal';
 import { EmptyState, ErrorState, Loading } from '../components/ui/States';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -31,6 +32,7 @@ export function Home() {
         }
       />
 
+      <SetupBanner />
       {isLoading && <Loading rows={4} />}
       {error && <ErrorState error={error} onRetry={() => void refetch()} />}
 
