@@ -1,9 +1,11 @@
 import { ApiError } from '../../lib/api';
+import { SlowLoadingHint } from './LoadingMessage';
 
 export function Loading({ rows = 3 }: { rows?: number }) {
   return (
     <div className="d-flex flex-column gap-3" aria-busy="true" aria-label="Cargando">
       {Array.from({ length: rows }, (_, i) => <div key={i} className="hz-skeleton" />)}
+      <SlowLoadingHint />
     </div>
   );
 }
