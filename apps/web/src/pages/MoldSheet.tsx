@@ -6,17 +6,20 @@ import { SizeChip } from '../components/ui/SizeChip';
 import { useToast } from '../components/ui/Toast';
 import { ApiError } from '../lib/api';
 import { api } from '../lib/apiClient';
+import { openPdf } from '../lib/files';
 import { formatCm, parseDecimal } from '../lib/format';
-import { useCalculation, useDancer, useGroupDancers, useGroups, useMeasurements, useMolds, type CalcRequest } from '../lib/queries';
+import { useCalculation, useDancer, useDesigns, useGroupDancers, useGroups, useMeasurements, useMolds, type CalcRequest } from '../lib/queries';
 import type { CalcRow, MissingItem, Mold } from '../lib/types';
 
 export function MoldSheet() {
   const [params, setParams] = useSearchParams();
   const dancerId = params.get('dancer') ?? '';
   const moldId = params.get('mold') ?? '';
+  const designId = params.get('design') ?? '';
   const dancer = useDancer(dancerId);
   const groups = useGroups();
   const molds = useMolds();
+  const designs = useDesigns();
   const [pickedGroup, setPickedGroup] = useState('');
   const groupId = dancer.data?.group_id ?? pickedGroup;
   const groupDancers = useGroupDancers(groupId);
@@ -58,6 +61,13 @@ export function MoldSheet() {
               {(molds.data ?? []).map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
             </select>
           </div>
+          <div className="col-12 col-md-4 d-flex flex-column gap-1">
+            <label htmlFor="pick-design" className="hz-label">Diseño (opcional)</label>
+            <select id="pick-design" className="hz-input" value={designId} disabled={!moldId} onChange={(e) => set('design', e.target.value)}>
+              <option value="">Sin diseño</option>
+              {(designs.data ?? []).map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </select>
+          </div>
         </div>
       </section>
 
@@ -65,13 +75,13 @@ export function MoldSheet() {
       {!dancerId || !mold ? (
         <EmptyState icon="bi-scissors" title="Elegí una bailarina y un molde" note="Vas a ver sus medidas reales y todos los resultados calculados, sin hacer cuentas a mano." />
       ) : (
-        <Sheet key={`${dancerId}-${moldId}`} dancerId={dancerId} dancerName={dancer.data?.name ?? ''} mold={mold} />
+        <Sheet key={`${dancerId}-${moldId}-${designId}`} dancerId={dancerId} dancerName={dancer.data?.name ?? ''} mold={mold} designId={designId || null} />
       )}
     </>
   );
 }
 
-function Sheet({ dancerId, dancerName, mold }: { dancerId: string; dancerName: string; mold: Mold }) {
+function Sheet({ dancerId, dancerName, mold, designId }: { dancerId: string; dancerName: string; mold: Mold; designId: string | null }) {
   const measures = useMeasurements(dancerId);
   const toast = useToast();
   const manualInputs = mold.inputs.filter((i) => i.source === 'manual');
@@ -82,6 +92,7 @@ function Sheet({ dancerId, dancerName, mold }: { dancerId: string; dancerName: s
   const [choices, setChoices] = useState<Record<string, string>>(() => Object.fromEntries(choiceInputs.map((c) => [c.key, c.defaultOptionId ?? c.options?.[0]?.id ?? ''])));
   const [xl, setXl] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const parsed = useMemo(() => {
     const out: Record<string, number> = {};
@@ -95,7 +106,7 @@ function Sheet({ dancerId, dancerName, mold }: { dancerId: string; dancerName: s
     return { values: out, invalid };
   }, [manual, manualInputs]);
 
-  const request: CalcRequest | null = parsed.invalid.length ? null : { dancerId, moldTypeId: mold.id, manualInputs: parsed.values, choices };
+  const request: CalcRequest | null = parsed.invalid.length ? null : { dancerId, moldTypeId: mold.id, manualInputs: parsed.values, choices, ...(designId ? { designId } : {}) };
   const calc = useCalculation(request);
   const missing = calc.error instanceof ApiError && calc.error.code === 'MISSING_MEASUREMENTS' ? ((calc.error.details as { missing: MissingItem[] }).missing) : null;
   const missingStandard = calc.error instanceof ApiError && calc.error.code === 'MISSING_STANDARD';
@@ -112,6 +123,17 @@ function Sheet({ dancerId, dancerName, mold }: { dancerId: string; dancerName: s
     try { await api.post('/pattern-sheets', request); toast.show('Hoja de molde guardada'); }
     catch { toast.show('No pudimos guardar la hoja'); }
     finally { setSaving(false); }
+  }
+
+  async function exportPdf() {
+    if (!request) return;
+    setExporting(true);
+    try {
+      const saved = await api.post<{ id: string }>('/pattern-sheets', request);
+      openPdf(await api.getBlob(`/pattern-sheets/${saved.id}/pdf`), `hoja-molde-${dancerName}.pdf`);
+      toast.show('Hoja guardada y PDF generado');
+    } catch { toast.show('No pudimos generar el PDF'); }
+    finally { setExporting(false); }
   }
 
   const sections = result ? groupBySection(result.rows) : [];
@@ -220,6 +242,7 @@ function Sheet({ dancerId, dancerName, mold }: { dancerId: string; dancerName: s
 
       <div className="d-flex flex-wrap gap-2 hz-no-print">
         <button type="button" className="hz-btn primary" disabled={!result || saving} onClick={() => void save()}><i className="bi bi-save" />{saving ? 'Guardando…' : 'Guardar hoja'}</button>
+        <button type="button" className="hz-btn" disabled={!result || exporting} onClick={() => void exportPdf()}><i className="bi bi-file-earmark-pdf" />{exporting ? 'Generando…' : 'Exportar PDF'}</button>
         <button type="button" className="hz-btn" disabled={!result} onClick={() => window.print()}><i className="bi bi-printer" />Imprimir A4</button>
         <button type="button" className="hz-btn" aria-pressed={xl} onClick={() => setXl(!xl)}><i className="bi bi-arrows-fullscreen" />Modo mesa de corte</button>
       </div>

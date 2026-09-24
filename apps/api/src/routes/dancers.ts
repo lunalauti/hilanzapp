@@ -11,10 +11,11 @@ const name = z.string().trim().min(1, 'El nombre es obligatorio').max(120);
 const age = z.number().int().min(0).max(120).nullable();
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha inválida (AAAA-MM-DD)').nullable();
 const notes = z.string().max(2000).nullable();
+const contact = z.string().trim().max(200).nullable();
 
-const createBody = z.object({ groupId: uuid, name, age: age.optional(), measuredOn: date.optional(), notes: notes.optional() });
+const createBody = z.object({ groupId: uuid, name, age: age.optional(), measuredOn: date.optional(), notes: notes.optional(), contact: contact.optional() });
 const patchBody = z.object({
-  name: name.optional(), age: age.optional(), measuredOn: date.optional(), notes: notes.optional(),
+  name: name.optional(), age: age.optional(), measuredOn: date.optional(), notes: notes.optional(), contact: contact.optional(),
   groupId: uuid.optional(), sizeTableId: uuid.nullable().optional(),
 }).strict();
 
@@ -43,6 +44,13 @@ dancersRouter.get('/dancers/:id', async (req, res) => {
   const row = await repo.getDancer(ctxOf(req).db, parseUuid(req.params.id));
   if (!row) throw notFound('Bailarina no encontrada');
   res.json(row);
+});
+
+dancersRouter.get('/dancers/:id/impact', async (req, res) => {
+  const { db } = ctxOf(req);
+  const id = parseUuid(req.params.id);
+  if (!(await repo.getDancer(db, id))) throw notFound('Bailarina no encontrada');
+  res.json(await repo.impact(db, id));
 });
 
 dancersRouter.patch('/dancers/:id', async (req, res) => {

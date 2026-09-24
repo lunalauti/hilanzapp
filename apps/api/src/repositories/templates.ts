@@ -21,7 +21,7 @@ export async function ensureCatalogs(db: SupabaseClient, ownerId: string): Promi
 }
 
 /** Reemplaza los datos hijos de un molde por los de su plantilla. */
-async function writeMoldChildren(db: SupabaseClient, ownerId: string, moldId: string, mold: MoldDefinition, defs: DefinitionIds) {
+export async function writeMoldChildren(db: SupabaseClient, ownerId: string, moldId: string, mold: MoldDefinition, defs: DefinitionIds, keptDefaults?: Map<string, unknown>) {
   unwrap(await db.from('mold_inputs').delete().eq('mold_type_id', moldId));
   unwrap(await db.from('mold_formulas').delete().eq('mold_type_id', moldId));
 
@@ -35,7 +35,7 @@ async function writeMoldChildren(db: SupabaseClient, ownerId: string, moldId: st
   const formulas = mold.formulas.map((f, sort) => ({
     owner_id: ownerId, mold_type_id: moldId, key: f.key, label: f.label, section: f.section ?? null,
     operand_a: f.operandA, op: f.op, operand_b: f.operandB ?? null, adjustment_cm: f.adjustmentCm ?? 0, decimals: f.decimals ?? 1, sort,
-    template_default: f,
+    template_default: keptDefaults ? (keptDefaults.get(f.key) ?? null) : f,
   }));
   unwrap(await db.from('mold_formulas').insert(formulas));
 }

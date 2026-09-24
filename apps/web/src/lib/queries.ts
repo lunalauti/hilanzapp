@@ -46,7 +46,7 @@ export function useApiMutation<TVars, TResult = unknown>(fn: (vars: TVars) => Pr
 }
 
 export interface CalcRequest {
-  dancerId: string; moldTypeId: string; manualInputs: Record<string, number>; choices: Record<string, string>;
+  dancerId: string; moldTypeId: string; manualInputs: Record<string, number>; choices: Record<string, string>; designId?: string;
 }
 export const useCalculation = (req: CalcRequest | null) =>
   useQuery({
@@ -56,3 +56,35 @@ export const useCalculation = (req: CalcRequest | null) =>
     retry: false,
     placeholderData: (prev) => prev,
   });
+
+export const useDesigns = () => useQuery({ queryKey: ['designs'], queryFn: () => api.get<import('./types').Design[]>('/designs') });
+export const useDesign = (id: string) => useQuery({ queryKey: ['design', id], queryFn: () => api.get<import('./types').Design>(`/designs/${id}`), enabled: Boolean(id) });
+export const useCatalog = () => useQuery({ queryKey: ['catalog'], queryFn: () => api.get<import('./types').CatalogOption[]>('/catalog-options'), staleTime: 60_000 });
+export const useMeasureDefs = () => useQuery({ queryKey: ['measure-defs'], queryFn: () => api.get<import('./types').MeasureDef[]>('/measure-definitions'), staleTime: 60_000 });
+
+export function useInvalidateDesigns() {
+  const qc = useQueryClient();
+  return (id?: string) => {
+    void qc.invalidateQueries({ queryKey: ['designs'] });
+    if (id) void qc.invalidateQueries({ queryKey: ['design', id] });
+    void qc.invalidateQueries({ queryKey: ['catalog'] });
+    void qc.invalidateQueries({ queryKey: ['measure-defs'] });
+  };
+}
+
+export const useSizeTables = () => useQuery({ queryKey: ['size-tables'], queryFn: () => api.get<import('./types').SizeTableSummary[]>('/size-tables') });
+export const useSizeTable = (id: string) => useQuery({ queryKey: ['size-table', id], queryFn: () => api.get<import('./types').SizeTableGrid>(`/size-tables/${id}`), enabled: Boolean(id) });
+
+export const useMaterials = () => useQuery({ queryKey: ['materials'], queryFn: () => api.get<import('./types').Material[]>('/materials') });
+export const useCosts = (groupId: string, designId: string) =>
+  useQuery({ queryKey: ['costs', groupId, designId], queryFn: () => api.get<import('./types').Costs>(`/groups/${groupId}/costs${designId ? `?design_id=${designId}` : ''}`), enabled: Boolean(groupId) });
+export const useStats = () => useQuery({ queryKey: ['stats'], queryFn: () => api.get<import('./types').Stats>('/stats') });
+export const useConsumptionRules = (designId: string) =>
+  useQuery({ queryKey: ['consumption', designId], queryFn: () => api.get<import('./types').ConsumptionRule[]>(`/consumption-rules?designId=${designId}`), enabled: Boolean(designId) });
+export const useMovements = (materialId: string) =>
+  useQuery({ queryKey: ['movements', materialId], queryFn: () => api.get<import('./types').StockMovement[]>(`/materials/${materialId}/movements`), enabled: Boolean(materialId) });
+
+export function useInvalidateInventory() {
+  const qc = useQueryClient();
+  return () => { for (const k of ['materials', 'costs', 'stats', 'consumption', 'movements']) void qc.invalidateQueries({ queryKey: [k] }); };
+}

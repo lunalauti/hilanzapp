@@ -6,6 +6,7 @@ import { ctxOf } from '../middleware/auth';
 import * as dancersRepo from '../repositories/dancers';
 import * as repo from '../repositories/molds';
 import { calculate } from '../services/calculations';
+import { moldView } from '../services/moldView';
 
 const number = z.number().finite().min(0).max(1000);
 const calcBody = z.object({
@@ -18,7 +19,7 @@ export const moldsRouter = Router();
 
 moldsRouter.get('/mold-types', async (req, res) => {
   const list = await repo.listMolds(ctxOf(req).db);
-  res.json(list.map((m) => ({ id: m.id, ...m.def })));
+  res.json(list.map(moldView));
 });
 
 moldsRouter.post('/calculations', async (req, res) => {
@@ -48,4 +49,12 @@ moldsRouter.get('/pattern-sheets/:id', async (req, res) => {
   const sheet = await repo.getSheet(ctxOf(req).db, parseUuid(req.params.id));
   if (!sheet) throw notFound('Hoja de molde no encontrada');
   res.json({ id: sheet.id, createdAt: sheet.created_at, sizeLabel: sheet.size_label, ...(sheet.snapshot as object) });
+});
+
+/** Última hoja guardada de cada bailarina del grupo para un molde (para exportar en lote). */
+moldsRouter.get('/groups/:id/pattern-sheets', async (req, res) => {
+  const { db } = ctxOf(req);
+  const groupId = parseUuid(req.params.id);
+  const moldTypeId = parseUuid(req.query.mold_type_id);
+  res.json(await repo.latestSheetsForGroup(db, groupId, moldTypeId));
 });

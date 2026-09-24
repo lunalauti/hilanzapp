@@ -4,10 +4,15 @@ import type { TokenVerifier } from '../lib/jwt';
 import { ctxOf, requireAuth } from '../middleware/auth';
 import { bootstrapUser } from '../services/bootstrap';
 import { dancersRouter } from './dancers';
+import { designsRouter } from './designs';
+import { exportsRouter } from './exports';
 import { groupsRouter } from './groups';
+import { inventoryRouter } from './inventory';
 import { measurementsRouter } from './measurements';
+import { moldEditorRouter } from './moldEditor';
 import { moldsRouter } from './molds';
 import { productionRouter } from './production';
+import { sizeTablesRouter } from './sizeTables';
 import { sizingRouter } from './sizing';
 
 export function apiRouter(config: Config, verify: TokenVerifier): Router {
@@ -28,8 +33,13 @@ export function apiRouter(config: Config, verify: TokenVerifier): Router {
   router.use(dancersRouter);
   router.use(measurementsRouter);
   router.use(sizingRouter);
+  router.use(sizeTablesRouter);
   router.use(moldsRouter);
+  router.use(moldEditorRouter);
   router.use(productionRouter);
+  router.use(designsRouter);
+  router.use(exportsRouter);
+  router.use(inventoryRouter);
 
   return router;
 }

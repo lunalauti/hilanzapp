@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { calculateMold, type CalcContext, type CalcRow, type MissingItem } from '@hilanzapp/pattern-engine';
+import { calculateMold, type CalcContext, type CalcRow, type MissingItem, type MoldDefinition } from '@hilanzapp/pattern-engine';
 import { AppError, notFound } from '../lib/errors';
 import * as dancersRepo from '../repositories/dancers';
 import * as molds from '../repositories/molds';
@@ -25,12 +25,12 @@ export interface Calculation {
   formulas: unknown;
 }
 
-export async function calculate(db: SupabaseClient, req: CalcRequest): Promise<Calculation> {
+export async function calculate(db: SupabaseClient, req: CalcRequest, override?: MoldDefinition): Promise<Calculation> {
   const dancer = await dancersRepo.getDancer(db, req.dancerId);
   if (!dancer) throw notFound('Bailarina no encontrada');
   const stored = await molds.getMold(db, req.moldTypeId);
   if (!stored) throw notFound('Molde no encontrado');
-  const mold = stored.def;
+  const mold = override ?? stored.def;
 
   const assignmentManual = await molds.findAssignmentSize(db, dancer.id, stored.id, req.designId);
   const { loaded, measures, view } = await resolveDancerSizing(db, dancer, { size_priority: mold.sizePriority }, assignmentManual);

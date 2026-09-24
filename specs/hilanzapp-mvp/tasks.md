@@ -143,71 +143,71 @@ Convenciones: TypeScript estricto, Vitest en todos los paquetes, un test primero
   - Test: restaurar crea versión nueva; el valor vigente alimenta los cálculos.
   - _Reqs: 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 25. Almacenamiento de imágenes (API)
+- [x] 25. Almacenamiento de imágenes (API)
   - Migración del bucket privado `design-images` (5 MB, JPG/PNG/WebP, política por carpeta del usuario), tabla `design_images`, endpoints `upload-url`, registro y borrado, URLs firmadas de lectura.
   - Test: tipo o tamaño no permitido da 415/413; otra usuaria no accede al objeto; registrar un objeto inexistente falla.
   - _Reqs: 9.1, 9.2, 9.3, 9.5_
 
-- [ ] 26. Imágenes de referencia (UI)
+- [x] 26. Imágenes de referencia (UI)
   - Subida directa con URL firmada, miniaturas, ampliar y eliminar, mostradas en la ficha del diseño y en la hoja de molde.
   - Test: rechazo visible de archivos inválidos; miniaturas en la hoja de molde.
   - _Reqs: 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 27. Exportación a PDF (API)
+- [x] 27. Exportación a PDF (API)
   - `pdfkit` con fuente TTF embebida: hoja de molde, resumen de producción y lote de hojas de un grupo, con imágenes de referencia si existen.
   - Test: el buffer empieza con `%PDF` y `pdf-parse` encuentra nombre, medidas, resultados y símbolos `÷` `×`.
   - _Reqs: 14.1, 14.2, 14.4_
 
-- [ ] 28. Impresión y botones de exportar (UI)
+- [x] 28. Impresión y botones de exportar (UI)
   - Estilos `@media print` A4 para la hoja de molde y la producción, botones "Exportar PDF" e "Imprimir", selección múltiple de bailarinas para el lote.
   - Test: los controles de navegación tienen la clase de ocultar al imprimir; el lote envía las bailarinas seleccionadas.
   - _Reqs: 14.1, 14.2, 14.3, 14.4_
 
 ## Fase 5 — Diseño de vestuario, fórmulas y tablas editables
 
-- [ ] 29. Diseños y catálogos (API)
+- [x] 29. Diseños y catálogos (API)
   - CRUD de diseños con prendas, medidas especiales, catálogos y valores "Otro" reutilizables.
   - Test: valor personalizado queda disponible para el siguiente diseño; medida especial se vincula a una definición.
   - _Reqs: 11.1, 11.2, 11.3, 11.5_
 
-- [ ] 30. Diseños (UI)
+- [x] 30. Diseños (UI)
   - Editor de diseño (escote, manga, falda, volado, asimetría, detalles), asignación a grupo o bailarina y vestuario visible en la vista de grupo.
   - Test: "Otro" guarda valor nuevo; asignar a grupo crea asignaciones para todas.
   - _Reqs: 11.1, 11.3, 11.4_
 
-- [ ] 31. Editor de moldes y fórmulas (API)
+- [x] 31. Editor de moldes y fórmulas (API)
   - `POST/PATCH/DELETE /mold-types`, `PUT /mold-types/:id/formulas` con validación, `POST /mold-types/:id/restore-defaults`.
   - Test: 422 `FORMULA_INVALID` por ciclo, referencia inexistente y divisor cero; restaurar devuelve el original; editar no altera hojas guardadas.
   - _Reqs: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6_
 
-- [ ] 32. Editor de moldes y fórmulas (UI)
+- [x] 32. Editor de moldes y fórmulas (UI)
   - Pantalla `/settings/molds`: elegir medida, operación, operando y ajuste; definir medidas requeridas y datos manuales; vista previa con una bailarina; restaurar.
   - Test: vista previa refleja el cambio; errores de validación en línea.
   - _Reqs: 12.1, 12.2, 12.3, 12.5, 12.6_
 
-- [ ] 33. Tablas de talles editables (API)
+- [x] 33. Tablas de talles editables (API)
   - `PATCH /size-tables/:id/values`, `POST /size-tables` (personalizada), `duplicate`, `activate`, `restore`; recálculo implícito por cálculo en lectura.
   - Test: la original queda intacta al duplicar; activar cambia la sugerencia sin tocar talles manuales; restaurar vuelve a las plantillas.
   - _Reqs: 13.1, 13.2, 13.3, 13.4, 13.5_
 
-- [ ] 34. Tablas de talles editables (UI)
+- [x] 34. Tablas de talles editables (UI)
   - Pantalla `/settings/size-tables` con edición de celdas, crear, duplicar, activar y restaurar; origen (`source/interpolated/extrapolated/user`) visible por celda.
   - Test: edición y guardado, duplicar, activar; marca visible en valores extrapolados.
   - _Reqs: 13.1, 13.2, 13.3, 13.5_
 
 ## Fase 6 — Consumo de tela, costos e inventario
 
-- [ ] 35. Migración de inventario
+- [x] 35. Migración de inventario
   - Tablas `materials`, `consumption_rules`, `stock_movements`, `labor_cost` en `design_garments`; funciones `apply_stock_movement` y `confirm_production` atómicas; RLS.
   - Test: descuento atómico, stock insuficiente falla sin cambios parciales, RLS entre usuarias.
   - _Reqs: 15.2, 15.5_
 
-- [ ] 36. Inventario, costos y estadísticas (API)
+- [x] 36. Inventario, costos y estadísticas (API)
   - `GET/POST/PATCH /materials`, `PUT /consumption-rules`, `GET /groups/:id/costs`, `POST /groups/:id/production/confirm`, `GET /stats`.
   - Test: consumo total por talle y unidades, costo de materiales más mano de obra, faltantes, estadísticas por talle y costo por grupo.
   - _Reqs: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6_
 
-- [ ] 37. Inventario y costos (UI)
+- [x] 37. Inventario y costos (UI)
   - Pantalla `/inventory`: materiales, consumo por prenda y talle, costos por grupo, faltantes resaltados, confirmar producción, estadísticas.
   - Test: alta de material, faltante visible, confirmación descuenta stock.
   - _Reqs: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6_

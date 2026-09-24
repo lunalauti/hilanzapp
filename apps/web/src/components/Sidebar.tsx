@@ -1,7 +1,9 @@
 import { NavLink } from 'react-router-dom';
+import { useOnboarding } from './onboarding/Onboarding';
 import { sidebarItems } from './nav';
 
 export function Sidebar() {
+  const onboarding = useOnboarding();
   return (
     <nav className="hz-sidebar hz-no-print" aria-label="Navegación principal">
       <div className="hz-brand">
@@ -15,6 +17,7 @@ export function Sidebar() {
         </NavLink>
       ))}
       <div style={{ flex: 1 }} />
+      <button type="button" className="hz-nav-link border-0 bg-transparent text-start w-100" onClick={onboarding.open}><i className="bi bi-question-circle" />Ver tutorial</button>
       <div className="hz-saved"><i className="bi bi-cloud-check" />Todo guardado</div>
     </nav>
   );

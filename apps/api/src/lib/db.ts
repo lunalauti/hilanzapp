@@ -12,6 +12,7 @@ const STATUS_BY_CODE: Record<string, [number, string]> = {
   '22P02': [422, 'VALIDATION_ERROR'],
   P0002: [404, 'NOT_FOUND'],
   '42501': [403, 'FORBIDDEN'],
+  HZ001: [409, 'INSUFFICIENT_STOCK'],
 };
 
 export function unwrap<T>(result: DbResult<T>): T {

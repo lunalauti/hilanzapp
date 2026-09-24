@@ -4,6 +4,7 @@ import { ErrorState, Loading } from '../../components/ui/States';
 import { useToast } from '../../components/ui/Toast';
 import { ApiError } from '../../lib/api';
 import { api } from '../../lib/apiClient';
+import { formatCm } from '../../lib/format';
 import { useAssignments, useInvalidateDancerData, useMolds, useSizing } from '../../lib/queries';
 
 const MEASURE_NAMES: Record<string, string> = { pecho: 'Pecho', cintura: 'Cintura', cadera: 'Cadera' };
@@ -60,11 +61,16 @@ export function SizeTab({ dancerId }: { dancerId: string }) {
 
         {s.suggested && (
           <div className="hz-suggested hz-sug">
-            <div className="d-flex flex-column align-items-center"><span className="big">T{s.suggested}</span><span className="tag">SUGERIDO</span></div>
+            <div className="d-flex flex-column align-items-center"><span className="big">T{s.suggested}{s.outOfRange ? (s.perMeasure.find((m) => m.sizeLabel === s.suggested && m.outOfRange)?.outOfRange === 'below' ? '−' : '+') : ''}</span><span className="tag">{s.outOfRange ? 'EXTRAPOLADO' : 'SUGERIDO'}</span></div>
             <span className="small">Se toma el talle de la medida principal de la prenda (pecho por defecto). Tabla: {s.table?.name}.</span>
           </div>
         )}
-        {s.outOfRange && <div className="hz-notice warning"><i className="bi bi-exclamation-triangle" />La medida está fuera del rango de la tabla; se sugiere el talle extremo. Revisalo a mano.</div>}
+        {s.perMeasure.filter((m) => m.outOfRange).map((m) => (
+          <div key={m.measureKey} className="hz-notice warning" role="note">
+            <i className="bi bi-exclamation-triangle" />
+            <span><strong>{MEASURE_NAMES[m.measureKey] ?? m.measureKey} fuera de rango</strong>: {formatCm(m.value)} cm {m.outOfRange === 'above' ? 'supera' : 'queda por debajo de'} el T{m.sizeLabel} de la tabla ({formatCm(m.reference)} cm). El talle se extrapoló: revisá la medida o asigná un talle a mano.</span>
+          </div>
+        ))}
 
         <div className="d-flex flex-column gap-2">
           <span className="hz-label">Talle a mano</span>

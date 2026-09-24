@@ -24,8 +24,8 @@ describe('suggestSize', () => {
   });
   it('marca fuera de rango y devuelve el talle extremo', () => {
     const r = suggestSize(table, { pecho: 95, cadera: 60 }, 'both');
-    expect(r.perMeasure.find((x) => x.measureKey === 'pecho')).toMatchObject({ sizeLabel: '12', outOfRange: 'above' });
-    expect(r.perMeasure.find((x) => x.measureKey === 'cadera')).toMatchObject({ sizeLabel: '8', outOfRange: 'below' });
+    expect(r.perMeasure.find((x) => x.measureKey === 'pecho')).toMatchObject({ sizeLabel: '12', reference: 80, outOfRange: 'above' });
+    expect(r.perMeasure.find((x) => x.measureKey === 'cadera')).toMatchObject({ sizeLabel: '8', reference: 76, outOfRange: 'below' });
   });
   it('en moldes both devuelve ambos desgloses, agrupa por pecho y avisa si difieren', () => {
     const r = suggestSize(table, { pecho: 80, cadera: 76 }, 'both');

@@ -12,12 +12,12 @@ export async function groupDancersView(db: SupabaseClient, groupId: string) {
     const st = status.find((s) => s.dancer_id === d.id);
     const size = sizeView(loaded, m, 'pecho', { dancer: d.manual_size_label });
     return {
-      id: d.id, name: d.name, age: d.age, notes: d.notes, groupId: d.group_id,
+      id: d.id, name: d.name, age: d.age, notes: d.notes, contact: d.contact, groupId: d.group_id,
       measureStatus: st?.status ?? 'none', requiredDone: st?.required_done ?? 0, requiredTotal: st?.required_total ?? 0,
       size: { label: size.label, origin: size.origin, suggested: size.suggested, manual: size.manual, outOfRange: size.outOfRange },
       garments: assignments.filter((a) => a.dancer_id === d.id).map((a) => {
         const gs = sizeView(loaded, m, a.mold_types.size_priority, { assignment: a.manual_size_label, dancer: d.manual_size_label });
-        return { assignmentId: a.id, moldKey: a.mold_types.key, moldName: a.mold_types.name, designName: a.designs?.name ?? null, sizeLabel: gs.label };
+        return { assignmentId: a.id, moldTypeId: a.mold_type_id, moldKey: a.mold_types.key, moldName: a.mold_types.name, designId: a.design_id, designName: a.designs?.name ?? null, sizeLabel: gs.label };
       }),
     };
   });

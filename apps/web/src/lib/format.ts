@@ -22,3 +22,12 @@ export function formatDate(iso: string): string {
   const [y, m, d] = iso.slice(0, 10).split('-');
   return `${d}/${m}/${y}`;
 }
+
+const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+export function formatMoney(n: number): string {
+  return money.format(Math.round(n));
+}
+
+export function formatQty(n: number): string {
+  return String(Math.round(n * 1000) / 1000).replace('.', ',');
+}

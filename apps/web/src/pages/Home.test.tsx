@@ -27,7 +27,8 @@ describe('Home', () => {
   it('muestra el estado vacío del primer uso', async () => {
     api.get.mockResolvedValue([]);
     renderApp(<Home />);
-    expect(await screen.findByText('Todavía no tenés grupos')).toBeInTheDocument();
+    expect(await screen.findByText('Empezá creando tu primer grupo')).toBeInTheDocument();
+    expect(screen.getByText(/Un grupo reúne a las bailarinas que comparten vestuario/)).toBeInTheDocument();
   });
 
   it('muestra el error y permite reintentar', async () => {

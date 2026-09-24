@@ -76,6 +76,25 @@ describe.skipIf(!up)('grupos, bailarinas y medidas (Supabase local)', () => {
       expect((await B().post('/dancers', { groupId, name: 'Intrusa' })).status).toBe(404);
     });
 
+    it('guarda el contacto opcional y valida su largo', async () => {
+      const created = await A().post('/dancers', { groupId, name: 'Con contacto', contact: '  11 5555-1234  ' });
+      expect(created.body.contact).toBe('11 5555-1234');
+      expect((await A().patch(`/dancers/${created.body.id}`, { contact: null })).body.contact).toBeNull();
+      expect((await A().post('/dancers', { groupId, name: 'X', contact: 'x'.repeat(201) })).status).toBe(422);
+      await A().del(`/dancers/${created.body.id}`);
+    });
+
+    it('informa qué se pierde al borrar: medidas, tomas de historial, prendas y hojas', async () => {
+      const id = (await A().post('/dancers', { groupId, name: 'Impacto' })).body.id;
+      await A().put(`/dancers/${id}/measurements/${def.pecho}`, { valueCm: 80 });
+      await A().put(`/dancers/${id}/measurements/${def.pecho}`, { valueCm: 82 });
+      await A().put(`/dancers/${id}/measurements/${def.cintura}`, { valueCm: 60 });
+      expect((await A().get(`/dancers/${id}/impact`)).body).toEqual({ measures: 2, versions: 3, assignments: 0, sheets: 0 });
+      expect((await B().get(`/dancers/${id}/impact`)).status).toBe(404);
+      expect((await A().get('/dancers/5f0c9e3e-0000-4000-8000-000000000000/impact')).status).toBe(404);
+      await A().del(`/dancers/${id}?confirm=true`);
+    });
+
     it('actualiza datos y mueve de grupo conservando medidas', async () => {
       await A().put(`/dancers/${dancerId}/measurements/${def.pecho}`, { valueCm: 88 });
       const moved = await A().patch(`/dancers/${dancerId}`, { groupId: group2Id, notes: 'alérgica al látex' });

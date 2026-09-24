@@ -1,10 +1,12 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderApp } from '../test/utils';
 
-const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), patch: vi.fn(), put: vi.fn(), delete: vi.fn() }));
+const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), patch: vi.fn(), put: vi.fn(), delete: vi.fn(), getBlob: vi.fn() }));
 vi.mock('../lib/apiClient', () => ({ api }));
+const files = vi.hoisted(() => ({ openPdf: vi.fn() }));
+vi.mock('../lib/files', async (orig) => ({ ...(await orig<typeof import('../lib/files')>()), openPdf: files.openPdf }));
 
 import { Production } from './Production';
 
@@ -61,5 +63,27 @@ describe('Producción', () => {
     api.get.mockResolvedValue({ dancerCount: 0, totalUnits: 0, byGarment: [], pending: [] });
     view();
     expect(await screen.findByText('Todavía no hay nada para producir')).toBeInTheDocument();
+  });
+
+  it('exporta el resumen a PDF', async () => {
+    const blob = new Blob(['%PDF-']);
+    api.getBlob.mockResolvedValue(blob);
+    view();
+    await userEvent.click(await screen.findByRole('button', { name: /Exportar PDF/ }));
+    await waitFor(() => expect(api.getBlob).toHaveBeenCalledWith('/groups/g1/production/pdf'));
+    expect(files.openPdf).toHaveBeenCalledWith(blob, 'produccion.pdf');
+  });
+
+  it('avisa si no se pudo generar el PDF', async () => {
+    api.getBlob.mockRejectedValue(new Error('caída'));
+    view();
+    await userEvent.click(await screen.findByRole('button', { name: /Exportar PDF/ }));
+    expect(await screen.findByText('No pudimos generar el PDF')).toBeInTheDocument();
+  });
+
+  it('sin prendas el botón de PDF está deshabilitado', async () => {
+    api.get.mockResolvedValue({ dancerCount: 0, totalUnits: 0, byGarment: [], pending: [] });
+    view();
+    expect(await screen.findByRole('button', { name: /Exportar PDF/ })).toBeDisabled();
   });
 });

@@ -83,4 +83,19 @@ describe('Panel de talle', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'T40' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('El talle 99 no existe');
   });
+
+  it('avisa cuando una medida queda fuera de la tabla, con el valor de referencia', async () => {
+    api.get.mockImplementation(async (path: string) => {
+      if (path === '/dancers/d1/sizing') return { ...sizing(null), suggested: '16', outOfRange: true, perMeasure: [{ measureKey: 'cadera', value: 104, sizeLabel: '16', reference: 100, outOfRange: 'above' }], components: { pecho: null, cadera: '16' } };
+      if (path === '/dancers/d1/assignments') return [];
+      if (path === '/mold-types') return [];
+      throw new Error(`GET inesperado ${path}`);
+    });
+    view();
+    const note = await screen.findByRole('note');
+    expect(note).toHaveTextContent('Cadera fuera de rango');
+    expect(note).toHaveTextContent('104 cm supera el T16 de la tabla (100 cm)');
+    expect(note).toHaveTextContent('El talle se extrapoló: revisá la medida o asigná un talle a mano.');
+    expect(screen.getByText('EXTRAPOLADO').previousElementSibling).toHaveTextContent('T16+');
+  });
 });

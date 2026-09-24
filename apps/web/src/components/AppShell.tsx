@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { api } from '../lib/apiClient';
 import { BottomNav } from './BottomNav';
+import { OnboardingProvider } from './onboarding/Onboarding';
 import { Sidebar } from './Sidebar';
 
 const BOOTSTRAP_KEY = 'hz-bootstrapped';
@@ -20,12 +21,14 @@ export function AppShell() {
   }, []);
 
   return (
-    <div className="hz-shell">
-      <Sidebar />
-      <main className="hz-main">
-        <Outlet />
-      </main>
-      <BottomNav />
-    </div>
+    <OnboardingProvider>
+      <div className="hz-shell">
+        <Sidebar />
+        <main className="hz-main">
+          <Outlet />
+        </main>
+        <BottomNav />
+      </div>
+    </OnboardingProvider>
   );
 }

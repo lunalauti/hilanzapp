@@ -18,7 +18,7 @@ export function CustomMeasureModal({ show, dancerId, onClose, onSaved }: { show:
     const next: typeof errors = {};
     if (!name.trim()) next.name = 'Poné un nombre para la medida.';
     const v = parseDecimal(value);
-    if (v === null) next.value = 'Ingresá un número, por ejemplo 68 o 68,5.';
+    if (v === null || v < 1 || v > 250) next.value = 'Cargá un valor entre 1 y 250 cm.';
     setErrors(next);
     if (next.name || next.value || v === null) return;
     setBusy(true);
@@ -37,7 +37,7 @@ export function CustomMeasureModal({ show, dancerId, onClose, onSaved }: { show:
   return (
     <Modal show={show} onHide={onClose} centered>
       <form onSubmit={submit} noValidate>
-        <Modal.Header closeButton><Modal.Title as="h2" className="h4">Medida personalizada</Modal.Title></Modal.Header>
+        <Modal.Header closeButton><Modal.Title as="h2" className="h4">Nueva medida personalizada</Modal.Title></Modal.Header>
         <Modal.Body className="d-flex flex-column gap-3">
           <div className="d-flex flex-column gap-1">
             <label htmlFor="cm-name" className="hz-label">Nombre</label>
@@ -47,17 +47,17 @@ export function CustomMeasureModal({ show, dancerId, onClose, onSaved }: { show:
           <div className="d-flex flex-column gap-1">
             <label htmlFor="cm-value" className="hz-label">Valor (cm)</label>
             <input id="cm-value" inputMode="decimal" className={`hz-input ${errors.value ? 'is-invalid' : ''}`} value={value} onChange={(e) => setValue(e.target.value)} placeholder="68" />
-            {errors.value && <span className="hz-field-error"><i className="bi bi-exclamation-circle" />{errors.value}</span>}
+            {errors.value ? <span className="hz-field-error"><i className="bi bi-exclamation-circle" />{errors.value}</span> : <span className="small text-secondary">Cargá un valor entre 1 y 250 cm.</span>}
           </div>
           <div className="d-flex flex-column gap-1">
             <label htmlFor="cm-note" className="hz-label">Observación (opcional)</label>
-            <input id="cm-note" className="hz-input" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Desde segunda cintura" />
+            <input id="cm-note" className="hz-input" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ej.: con rodilla flexionada" />
           </div>
           {errors.form && <div className="hz-notice danger" role="alert"><i className="bi bi-exclamation-triangle" />{errors.form}</div>}
         </Modal.Body>
         <Modal.Footer>
           <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="hz-btn primary" disabled={busy}>{busy ? 'Guardando…' : 'Guardar'}</button>
+          <button type="submit" className="hz-btn primary" disabled={busy}>{busy ? 'Guardando…' : 'Agregar'}</button>
         </Modal.Footer>
       </form>
     </Modal>

@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useOutletContext, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { BatchPdfModal } from '../components/BatchPdfModal';
 import { DancerFormModal } from '../components/DancerFormModal';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { MeasureStatusLabel } from '../components/ui/MeasureStatusLabel';
@@ -7,19 +9,27 @@ import { SizeChip } from '../components/ui/SizeChip';
 import { EmptyState, ErrorState, Loading } from '../components/ui/States';
 import { useToast } from '../components/ui/Toast';
 import { api } from '../lib/apiClient';
-import { initials } from '../lib/format';
+import { initials, plural } from '../lib/format';
 import { useGroupDancers, useInvalidateDancerData } from '../lib/queries';
+import type { Group } from '../lib/types';
 import type { GroupDancer } from '../lib/types';
 
 export function GroupDancers() {
   const { groupId = '' } = useParams();
+  const groupName = useOutletContext<{ group?: Group } | undefined>()?.group?.name;
   const { data: dancers, isLoading, error, refetch } = useGroupDancers(groupId);
   const [filter, setFilter] = useState<'all' | 'pending'>('all');
   const [editing, setEditing] = useState<GroupDancer | 'new' | null>(null);
   const [deleting, setDeleting] = useState<GroupDancer | null>(null);
+  const [batch, setBatch] = useState(false);
   const [busy, setBusy] = useState(false);
   const invalidate = useInvalidateDancerData();
   const toast = useToast();
+  const impact = useQuery({
+    queryKey: ['dancer-impact', deleting?.id],
+    queryFn: () => api.get<{ measures: number; versions: number; assignments: number; sheets: number }>(`/dancers/${deleting!.id}/impact`),
+    enabled: deleting !== null,
+  });
 
   if (isLoading) return <Loading rows={5} />;
   if (error) return <ErrorState error={error} onRetry={() => void refetch()} />;
@@ -46,7 +56,10 @@ export function GroupDancers() {
           <button type="button" className={`hz-pill ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>Todas {all.length}</button>
           <button type="button" className={`hz-pill ${filter === 'pending' ? 'active' : 'warn'}`} onClick={() => setFilter('pending')}><i className="bi bi-circle-half" />Pendientes {pending.length}</button>
         </div>
-        <button type="button" className="hz-btn primary" onClick={() => setEditing('new')}><i className="bi bi-person-plus" />Agregar bailarina</button>
+        <div className="d-flex flex-wrap gap-2">
+          <button type="button" className="hz-btn" onClick={() => setBatch(true)} disabled={all.length === 0}><i className="bi bi-file-earmark-pdf" />Hojas de molde en PDF</button>
+          <button type="button" className="hz-btn primary" onClick={() => setEditing('new')}><i className="bi bi-person-plus" />Agregar bailarina</button>
+        </div>
       </div>
 
       {all.length === 0 && <EmptyState icon="bi-person-plus" title="Este grupo no tiene bailarinas" note="Agregá la primera para cargar sus medidas." />}
@@ -78,15 +91,28 @@ export function GroupDancers() {
         </div>
       )}
 
-      <DancerFormModal show={editing !== null} groupId={groupId} dancer={editing === 'new' ? undefined : (editing ?? undefined)} onClose={() => setEditing(null)} />
+      <BatchPdfModal show={batch} groupId={groupId} onClose={() => setBatch(false)} />
+      <DancerFormModal show={editing !== null} groupId={groupId} groupName={groupName} siblings={all} dancer={editing === 'new' ? undefined : (editing ?? undefined)} onClose={() => setEditing(null)} />
       <ConfirmDialog
         show={deleting !== null}
-        title={`Eliminar a ${deleting?.name ?? ''}`}
-        confirmLabel="Eliminar bailarina"
+        title={`¿Borrar a ${deleting?.name ?? ''}?`}
+        confirmLabel="Borrar para siempre"
         busy={busy}
         onCancel={() => setDeleting(null)}
         onConfirm={() => deleting && void remove(deleting)}
-        body={<p className="mb-0">Se van a eliminar sus medidas, prendas asignadas y hojas de molde. No se puede deshacer.</p>}
+        body={
+          <div className="d-flex flex-column gap-2">
+            <p className="mb-0">Esto no se puede deshacer. Se pierden:</p>
+            {impact.data ? (
+              <ul className="mb-0">
+                <li>{plural(impact.data.measures, 'medida', 'medidas')}</li>
+                <li>{plural(impact.data.versions, 'toma de historial', 'tomas de historial')}</li>
+                <li>{plural(impact.data.assignments, 'prenda asignada', 'prendas asignadas')}</li>
+                {impact.data.sheets > 0 && <li>{plural(impact.data.sheets, 'hoja de molde guardada', 'hojas de molde guardadas')}</li>}
+              </ul>
+            ) : <span className="text-secondary">Calculando…</span>}
+          </div>
+        }
       />
     </>
   );

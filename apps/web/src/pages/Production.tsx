@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { EmptyState, ErrorState, Loading } from '../components/ui/States';
+import { useToast } from '../components/ui/Toast';
+import { api } from '../lib/apiClient';
+import { openPdf } from '../lib/files';
 import { plural } from '../lib/format';
 import { useProduction } from '../lib/queries';
 
@@ -8,13 +11,25 @@ export function Production() {
   const { groupId = '' } = useParams();
   const { data, isLoading, error, refetch } = useProduction(groupId);
   const [open, setOpen] = useState<{ mold: string; size: string } | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const toast = useToast();
 
   if (isLoading) return <Loading rows={3} />;
   if (error) return <ErrorState error={error} onRetry={() => void refetch()} />;
   const p = data!;
 
+  async function exportPdf() {
+    setExporting(true);
+    try { openPdf(await api.getBlob(`/groups/${groupId}/production/pdf`), 'produccion.pdf'); }
+    catch { toast.show('No pudimos generar el PDF'); }
+    finally { setExporting(false); }
+  }
+
   return (
     <div className="d-flex flex-column gap-4">
+      <div className="d-flex justify-content-end hz-no-print">
+        <button type="button" className="hz-btn primary" disabled={exporting || p.byGarment.length === 0} onClick={() => void exportPdf()}><i className="bi bi-file-earmark-pdf" />{exporting ? 'Generando…' : 'Exportar PDF'}</button>
+      </div>
       {p.pending.length > 0 && (
         <section className="hz-notice warning" style={{ flexDirection: 'column' }} aria-label="Bailarinas pendientes">
           <strong><i className="bi bi-hourglass-split" /> {plural(p.pending.length, 'pendiente', 'pendientes')}, no entran en el conteo</strong>

@@ -22,7 +22,7 @@ export function Home() {
         title="Tus grupos"
         actions={
           <>
-            <label className="hz-search" style={{ width: 'min(100%, 280px)' }}>
+            <label className="hz-search hz-search-fixed">
               <i className="bi bi-search" />
               <input type="search" placeholder="Buscar grupo" aria-label="Buscar grupo" value={query} onChange={(e) => setQuery(e.target.value)} />
             </label>
@@ -35,7 +35,7 @@ export function Home() {
       {error && <ErrorState error={error} onRetry={() => void refetch()} />}
 
       {groups && groups.length === 0 && (
-        <EmptyState icon="bi-people" title="Todavía no tenés grupos" note="Creá el primero para empezar a cargar bailarinas y medidas." action={<button type="button" className="hz-btn primary" onClick={() => setCreating(true)}><i className="bi bi-plus-lg" />Crear grupo</button>} />
+        <EmptyState icon="bi-people" title="Empezá creando tu primer grupo" note="Un grupo reúne a las bailarinas que comparten vestuario, como Ágata o Jade." action={<button type="button" className="hz-btn primary" onClick={() => setCreating(true)}><i className="bi bi-plus-lg" />Nuevo grupo</button>} />
       )}
 
       {groups && groups.length > 0 && (

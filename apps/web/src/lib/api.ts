@@ -29,7 +29,22 @@ export function createApiClient(baseUrl: string, getToken: TokenGetter, fetchImp
     return body as T;
   }
 
+  async function blob(path: string, init: RequestInit = {}): Promise<Blob> {
+    const token = await getToken();
+    const headers = new Headers(init.headers);
+    if (token) headers.set('Authorization', `Bearer ${token}`);
+    if (init.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+    const res = await fetchImpl(`${baseUrl}/api/v1${path}`, { ...init, headers });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new ApiError(res.status, body?.error?.code ?? 'UNKNOWN', body?.error?.message ?? 'No pudimos generar el archivo', body?.error?.details);
+    }
+    return res.blob();
+  }
+
   return {
+    getBlob: (path: string) => blob(path),
+    postBlob: (path: string, data: unknown) => blob(path, { method: 'POST', body: JSON.stringify(data) }),
     get: <T>(path: string) => request<T>(path),
     post: <T>(path: string, data?: unknown) => request<T>(path, { method: 'POST', body: data === undefined ? undefined : JSON.stringify(data) }),
     put: <T>(path: string, data?: unknown) => request<T>(path, { method: 'PUT', body: JSON.stringify(data) }),

@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const supabase = getSupabase();
         if (!supabase) return 'Falta configurar Supabase (VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY).';
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        return error ? 'Email o contraseña incorrectos.' : null;
+        return error ? 'El email o la contraseña no coinciden. Probá de nuevo.' : null;
       },
       async signOut() {
         await getSupabase()?.auth.signOut();

@@ -6,6 +6,8 @@ export interface MeasureSize {
   measureKey: string;
   value: number;
   sizeLabel: string;
+  /** Valor de la tabla para el talle elegido (cm). */
+  reference: number;
   outOfRange: OutOfRange;
 }
 
@@ -39,6 +41,7 @@ export function sizeForMeasure(table: SizeTable, measureKey: string, value: numb
     measureKey,
     value,
     sizeLabel: best.s.label,
+    reference: best.ref,
     outOfRange: value < min ? 'below' : value > max ? 'above' : null,
   };
 }

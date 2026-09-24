@@ -2,14 +2,19 @@ import { Route, Routes } from 'react-router-dom';
 import { RequireAuth } from './auth/RequireAuth';
 import { AppShell } from './components/AppShell';
 import { DancerPage } from './pages/dancer/DancerPage';
+import { DesignPage } from './pages/designs/DesignPage';
+import { DesignsList } from './pages/designs/DesignsList';
+import { FormulaEditor } from './pages/formulas/FormulaEditor';
 import { GroupDancers } from './pages/GroupDancers';
 import { GroupLayout } from './pages/GroupLayout';
 import { Home } from './pages/Home';
+import { Inventory } from './pages/inventory/Inventory';
 import { Login } from './pages/Login';
 import { MoldSheet } from './pages/MoldSheet';
 import { Production } from './pages/Production';
 import { Placeholder } from './pages/Placeholder';
 import { Settings } from './pages/Settings';
+import { SizeTables } from './pages/tables/SizeTables';
 
 export function App() {
   return (
@@ -24,10 +29,11 @@ export function App() {
           </Route>
           <Route path="dancers/:dancerId" element={<DancerPage />} />
           <Route path="moldes" element={<MoldSheet />} />
-          <Route path="disenos" element={<Placeholder eyebrow="Taller" title="Diseños" note="Llega con la tarea 30." />} />
-          <Route path="inventario" element={<Placeholder eyebrow="Taller" title="Inventario y costos" note="Llega con la tarea 37." />} />
-          <Route path="formulas" element={<Placeholder eyebrow="Ajustes" title="Fórmulas" note="Llega con la tarea 32." />} />
-          <Route path="tablas" element={<Placeholder eyebrow="Ajustes" title="Tablas de talles" note="Llega con la tarea 34." />} />
+          <Route path="disenos" element={<DesignsList />} />
+          <Route path="disenos/:designId" element={<DesignPage />} />
+          <Route path="inventario" element={<Inventory />} />
+          <Route path="formulas" element={<FormulaEditor />} />
+          <Route path="tablas" element={<SizeTables />} />
           <Route path="ajustes" element={<Settings />} />
         </Route>
       </Route>
