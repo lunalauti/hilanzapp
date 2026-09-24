@@ -1,0 +1,10 @@
+export * from './types';
+export { parseOperand, formatNumber } from './operands';
+export { calculateMold, EngineError } from './calculate';
+export { validateFormulaSet } from './validate';
+export { suggestSize, sizeForMeasure, defaultAgeRange, effectiveSize } from './sizing';
+export type { MeasureSize, SizeSuggestion, OutOfRange, SizeOrigin } from './sizing';
+export { interpolateTable, extrapolateBackward } from './interpolate';
+export type { InterpolateOptions } from './interpolate';
+export { aggregateProduction } from './production';
+export type { ProductionSummary, ProductionGarment, ProductionSize } from './production';

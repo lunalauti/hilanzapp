@@ -1,0 +1,97 @@
+// Hilanzapp — overrides de Bootstrap 5.3 (Sass). Importar ANTES de "bootstrap/scss/bootstrap".
+// @import "hilanzapp-variables"; @import "bootstrap/scss/bootstrap";
+
+// Paleta
+$hz-ink: #2B2420;
+$hz-ink-2: #5F544B;
+$hz-line: #E3D9CB;
+$hz-base: #F5F0E8;
+$hz-raised: #FFFCF7;
+$hz-float: #FFFFFF;
+
+$primary:   #8E3B26;
+$secondary: #5F544B;
+$success:   #2F6B3A;
+$info:      #2E4A6E;   // se usa para "calculado"
+$warning:   #8C5200;
+$danger:    #B3261E;
+$light:     #FFFCF7;
+$dark:      #2B2420;
+
+$theme-colors: (
+  "primary": $primary, "secondary": $secondary, "success": $success, "info": $info,
+  "warning": $warning, "danger": $danger, "light": $light, "dark": $dark,
+  "accent": #4E6B52, "real": #6B4E0A, "calc": #2E4A6E, "sug": #963D5A
+);
+
+$body-bg: $hz-base;
+$body-color: $hz-ink;
+$body-secondary-color: $hz-ink-2;
+$border-color: $hz-line;
+$link-color: $primary;
+$link-decoration: none;
+$link-hover-decoration: underline;
+
+// Tipografía
+$font-family-sans-serif: "IBM Plex Sans", system-ui, sans-serif;
+$font-family-monospace: "IBM Plex Mono", ui-monospace, monospace;
+$headings-font-family: "Newsreader", Georgia, serif;
+$headings-font-weight: 500;
+$font-size-base: 1rem;
+$h1-font-size: 2.25rem; $h2-font-size: 1.75rem; $h3-font-size: 1.375rem;
+$h4-font-size: 1.125rem; $h5-font-size: 1rem; $h6-font-size: .875rem;
+$small-font-size: .875rem;
+
+// Espaciado (base 4)
+$spacer: 1rem;
+$spacers: (0: 0, 1: .25rem, 2: .5rem, 3: .75rem, 4: 1rem, 5: 1.5rem, 6: 2rem, 7: 3rem);
+
+// Radios
+$border-radius-sm: 6px;
+$border-radius: 10px;
+$border-radius-lg: 14px;
+$border-radius-xl: 20px;
+$border-radius-pill: 999px;
+
+// Sombras con tinte
+$box-shadow-sm: 0 1px 2px rgba(80,52,30,.08), 0 1px 1px rgba(80,52,30,.04);
+$box-shadow:    0 2px 6px rgba(80,52,30,.08), 0 8px 20px rgba(80,52,30,.08);
+$box-shadow-lg: 0 12px 32px rgba(80,52,30,.18), 0 2px 6px rgba(80,52,30,.08);
+
+// Foco
+$focus-ring-width: 3px;
+$focus-ring-opacity: .28;
+$focus-ring-color: rgba($primary, .28);
+$input-focus-border-color: $primary;
+$input-focus-box-shadow: 0 0 0 3px rgba($primary, .28);
+
+// Zonas táctiles 44px
+$input-btn-padding-y: .625rem;
+$input-btn-padding-x: 1rem;
+$input-height: 3rem;          // 48px
+$btn-font-weight: 500;
+$input-bg: $hz-float;
+$input-border-color: #D4C6B3;
+
+// Tarjetas / modales / tablas
+$card-bg: $hz-raised;
+$card-border-color: $hz-line;
+$card-border-radius: 14px;
+$card-box-shadow: $box-shadow-sm;
+$modal-content-bg: $hz-float;
+$modal-content-border-radius: 20px;
+$modal-content-box-shadow-sm-up: $box-shadow-lg;
+$table-bg: transparent;
+$table-border-color: $hz-line;
+$table-striped-bg: rgba($hz-ink, .03);
+$toast-background-color: $hz-float;
+$toast-border-radius: 14px;
+$badge-font-weight: 600;
+$badge-border-radius: 999px;
+$progress-bg: $hz-line;
+$progress-bar-bg: #4E6B52;
+$progress-height: .5rem;
+$nav-link-color: $hz-ink-2;
+$nav-link-hover-color: $primary;
+$enable-shadows: false;
+$enable-negative-margins: true;

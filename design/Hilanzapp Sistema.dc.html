@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>body{margin:0;background:#F5F0E8;color:#2B2420;font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:#8E3B26;text-decoration:none}a:hover{color:#76301F;text-decoration:underline}*{box-sizing:border-box}</style>
+</helmet>
+<div style="max-width:1200px;margin:0 auto;padding:48px 24px 96px;display:flex;flex-direction:column;gap:64px;font-variant-numeric:tabular-nums">
+
+<header style="display:flex;flex-direction:column;gap:16px;padding-bottom:32px;border-bottom:1px solid #D4C6B3">
+<div style="display:flex;align-items:center;gap:10px;font:500 13px/1 'IBM Plex Mono',monospace;color:#5F544B;letter-spacing:.06em;text-transform:uppercase"><i class="bi bi-scissors" style="font-size:16px;color:#8E3B26"></i>Hilanzapp · Sistema de diseño v1</div>
+<h1 style="margin:0;font:500 clamp(40px,6vw,72px)/1 'Newsreader',Georgia,serif;letter-spacing:-.02em;text-wrap:balance">Medidas reales para construir el molde; talles para organizar la producción.</h1>
+<p style="margin:0;max-width:720px;font-size:18px;line-height:1.55;color:#5F544B;text-wrap:pretty">Tokens, componentes y estados para la app de la modista. Todo está pensado para usarse con el celular en una mano y la cinta en la otra: números grandes y tabulares, zonas táctiles de 44 px como mínimo y una codificación visual que nunca mezcla lo medido con lo calculado.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<a href="Hilanzapp Móvil.dc.html" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:10px;background:#8E3B26;color:#FFFCF7;font-weight:500">Pantallas móvil<i class="bi bi-arrow-right"></i></a>
+<a href="Hilanzapp Escritorio.dc.html" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:10px;background:#FFFCF7;border:1px solid #D4C6B3;color:#2B2420;font-weight:500">Tablet y escritorio<i class="bi bi-arrow-right"></i></a>
+</div>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font:500 12px 'IBM Plex Mono',monospace;color:#5F544B;letter-spacing:.08em">01</div><h2 style="margin:0;font:500 36px/1.1 'Newsreader',Georgia,serif">El principio, hecho visible</h2><p style="margin:0;color:#5F544B;max-width:680px;line-height:1.5">Cuatro tipos de dato, cuatro tratamientos. Además del color, cada uno tiene un borde distinto (sólido, discontinuo, punteado, relleno) para que se distingan también en blanco y negro o impresos.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 1px 2px rgba(80,52,30,.08)">
+<div style="display:flex;align-items:center;gap:8px;font:600 13px 'IBM Plex Sans';letter-spacing:.04em;text-transform:uppercase;color:#6B4E0A"><i class="bi bi-rulers"></i>Medida real</div>
+<div style="display:inline-flex;align-self:flex-start;align-items:baseline;gap:4px;padding:6px 12px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A"><span style="font:600 28px/1 'IBM Plex Sans'">88</span><span style="font-size:14px">cm</span></div>
+<p style="margin:0;font-size:14px;line-height:1.45;color:#5F544B">Lo que se tomó con la cinta. Cinta métrica: mostaza, borde sólido, ícono de regla.</p>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">--hz-real · #6B4E0A / #F7EBC6</div></div>
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 1px 2px rgba(80,52,30,.08)">
+<div style="display:flex;align-items:center;gap:8px;font:600 13px 'IBM Plex Sans';letter-spacing:.04em;text-transform:uppercase;color:#2E4A6E"><i class="bi bi-calculator"></i>Resultado calculado</div>
+<div style="display:inline-flex;align-self:flex-start;align-items:baseline;gap:4px;padding:6px 12px;border-radius:8px;background:#E6ECF4;border:1px dashed #7D93B3;color:#2E4A6E"><span style="font:400 18px/1 'IBM Plex Mono'">=</span><span style="font:600 28px/1 'IBM Plex Sans'">22</span><span style="font-size:14px">cm</span></div>
+<p style="margin:0;font-size:14px;line-height:1.45;color:#5F544B">Sale de una fórmula. Tiza azul, borde discontinuo, siempre con “=”. Nunca se edita a mano.</p>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">--hz-calc · #2E4A6E / #E6ECF4</div></div>
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 1px 2px rgba(80,52,30,.08)">
+<div style="display:flex;align-items:center;gap:8px;font:600 13px 'IBM Plex Sans';letter-spacing:.04em;text-transform:uppercase;color:#963D5A"><i class="bi bi-lightbulb"></i>Talle sugerido</div>
+<div style="display:inline-flex;align-self:flex-start;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A"><span style="font:600 22px/1 'IBM Plex Sans'">T14</span><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.06em">SUGERIDO</span></div>
+<p style="margin:0;font-size:14px;line-height:1.45;color:#5F544B">Lo propone la tabla de talles. Tiza rosa, borde punteado (hilván): es provisorio.</p>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">--hz-sug · #963D5A / #F7E4EA</div></div>
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 1px 2px rgba(80,52,30,.08)">
+<div style="display:flex;align-items:center;gap:8px;font:600 13px 'IBM Plex Sans';letter-spacing:.04em;text-transform:uppercase;color:#2B2420"><i class="bi bi-pencil"></i>Talle asignado a mano</div>
+<div style="display:inline-flex;align-self:flex-start;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#2B2420;border:1.5px solid #2B2420;color:#FFFCF7"><span style="font:600 22px/1 'IBM Plex Sans'">T12</span><i class="bi bi-pencil-fill" style="font-size:12px"></i></div>
+<p style="margin:0;font-size:14px;line-height:1.45;color:#5F544B">Decisión de la modista. Relleno sólido de tinta: es definitivo y le gana al sugerido.</p>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">--hz-manual · #2B2420</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font:500 12px 'IBM Plex Mono',monospace;color:#5F544B;letter-spacing:.08em">02</div><h2 style="margin:0;font:500 36px/1.1 'Newsreader',Georgia,serif">Color</h2><p style="margin:0;color:#5F544B;max-width:680px;line-height:1.5">Papel de molde, hilo óxido de hilvanar y salvia. Ningún azul ni violeta de Bootstrap. Todas las combinaciones de texto cumplen AA.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="font:600 14px 'IBM Plex Sans'">Superficies en capas y tinta</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#F5F0E8;border:1px solid #D4C6B3"></div><div style="font:600 13px 'IBM Plex Sans'">Base</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">surface-base #F5F0E8</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#FFFCF7;border:1px solid #E3D9CB;box-shadow:0 1px 2px rgba(80,52,30,.08)"></div><div style="font:600 13px 'IBM Plex Sans'">Elevada</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">surface-raised #FFFCF7</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#FFFFFF;box-shadow:0 12px 32px rgba(80,52,30,.18),0 2px 6px rgba(80,52,30,.08)"></div><div style="font:600 13px 'IBM Plex Sans'">Flotante</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">surface-float #FFFFFF</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#2B2420"></div><div style="font:600 13px 'IBM Plex Sans'">Tinta</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">ink #2B2420</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#5F544B"></div><div style="font:600 13px 'IBM Plex Sans'">Tinta 2</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">ink-2 #5F544B</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#E3D9CB"></div><div style="font:600 13px 'IBM Plex Sans'">Línea</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">line #E3D9CB</div></div>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="font:600 14px 'IBM Plex Sans'">Marca</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#8E3B26"></div><div style="font:600 13px 'IBM Plex Sans'">Primario · óxido</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">primary #8E3B26</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#76301F"></div><div style="font:600 13px 'IBM Plex Sans'">Primario hover</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">#76301F · activo #62281A</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#F4E1DA"></div><div style="font:600 13px 'IBM Plex Sans'">Primario suave</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">primary-subtle #F4E1DA</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#4E6B52"></div><div style="font:600 13px 'IBM Plex Sans'">Acento · salvia</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">accent #4E6B52</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:72px;border-radius:10px;background:#E3ECE2"></div><div style="font:600 13px 'IBM Plex Sans'">Acento suave</div><div style="font:12px 'IBM Plex Mono';color:#5F544B">accent-subtle #E3ECE2</div></div>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="font:600 14px 'IBM Plex Sans'">Estados</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+<div style="display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border-radius:10px;background:#E2EFDF;color:#2F6B3A;font-weight:500"><i class="bi bi-check-circle"></i>Éxito · #2F6B3A</div>
+<div style="display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border-radius:10px;background:#FCEBD0;border:1px solid #E0A95A;color:#8C5200;font-weight:500"><i class="bi bi-exclamation-triangle"></i>Aviso · #8C5200</div>
+<div style="display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border-radius:10px;background:#F9E1DE;border:1px solid #E3A39C;color:#B3261E;font-weight:500"><i class="bi bi-x-octagon"></i>Error · #B3261E</div>
+</div></div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font:500 12px 'IBM Plex Mono',monospace;color:#5F544B;letter-spacing:.08em">03</div><h2 style="margin:0;font:500 36px/1.1 'Newsreader',Georgia,serif">Tipografía</h2><p style="margin:0;color:#5F544B;max-width:680px;line-height:1.5">Newsreader para títulos (serif de libro, cálida). IBM Plex Sans para datos, siempre con <code style="font-family:'IBM Plex Mono'">tabular-nums</code>. IBM Plex Mono sólo para fórmulas.</p></div>
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:baseline;padding:18px 20px;border-bottom:1px solid #E3D9CB"><div style="font:12px 'IBM Plex Mono';color:#5F544B">Display · 36/40 · 500</div><div style="font:500 36px/1.1 'Newsreader',Georgia,serif">Grupo Ágata</div></div>
+<div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:baseline;padding:18px 20px;border-bottom:1px solid #E3D9CB"><div style="font:12px 'IBM Plex Mono';color:#5F544B">H2 · 28/32 · 500</div><div style="font:500 28px/1.15 'Newsreader',Georgia,serif">Martina López</div></div>
+<div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:baseline;padding:18px 20px;border-bottom:1px solid #E3D9CB"><div style="font:12px 'IBM Plex Mono';color:#5F544B">H3 · 22/28 · 500</div><div style="font:500 22px/1.25 'Newsreader',Georgia,serif">Medidas base</div></div>
+<div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:baseline;padding:18px 20px;border-bottom:1px solid #E3D9CB"><div style="font:12px 'IBM Plex Mono';color:#5F544B">Número XL · 36 · 600</div><div style="font:600 36px/1 'IBM Plex Sans'">88 <span style="font-size:18px;font-weight:400">cm</span> · 22,5 <span style="font-size:18px;font-weight:400">cm</span></div></div>
+<div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:baseline;padding:18px 20px;border-bottom:1px solid #E3D9CB"><div style="font:12px 'IBM Plex Mono';color:#5F544B">Número · 20 · 600</div><div style="font:600 20px/1 'IBM Plex Sans'">36 · 40 · 70 · 94 · 111,1</div></div>
+<div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:baseline;padding:18px 20px;border-bottom:1px solid #E3D9CB"><div style="font:12px 'IBM Plex Mono';color:#5F544B">Cuerpo · 16/24 · 400</div><div style="font:400 16px/1.5 'IBM Plex Sans'">Tomar la cadera en la parte más ancha, con la malla puesta.</div></div>
+<div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:baseline;padding:18px 20px;border-bottom:1px solid #E3D9CB"><div style="font:12px 'IBM Plex Mono';color:#5F544B">Etiqueta · 13 · 600 · caps</div><div style="font:600 13px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B">Largo de talle</div></div>
+<div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:baseline;padding:18px 20px"><div style="font:12px 'IBM Plex Mono';color:#5F544B">Fórmula · Mono 16</div><div style="font:400 16px 'IBM Plex Mono';color:#2E4A6E">Pecho ÷ 4 + 0,5 cm</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font:500 12px 'IBM Plex Mono',monospace;color:#5F544B;letter-spacing:.08em">04</div><h2 style="margin:0;font:500 36px/1.1 'Newsreader',Georgia,serif">Espaciado, radios y sombras</h2></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px">
+<div style="font:600 14px 'IBM Plex Sans'">Espaciado base 4 → <code style="font-family:'IBM Plex Mono'">$spacers</code></div>
+<div style="display:flex;align-items:center;gap:12px"><div style="width:4px;height:16px;background:#8E3B26;border-radius:2px"></div><span style="font:13px 'IBM Plex Mono';color:#5F544B">1 · 4 px</span></div>
+<div style="display:flex;align-items:center;gap:12px"><div style="width:8px;height:16px;background:#8E3B26;border-radius:2px"></div><span style="font:13px 'IBM Plex Mono';color:#5F544B">2 · 8 px</span></div>
+<div style="display:flex;align-items:center;gap:12px"><div style="width:12px;height:16px;background:#8E3B26;border-radius:2px"></div><span style="font:13px 'IBM Plex Mono';color:#5F544B">3 · 12 px</span></div>
+<div style="display:flex;align-items:center;gap:12px"><div style="width:16px;height:16px;background:#8E3B26;border-radius:2px"></div><span style="font:13px 'IBM Plex Mono';color:#5F544B">4 · 16 px (margen de pantalla móvil)</span></div>
+<div style="display:flex;align-items:center;gap:12px"><div style="width:24px;height:16px;background:#8E3B26;border-radius:2px"></div><span style="font:13px 'IBM Plex Mono';color:#5F544B">5 · 24 px</span></div>
+<div style="display:flex;align-items:center;gap:12px"><div style="width:32px;height:16px;background:#8E3B26;border-radius:2px"></div><span style="font:13px 'IBM Plex Mono';color:#5F544B">6 · 32 px</span></div>
+<div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:16px;background:#4E6B52;border-radius:2px"></div><span style="font:13px 'IBM Plex Mono';color:#5F544B">zona táctil mínima · 44 px</span></div>
+</div>
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Radios</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:56px;border:1.5px solid #5F544B;border-radius:6px"></div><span style="font:12px 'IBM Plex Mono';color:#5F544B">sm 6</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:56px;border:1.5px solid #5F544B;border-radius:10px"></div><span style="font:12px 'IBM Plex Mono';color:#5F544B">md 10</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:56px;border:1.5px solid #5F544B;border-radius:14px"></div><span style="font:12px 'IBM Plex Mono';color:#5F544B">lg 14</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:56px;border:1.5px solid #5F544B;border-radius:20px"></div><span style="font:12px 'IBM Plex Mono';color:#5F544B">xl 20</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:80px;height:36px;border:1.5px solid #5F544B;border-radius:999px;margin:10px 0"></div><span style="font:12px 'IBM Plex Mono';color:#5F544B">pill</span></div>
+</div>
+<p style="margin:0;font-size:13px;color:#5F544B;line-height:1.45">Campos y botones: md · Tarjetas: lg · Modales y hojas inferiores: xl · Chips: pill.</p>
+</div>
+<div style="background:#F5F0E8;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Sombras (tinte tierra)</div>
+<div style="display:flex;gap:14px">
+<div style="flex:1;height:72px;border-radius:10px;background:#FFFCF7;box-shadow:0 1px 2px rgba(80,52,30,.08),0 1px 1px rgba(80,52,30,.04);display:flex;align-items:flex-end;padding:8px;font:12px 'IBM Plex Mono';color:#5F544B">1 · tarjeta</div>
+<div style="flex:1;height:72px;border-radius:10px;background:#FFFCF7;box-shadow:0 2px 6px rgba(80,52,30,.08),0 8px 20px rgba(80,52,30,.08);display:flex;align-items:flex-end;padding:8px;font:12px 'IBM Plex Mono';color:#5F544B">2 · hover</div>
+<div style="flex:1;height:72px;border-radius:10px;background:#FFFFFF;box-shadow:0 12px 32px rgba(80,52,30,.18),0 2px 6px rgba(80,52,30,.08);display:flex;align-items:flex-end;padding:8px;font:12px 'IBM Plex Mono';color:#5F544B">3 · flotante</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px"><div style="height:44px;padding:0 16px;display:flex;align-items:center;border-radius:10px;background:#FFFFFF;border:1px solid #8E3B26;box-shadow:0 0 0 3px rgba(142,59,38,.28);font-size:14px">Anillo de foco</div><span style="font:12px 'IBM Plex Mono';color:#5F544B">0 0 0 3px primario 28%</span></div>
+</div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font:500 12px 'IBM Plex Mono',monospace;color:#5F544B;letter-spacing:.08em">05</div><h2 style="margin:0;font:500 36px/1.1 'Newsreader',Georgia,serif">Componentes</h2><p style="margin:0;color:#5F544B;max-width:680px;line-height:1.5">Cada uno con sus estados. Pasá el mouse por los botones y chips para ver hover y activo.</p></div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px">
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px">
+<div style="font:600 14px 'IBM Plex Sans'">Botones</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<button style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 15px 'IBM Plex Sans';cursor:pointer" style-hover="background:#76301F" style-active="background:#62281A;transform:translateY(1px)" style-focus="outline:none;box-shadow:0 0 0 3px rgba(142,59,38,.28)"><i class="bi bi-plus-lg"></i>Nuevo grupo</button>
+<button style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;color:#2B2420;font:500 15px 'IBM Plex Sans';cursor:pointer" style-hover="background:#F5F0E8;border-color:#5F544B" style-active="background:#E3D9CB" style-focus="outline:none;box-shadow:0 0 0 3px rgba(142,59,38,.28)">Cancelar</button>
+<button style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:0;border-radius:10px;background:transparent;color:#8E3B26;font:500 15px 'IBM Plex Sans';cursor:pointer" style-hover="background:#F4E1DA" style-active="background:#EBCFC4"><i class="bi bi-clock-history"></i>Historial</button>
+<button style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:10px;background:#B3261E;color:#FFFFFF;font:500 15px 'IBM Plex Sans';cursor:pointer" style-hover="background:#971F18" style-active="background:#7D1913"><i class="bi bi-trash3"></i>Borrar</button>
+<button disabled="" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:10px;background:#E3D9CB;color:#5F544B;font:500 15px 'IBM Plex Sans';cursor:not-allowed"><i class="bi bi-lock"></i>Calcular</button>
+</div>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B;line-height:1.5">&lt;Button variant="primary|outline-secondary|link|danger"&gt; · min-height 44 px</div>
+</div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Campo numérico con unidad</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Pecho</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 12px"><span style="flex:1;font:600 22px 'IBM Plex Sans'">88</span><span style="font-size:15px;color:#5F544B">cm</span></div><span style="font-size:12px;color:#5F544B">Reposo</span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#8E3B26">Cuello</span><div style="display:flex;align-items:center;height:52px;border:1.5px solid #8E3B26;border-radius:10px;background:#FFFFFF;padding:0 12px;box-shadow:0 0 0 3px rgba(142,59,38,.28)"><span style="flex:1;font:600 22px 'IBM Plex Sans'">36<span style="display:inline-block;width:2px;height:22px;background:#2B2420;vertical-align:-3px;margin-left:1px"></span></span><span style="font-size:15px;color:#5F544B">cm</span></div><span style="font-size:12px;color:#5F544B">Foco · teclado decimal</span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#B3261E">Espalda</span><div style="display:flex;align-items:center;height:52px;border:1.5px solid #B3261E;border-radius:10px;background:#FFFFFF;padding:0 12px"><span style="flex:1;font:600 22px 'IBM Plex Sans'">4,0,5</span><span style="font-size:15px;color:#5F544B">cm</span></div><span style="display:flex;gap:6px;font-size:12px;color:#B3261E"><i class="bi bi-x-circle"></i>Número no válido</span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#8C5200">Cadera</span><div style="display:flex;align-items:center;height:52px;border:1.5px solid #E0A95A;border-radius:10px;background:#FCEBD0;padding:0 12px"><span style="flex:1;font:600 22px 'IBM Plex Sans'">140</span><span style="font-size:15px;color:#5F544B">cm</span></div><span style="display:flex;gap:6px;font-size:12px;color:#8C5200"><i class="bi bi-exclamation-triangle"></i>Inusual: ¿revisás?</span></label>
+</div>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B;line-height:1.5">&lt;InputGroup&gt; + &lt;Form.Control inputMode="decimal"&gt; + &lt;InputGroup.Text&gt;cm · acepta coma</div>
+</div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Chip de talle</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+<span style="display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A;font:600 15px 'IBM Plex Sans'">T14<span style="font-size:10px;letter-spacing:.06em">SUG.</span></span>
+<span style="display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:#2B2420;border:1.5px solid #2B2420;color:#FFFCF7;font:600 15px 'IBM Plex Sans'">T12<i class="bi bi-pencil-fill" style="font-size:10px"></i></span>
+<span style="display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:#FCEBD0;border:1.5px dashed #8C5200;color:#8C5200;font:600 15px 'IBM Plex Sans'"><i class="bi bi-exclamation-triangle" style="font-size:12px"></i>T16+<span style="font-size:10px;letter-spacing:.06em">EXTRAP.</span></span>
+<span style="display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:transparent;border:1.5px dashed #D4C6B3;color:#5F544B;font:500 14px 'IBM Plex Sans'">Sin talle</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#5F544B;line-height:1.45"><span>Sugerido: punteado · Manual: relleno + lápiz · Extrapolado: discontinuo aviso, fuera de la tabla.</span><span>Por prenda: <span style="display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;background:#2B2420;color:#FFFCF7;font:600 13px 'IBM Plex Sans'">Pantalón · T12</span></span></div>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">&lt;Badge pill bg=""&gt; + className="hz-sug|hz-manual"</div>
+</div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Tarjeta de grupo</div>
+<a href="#" style="display:flex;flex-direction:column;gap:12px;padding:16px;background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;box-shadow:0 1px 2px rgba(80,52,30,.08);color:#2B2420;text-decoration:none" style-hover="box-shadow:0 2px 6px rgba(80,52,30,.08),0 8px 20px rgba(80,52,30,.08);border-color:#D4C6B3;text-decoration:none;color:#2B2420">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font:500 24px/1.1 'Newsreader',Georgia,serif">Ágata</span><span style="font-size:14px;color:#5F544B">12 bailarinas</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:8px;border-radius:999px;background:#E3D9CB;overflow:hidden;display:flex"><div style="width:75%;background:#4E6B52"></div><div style="width:8%;background:#C99A2E"></div></div><div style="display:flex;justify-content:space-between;font-size:13px;color:#5F544B"><span>9 completas · 1 parcial</span><span style="font-weight:600;color:#2B2420">75 %</span></div></div>
+</a>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">&lt;Card as={Link} className="hz-card-hover"&gt; + &lt;ProgressBar&gt; apilada</div>
+</div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Fila de bailarina</div>
+<div style="display:flex;flex-direction:column;border:1px solid #E3D9CB;border-radius:10px;overflow:hidden;background:#FFFFFF">
+<div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 12px;border-bottom:1px solid #E3D9CB" style-hover="background:#F5F0E8"><div style="width:40px;height:40px;border-radius:999px;background:#E3ECE2;color:#4E6B52;display:flex;align-items:center;justify-content:center;font:600 15px 'IBM Plex Sans'">ML</div><div style="flex:1;display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font:500 16px 'IBM Plex Sans'">Martina López</span><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#2F6B3A"><i class="bi bi-check-circle-fill"></i>Completa · Vestido Aurora</span></div><span style="display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px;border-radius:999px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A;font:600 14px 'IBM Plex Sans'">T14</span></div>
+<div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 12px;border-bottom:1px solid #E3D9CB"><div style="width:40px;height:40px;border-radius:999px;background:#FCEBD0;color:#8C5200;display:flex;align-items:center;justify-content:center;font:600 15px 'IBM Plex Sans'">SF</div><div style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font:500 16px 'IBM Plex Sans'">Sofía Ferreyra</span><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#8C5200"><i class="bi bi-circle-half"></i>Parcial · faltan 2</span></div><span style="display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px;border-radius:999px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A;font:600 14px 'IBM Plex Sans'">T10</span></div>
+<div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 12px"><div style="width:40px;height:40px;border-radius:999px;background:#F5F0E8;border:1.5px dashed #D4C6B3;color:#5F544B;display:flex;align-items:center;justify-content:center;font:600 15px 'IBM Plex Sans'">LG</div><div style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font:500 16px 'IBM Plex Sans'">Lucía Gómez</span><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#5F544B"><i class="bi bi-circle"></i>Sin cargar</span></div><span style="display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:999px;border:1.5px dashed #D4C6B3;color:#5F544B;font:500 13px 'IBM Plex Sans'">—</span></div>
+</div>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">&lt;ListGroup.Item action&gt; · estado = ícono + texto, no sólo color</div>
+</div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;grid-column:1/-1">
+<div style="font:600 14px 'IBM Plex Sans'">Tabla real → fórmula → resultado</div>
+<div style="display:flex;flex-direction:column;border:1px solid #E3D9CB;border-radius:10px;overflow:hidden;background:#FFFFFF">
+<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:12px;padding:10px 16px;background:#F5F0E8;font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B"><span>Pieza</span><span style="color:#6B4E0A"><i class="bi bi-rulers"></i> Real</span><span style="color:#2E4A6E">Fórmula</span><span style="color:#2E4A6E;text-align:right">= Resultado</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center;padding:14px 16px;border-top:1px solid #E3D9CB"><span style="font-size:16px">Ancho de delantero</span><span style="justify-self:start;display:inline-flex;align-items:baseline;gap:4px;padding:4px 10px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A"><span style="font-size:13px">Pecho</span><span style="font:600 26px/1 'IBM Plex Sans'">88</span><span style="font-size:13px">cm</span></span><span style="font:400 20px 'IBM Plex Mono';color:#2E4A6E">÷ 4</span><span style="justify-self:end;display:inline-flex;align-items:baseline;gap:4px;padding:4px 10px;border-radius:8px;background:#E6ECF4;border:1px dashed #7D93B3;color:#2E4A6E"><span style="font:600 30px/1 'IBM Plex Sans'">22</span><span style="font-size:13px">cm</span></span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center;padding:14px 16px;border-top:1px solid #E3D9CB;background:#FCEBD0"><span style="font-size:16px">Pinza de busto</span><span style="justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;border:1.5px dashed #8C5200;color:#8C5200;font:500 14px 'IBM Plex Sans'"><i class="bi bi-exclamation-triangle"></i>Falta</span><span style="font:400 20px 'IBM Plex Mono';color:#5F544B">− 2</span><span style="justify-self:end;font:500 14px 'IBM Plex Sans';color:#8C5200"><a href="#" style="color:#8C5200;text-decoration:underline">Cargar altura de busto</a></span></div>
+</div>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">Componente propio &lt;MoldeRow&gt; sobre CSS grid (no &lt;Table&gt;): permite reflujo en móvil. En impresión cae a &lt;Table bordered&gt;.</div>
+</div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Selector con opción “Otro”</div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Escote</span>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<span style="display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font-size:15px">Redondo</span>
+<span style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:10px;border:1.5px solid #8E3B26;background:#F4E1DA;color:#8E3B26;font:500 15px 'IBM Plex Sans'"><i class="bi bi-check2"></i>Corazón</span>
+<span style="display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font-size:15px">En V</span>
+<span style="display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font-size:15px">Bote</span>
+<span style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:10px;border:1px dashed #5F544B;background:#FFFFFF;font-size:15px"><i class="bi bi-plus"></i>Otro</span>
+</div>
+<div style="display:flex;align-items:center;height:48px;border:1.5px solid #8E3B26;border-radius:10px;background:#FFFFFF;padding:0 12px;box-shadow:0 0 0 3px rgba(142,59,38,.28);font-size:15px;color:#5F544B">Otro: escribí el tipo de escote…</div></div>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">&lt;ToggleButtonGroup type="radio"&gt; + &lt;Form.Control&gt; si value==="otro"</div>
+</div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Subida de imágenes</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+<div style="aspect-ratio:1;border-radius:10px;background:repeating-linear-gradient(135deg,#EFE6D8 0 8px,#F5F0E8 8px 16px);display:flex;align-items:flex-end;padding:6px;font:11px 'IBM Plex Mono';color:#5F544B">boceto frente</div>
+<div style="aspect-ratio:1;border-radius:10px;background:repeating-linear-gradient(135deg,#EFE6D8 0 8px,#F5F0E8 8px 16px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;color:#5F544B;position:relative"><div style="position:absolute;inset:auto 8px 8px 8px;height:4px;border-radius:999px;background:#E3D9CB"><div style="width:60%;height:100%;border-radius:999px;background:#4E6B52"></div></div>Subiendo 60 %</div>
+<div style="aspect-ratio:1;border-radius:10px;border:1.5px dashed #8E3B26;background:#F4E1DA;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#8E3B26;font:500 13px 'IBM Plex Sans'"><i class="bi bi-camera" style="font-size:22px"></i>Sacar o subir</div>
+</div>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">&lt;Form.Control type="file" accept="image/*" capture multiple&gt; oculto + &lt;Modal fullscreen&gt; para ampliar</div>
+</div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 14px 'IBM Plex Sans'">Barra de navegación inferior (móvil)</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);height:64px;background:#FFFFFF;border-radius:14px;box-shadow:0 12px 32px rgba(80,52,30,.18),0 2px 6px rgba(80,52,30,.08)">
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#8E3B26;font:600 11px 'IBM Plex Sans'"><span style="display:flex;align-items:center;justify-content:center;width:48px;height:28px;border-radius:999px;background:#F4E1DA"><i class="bi bi-people-fill" style="font-size:18px"></i></span>Grupos</div>
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#5F544B;font:500 11px 'IBM Plex Sans'"><span style="display:flex;align-items:center;justify-content:center;width:48px;height:28px"><i class="bi bi-scissors" style="font-size:18px"></i></span>Moldes</div>
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#5F544B;font:500 11px 'IBM Plex Sans'"><span style="display:flex;align-items:center;justify-content:center;width:48px;height:28px"><i class="bi bi-brush" style="font-size:18px"></i></span>Diseños</div>
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#5F544B;font:500 11px 'IBM Plex Sans'"><span style="display:flex;align-items:center;justify-content:center;width:48px;height:28px"><i class="bi bi-box-seam" style="font-size:18px"></i></span>Inventario</div>
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#5F544B;font:500 11px 'IBM Plex Sans'"><span style="display:flex;align-items:center;justify-content:center;width:48px;height:28px"><i class="bi bi-sliders" style="font-size:18px"></i></span>Ajustes</div>
+</div>
+<p style="margin:0;font-size:13px;color:#5F544B;line-height:1.45">“Ajustes” agrupa fórmulas y tablas de talles. En tablet+ pasa a barra lateral izquierda.</p>
+<div style="font:12px 'IBM Plex Mono';color:#5F544B">&lt;Nav as="nav" className="fixed-bottom d-md-none"&gt; + NavLink de react-router</div>
+</div>
+
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font:500 12px 'IBM Plex Mono',monospace;color:#5F544B;letter-spacing:.08em">06</div><h2 style="margin:0;font:500 36px/1.1 'Newsreader',Georgia,serif">Estados</h2></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B">Vacío</div><i class="bi bi-people" style="font-size:28px;color:#8A7D6F"></i><div style="font:500 20px 'Newsreader',Georgia,serif">Todavía no hay bailarinas en Ágata</div><div style="font-size:14px;color:#5F544B;line-height:1.45">Agregá la primera para empezar a tomar medidas.</div><span style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:10px;background:#8E3B26;color:#FFFCF7;font-weight:500"><i class="bi bi-plus-lg"></i>Agregar bailarina</span></div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px"><div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B">Cargando</div><div style="height:22px;width:60%;border-radius:6px;background:#EFE6D8"></div><div style="height:12px;width:40%;border-radius:6px;background:#EFE6D8"></div><div style="height:8px;border-radius:999px;background:#EFE6D8"></div><div style="height:64px;border-radius:10px;background:#EFE6D8"></div><div style="font-size:12px;color:#5F544B">Esqueleto con la forma final; nunca un spinner a pantalla completa.</div></div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px"><div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B">Servicio despertando</div><div style="display:flex;align-items:center;gap:10px"><span style="width:22px;height:22px;border-radius:999px;border:3px solid #E3D9CB;border-top-color:#8E3B26"></span><span style="font:500 18px 'Newsreader',Georgia,serif">Enhebrando la aguja…</span></div><div style="font-size:14px;color:#5F544B;line-height:1.45">El servidor estaba dormido. Puede tardar hasta 30 segundos; no cierres la app.</div><div style="height:6px;border-radius:999px;background:#E3D9CB;overflow:hidden"><div style="width:40%;height:100%;background:#8E3B26"></div></div><div style="font:500 13px 'IBM Plex Sans';color:#5F544B">12 s de ~30 s</div></div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px"><div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B">Faltan medidas</div><div style="display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:10px;background:#FCEBD0;border:1px solid #E0A95A;color:#8C5200"><div style="display:flex;gap:8px;font-weight:600"><i class="bi bi-lock"></i>No se puede calcular todavía</div><div style="font-size:14px;line-height:1.45">Faltan 2 medidas de Sofía:</div><div style="display:flex;flex-wrap:wrap;gap:6px"><a href="#" style="display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 10px;border-radius:999px;background:#FFFFFF;border:1px solid #E0A95A;color:#8C5200;font-size:14px">Cadera<i class="bi bi-arrow-right-short"></i></a><a href="#" style="display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 10px;border-radius:999px;background:#FFFFFF;border:1px solid #E0A95A;color:#8C5200;font-size:14px">Largo de talle<i class="bi bi-arrow-right-short"></i></a></div></div></div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px"><div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B">Fuera de rango</div><div style="display:flex;gap:10px;padding:14px;border-radius:10px;background:#FCEBD0;border:1px solid #E0A95A;color:#8C5200"><i class="bi bi-exclamation-triangle" style="font-size:18px"></i><div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Cadera 104 cm supera el T16 (100 cm)</span><span style="font-size:14px;line-height:1.45">El talle se extrapoló. Revisá la medida o asigná un talle a mano.</span></div></div></div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px"><div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B">Éxito al guardar</div><div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:#FFFFFF;box-shadow:0 12px 32px rgba(80,52,30,.18),0 2px 6px rgba(80,52,30,.08)"><span style="width:28px;height:28px;border-radius:999px;background:#E2EFDF;color:#2F6B3A;display:flex;align-items:center;justify-content:center"><i class="bi bi-check-lg"></i></span><span style="flex:1;font-size:15px">Pecho guardado: 88 cm</span><a href="#" style="font-weight:500">Deshacer</a></div><div style="font-size:12px;color:#5F544B">Toast abajo, sobre la barra de navegación, 4 s.</div></div>
+
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;grid-column:span 2;min-width:0"><div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B">Confirmación destructiva</div><div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:20px;background:#FFFFFF;box-shadow:0 12px 32px rgba(80,52,30,.18),0 2px 6px rgba(80,52,30,.08)"><div style="font:500 22px 'Newsreader',Georgia,serif">¿Borrar a Sofía Ferreyra?</div><div style="font-size:15px;color:#5F544B;line-height:1.45">Se pierden <strong style="color:#2B2420">7 medidas, 14 tomas del historial y 2 asignaciones de vestuario</strong>. No se puede deshacer.</div><div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid #D4C6B3;font-weight:500">Cancelar</span><span style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:10px;background:#B3261E;color:#FFFFFF;font-weight:500"><i class="bi bi-trash3"></i>Borrar para siempre</span></div></div></div>
+
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font:500 12px 'IBM Plex Mono',monospace;color:#5F544B;letter-spacing:.08em">07</div><h2 style="margin:0;font:500 36px/1.1 'Newsreader',Georgia,serif">Notas de implementación · react-bootstrap</h2><p style="margin:0;color:#5F544B;max-width:720px;line-height:1.5">Archivos: <code style="font-family:'IBM Plex Mono'">bootstrap/_hilanzapp-variables.scss</code> (se importa antes de Bootstrap) y <code style="font-family:'IBM Plex Mono'">bootstrap/hilanzapp-tokens.css</code> (custom properties + clases .hz-real / .hz-calc / .hz-sug / .hz-manual). Íconos: bootstrap-icons.</p></div>
+<div style="background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.6fr);gap:16px;padding:12px 20px;background:#F5F0E8;font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B"><span>Componente</span><span>react-bootstrap</span><span>Personalizar</span></div>
+<sc-for list="{{ notes }}" as="n" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.6fr);gap:16px;padding:14px 20px;border-top:1px solid #E3D9CB;font-size:14px;line-height:1.5"><span style="font-weight:600">{{ n.c }}</span><span style="font:13px/1.55 'IBM Plex Mono';color:#2E4A6E">{{ n.rb }}</span><span style="color:#5F544B">{{ n.p }}</span></div>
+</sc-for>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return { notes: [
+      { c: 'Layout y navegación', rb: '<Container fluid>, <Row>, <Col md>, <Nav className="fixed-bottom d-md-none">, <Offcanvas responsive="md">', p: 'Barra inferior propia de 64 px con safe-area-inset-bottom. En md+ la misma lista va en barra lateral fija de 240 px.' },
+      { c: 'Encabezado de pantalla', rb: '<Navbar sticky="top">', p: 'Fondo surface-base con blur, título en Newsreader 22 px, botón atrás de 44×44.' },
+      { c: 'Campo numérico (cm)', rb: '<InputGroup>, <Form.Control inputMode="decimal">, <InputGroup.Text>, <Form.Control.Feedback>', p: 'Parsear coma decimal. font-size 22px/600 tabular. Guardado on blur con toast. Rango plausible por medida → aviso (no error).' },
+      { c: 'Edición en línea de medida', rb: '<ListGroup.Item>, <Form.Control plaintext> que pasa a editable', p: 'Tap en el valor → input con foco y teclado decimal. Enter = guardar y saltar a la siguiente medida.' },
+      { c: 'Tarjeta de grupo', rb: '<Card as={Link}>, <ProgressBar> con dos <ProgressBar> hijas (apiladas)', p: 'Hover: shadow-2. Barra salvia = completas, mostaza = parciales.' },
+      { c: 'Fila de bailarina', rb: '<ListGroup.Item action>, <Dropdown> para acciones', p: 'Estado siempre con ícono + texto. Swipe opcional para borrar en móvil.' },
+      { c: 'Chip de talle', rb: '<Badge pill bg="">', p: 'Clases .hz-sug / .hz-manual / .hz-extrap. Tamaño mínimo 30 px de alto; tocable si abre selector (44 px).' },
+      { c: 'Tabla real/fórmula/resultado', rb: 'Componente propio <MoldeTable>, en impresión <Table bordered>', p: 'CSS grid de 4 columnas; en <576 px cada fila se apila en 2 líneas. Resultado 32–40 px.' },
+      { c: 'Selector con “Otro”', rb: '<ToggleButtonGroup type="radio">, <ToggleButton variant="outline-secondary">', p: 'Opción “Otro” con borde discontinuo; al elegirla aparece <Form.Control autoFocus>.' },
+      { c: 'Subida de imágenes', rb: '<Form.Control type="file" accept="image/*" multiple> oculto, <Image thumbnail>, <Modal fullscreen>', p: 'Zona de drop propia. Progreso por miniatura. Comprimir en cliente antes de subir.' },
+      { c: 'Confirmación destructiva', rb: '<Modal centered>, <Button variant="danger">', p: 'El cuerpo cuenta lo que se pierde (medidas, tomas, asignaciones) consultado a la API antes de abrir.' },
+      { c: 'Toasts', rb: '<ToastContainer position="bottom-center">, <Toast autohide delay={4000}>', p: 'Offset para no tapar la barra inferior. Acción “Deshacer”.' },
+      { c: 'Servicio despertando', rb: '<ProgressBar now>, <Spinner animation="border" size="sm">', p: 'Se muestra si el primer request tarda >2 s. Contador hasta 30 s; después, botón Reintentar.' },
+      { c: 'Carga', rb: '<Placeholder as="div" animation="glow">', p: 'Color #EFE6D8. Replicar la forma de la tarjeta o fila.' },
+      { c: 'Grilla de talles', rb: '<Table responsive size="sm">, celdas con <Form.Control size="sm">', p: 'Primera columna sticky. Marca de origen por celda con ícono + color de fondo; leyenda fija.' },
+      { c: 'Producción', rb: '<Accordion alwaysOpen>, <Collapse> por talle', p: 'Cada talle es un botón de 44 px que despliega nombres. Exportar PDF con window.print() sobre vista A4.' }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

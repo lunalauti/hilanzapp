@@ -1,0 +1,88 @@
+/* Hilanzapp — tokens como CSS custom properties. Cargar DESPUÉS de bootstrap.min.css */
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Tinta y papel */
+  --hz-ink: #2B2420;          /* grafito cálido: texto principal */
+  --hz-ink-2: #5F544B;        /* texto secundario (6.3:1 sobre base) */
+  --hz-ink-3: #8A7D6F;        /* sólo íconos / decoración, nunca texto chico */
+  --hz-line: #E3D9CB;
+  --hz-line-strong: #D4C6B3;
+
+  /* Superficies en capas */
+  --hz-surface-base: #F5F0E8;     /* papel de molde */
+  --hz-surface-raised: #FFFCF7;   /* tarjetas */
+  --hz-surface-float: #FFFFFF;    /* modales, popovers, barra inferior */
+
+  /* Marca */
+  --hz-primary: #8E3B26;          /* óxido: hilo de hilvanar */
+  --hz-primary-hover: #76301F;
+  --hz-primary-active: #62281A;
+  --hz-primary-subtle: #F4E1DA;
+  --hz-accent: #4E6B52;           /* salvia: hilo verde */
+  --hz-accent-subtle: #E3ECE2;
+
+  /* Semántica de datos: el principio de la app */
+  --hz-real: #6B4E0A;  --hz-real-bg: #F7EBC6;  --hz-real-border: #C99A2E;   /* cinta métrica · borde sólido */
+  --hz-calc: #2E4A6E;  --hz-calc-bg: #E6ECF4;  --hz-calc-border: #7D93B3;   /* tiza azul · borde discontinuo */
+  --hz-sug:  #963D5A;  --hz-sug-bg:  #F7E4EA;  --hz-sug-border:  #C98AA0;   /* tiza rosa · borde punteado */
+  --hz-manual: #2B2420; --hz-manual-fg: #FFFCF7;                            /* asignado a mano · relleno sólido */
+
+  /* Estados */
+  --hz-success: #2F6B3A; --hz-success-bg: #E2EFDF;
+  --hz-warning: #8C5200; --hz-warning-bg: #FCEBD0; --hz-warning-border: #E0A95A;
+  --hz-danger:  #B3261E; --hz-danger-bg:  #F9E1DE; --hz-danger-border:  #E3A39C;
+
+  /* Tipografía */
+  --hz-font-display: 'Newsreader', Georgia, serif;
+  --hz-font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --hz-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --hz-fs-xs: .75rem; --hz-fs-sm: .875rem; --hz-fs-md: 1rem; --hz-fs-lg: 1.125rem;
+  --hz-fs-num: 1.25rem; --hz-fs-num-xl: 2.25rem; --hz-fs-h3: 1.375rem; --hz-fs-h2: 1.75rem; --hz-fs-h1: 2.25rem;
+
+  /* Espaciado (base 4) */
+  --hz-space-1: 4px; --hz-space-2: 8px; --hz-space-3: 12px; --hz-space-4: 16px;
+  --hz-space-5: 24px; --hz-space-6: 32px; --hz-space-7: 48px;
+  --hz-touch: 44px;
+
+  /* Radios */
+  --hz-radius-sm: 6px; --hz-radius-md: 10px; --hz-radius-lg: 14px; --hz-radius-xl: 20px; --hz-radius-pill: 999px;
+
+  /* Sombras con tinte */
+  --hz-shadow-1: 0 1px 2px rgba(80,52,30,.08), 0 1px 1px rgba(80,52,30,.04);
+  --hz-shadow-2: 0 2px 6px rgba(80,52,30,.08), 0 8px 20px rgba(80,52,30,.08);
+  --hz-shadow-3: 0 12px 32px rgba(80,52,30,.18), 0 2px 6px rgba(80,52,30,.08);
+  --hz-focus-ring: 0 0 0 3px rgba(142,59,38,.28);
+
+  /* Puente a Bootstrap 5.3 (runtime) */
+  --bs-body-font-family: var(--hz-font-sans);
+  --bs-body-color: var(--hz-ink);
+  --bs-body-bg: var(--hz-surface-base);
+  --bs-secondary-color: var(--hz-ink-2);
+  --bs-border-color: var(--hz-line);
+  --bs-border-radius: var(--hz-radius-md);
+  --bs-border-radius-sm: var(--hz-radius-sm);
+  --bs-border-radius-lg: var(--hz-radius-lg);
+  --bs-primary: var(--hz-primary); --bs-primary-rgb: 142,59,38;
+  --bs-success: var(--hz-success); --bs-success-rgb: 47,107,58;
+  --bs-warning: var(--hz-warning); --bs-warning-rgb: 140,82,0;
+  --bs-danger: var(--hz-danger);   --bs-danger-rgb: 179,38,30;
+  --bs-link-color: var(--hz-primary); --bs-link-color-rgb: 142,59,38;
+  --bs-link-hover-color: var(--hz-primary-hover);
+  --bs-focus-ring-color: rgba(142,59,38,.28);
+}
+
+/* Números siempre tabulares */
+.hz-num, .table, input[type="number"], input[inputmode="decimal"] { font-variant-numeric: tabular-nums; }
+h1, h2, h3, .hz-display { font-family: var(--hz-font-display); font-weight: 500; letter-spacing: -.01em; }
+
+/* Clases utilitarias propias */
+.hz-real { color: var(--hz-real); background: var(--hz-real-bg); border: 1px solid var(--hz-real-border); }
+.hz-calc { color: var(--hz-calc); background: var(--hz-calc-bg); border: 1px dashed var(--hz-calc-border); }
+.hz-sug  { color: var(--hz-sug);  background: var(--hz-sug-bg);  border: 1.5px dotted var(--hz-sug-border); }
+.hz-manual { color: var(--hz-manual-fg); background: var(--hz-manual); border: 1px solid var(--hz-manual); }
+
+@media print {
+  .hz-no-print, .navbar, .hz-bottom-nav { display: none !important; }
+  body { background: #fff; }
+}

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>body{margin:0;background:#EAE3D8;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#2B2420}*{box-sizing:border-box}a{color:#8E3B26;text-decoration:none}a:hover{color:#76301F}.dv-turn{padding:40px 44px 36px;border-bottom:1px solid rgba(43,36,32,.1);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:12px;margin:0 0 22px}.dv-tid{font:600 11px 'IBM Plex Mono',monospace;padding:4px 8px;background:#2B2420;color:#FFFCF7;border-radius:5px;text-decoration:none}.dv-tname{font:500 28px/1.1 'Newsreader',Georgia,serif;color:#2B2420}.dv-tsub{font:14px 'IBM Plex Sans';color:#5F544B}.dv-opts{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:16px}.dv-oid{font:600 11px 'IBM Plex Mono',monospace;padding:3px 7px;background:rgba(43,36,32,.1);color:#2B2420;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:13px/1.3 'IBM Plex Sans';color:#5F544B}.dv-opt:target .dv-oid{background:#8E3B26;color:#fff}</style>
+</helmet>
+
+<section class="dv-turn" id="s1">
+<div class="dv-thd"><a class="dv-tid" href="#s1">1</a><span class="dv-tname">Login</span><span class="dv-tsub">Email y contraseña · la API puede tardar 30 s en despertar</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Reposo</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:32px;padding:24px 24px 40px">
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:#8E3B26;color:#FFFCF7"><i class="bi bi-scissors" style="font-size:26px"></i></div><div style="font:italic 500 44px/1 'Newsreader',Georgia,serif;letter-spacing:-.02em;margin-top:12px">Hilanzapp</div><div style="font-size:16px;color:#5F544B">Tu taller de vestuario, a mano.</div></div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Email</span><div style="display:flex;align-items:center;gap:10px;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 14px"><i class="bi bi-envelope" style="color:#5F544B"></i><span style="font-size:16px;color:#5F544B">nombre@correo.com</span></div></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Contraseña</span><div style="display:flex;align-items:center;gap:10px;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 4px 0 14px"><i class="bi bi-lock" style="color:#5F544B"></i><span style="flex:1;font-size:16px;color:#5F544B">••••••••</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#5F544B"><i class="bi bi-eye"></i></span></div></label>
+<button style="min-height:52px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 16px 'IBM Plex Sans';cursor:pointer;margin-top:4px" style-hover="background:#76301F" style-active="background:#62281A">Entrar</button>
+<a href="#" style="align-self:center;min-height:44px;display:flex;align-items:center;font-size:15px;font-weight:500">¿Olvidaste la contraseña?</a>
+</div></div></div></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Error de validación en línea</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px;padding:24px 24px 40px">
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:#8E3B26;color:#FFFCF7"><i class="bi bi-scissors" style="font-size:26px"></i></div><div style="font:italic 500 44px/1 'Newsreader',Georgia,serif;letter-spacing:-.02em;margin-top:12px">Hilanzapp</div></div>
+<div style="display:flex;gap:10px;padding:12px 14px;border-radius:10px;background:#F9E1DE;border:1px solid #E3A39C;color:#B3261E;font-size:14px;line-height:1.4"><i class="bi bi-x-octagon"></i><span>El email o la contraseña no coinciden. Probá de nuevo.</span></div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#B3261E">Email</span><div style="display:flex;align-items:center;gap:10px;height:52px;border:1.5px solid #B3261E;border-radius:10px;background:#FFFFFF;padding:0 14px"><i class="bi bi-envelope" style="color:#B3261E"></i><span style="font-size:16px">taller.hilanza.com</span></div><span style="display:flex;gap:6px;font-size:13px;color:#B3261E"><i class="bi bi-x-circle"></i>Falta la @ en el email.</span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Contraseña</span><div style="display:flex;align-items:center;gap:10px;height:52px;border:1.5px solid #8E3B26;border-radius:10px;background:#FFFFFF;padding:0 4px 0 14px;box-shadow:0 0 0 3px rgba(142,59,38,.28)"><i class="bi bi-lock" style="color:#5F544B"></i><span style="flex:1;font-size:16px">agata2026</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#8E3B26"><i class="bi bi-eye-slash"></i></span></div></label>
+<button style="min-height:52px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 16px 'IBM Plex Sans';margin-top:4px">Entrar</button>
+</div></div></div></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Servicio despertando</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:24px;padding:24px 24px 40px">
+<div style="font:italic 500 44px/1 'Newsreader',Georgia,serif;letter-spacing:-.02em">Hilanzapp</div>
+<div style="display:flex;flex-direction:column;gap:14px;padding:22px;border-radius:20px;background:#FFFFFF;box-shadow:0 12px 32px rgba(80,52,30,.18),0 2px 6px rgba(80,52,30,.08)">
+<div style="display:flex;align-items:center;gap:12px"><span style="width:26px;height:26px;border-radius:999px;border:3px solid #E3D9CB;border-top-color:#8E3B26;border-right-color:#8E3B26"></span><span style="font:500 22px 'Newsreader',Georgia,serif">Enhebrando la aguja…</span></div>
+<div style="font-size:15px;line-height:1.5;color:#5F544B">El servidor estaba dormido y se está despertando. Puede tardar hasta 30 segundos. Tus datos están a salvo.</div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:8px;border-radius:999px;background:#E3D9CB;overflow:hidden"><div style="width:42%;height:100%;background:#8E3B26;border-radius:999px"></div></div><div style="display:flex;justify-content:space-between;font-size:13px;color:#5F544B"><span>Conectando</span><span style="font-weight:600;color:#2B2420">13 s de ~30 s</span></div></div>
+</div>
+<div style="font-size:13px;color:#5F544B;text-align:center;line-height:1.45">Si pasan 30 s aparece “Reintentar”.</div>
+</div></div></div>
+
+</div></section>
+
+<section class="dv-turn" id="s2">
+<div class="dv-thd"><a class="dv-tid" href="#s2">2</a><span class="dv-tname">Inicio · grupos</span><span class="dv-tsub">Tarjetas con avance de medidas</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Con grupos</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:12px 16px 24px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;color:#5F544B">Buen día</span><span style="font:500 32px/1 'Newsreader',Georgia,serif">Tus grupos</span></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:#2B2420"><i class="bi bi-search" style="font-size:18px"></i></span></div>
+<div style="display:flex;gap:8px"><div style="flex:1;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;background:#FFFCF7;border:1px solid #E3D9CB"><span style="font:600 22px 'IBM Plex Sans'">118</span><span style="font-size:12px;color:#5F544B">bailarinas</span></div><div style="flex:1;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;background:#FCEBD0;border:1px solid #E0A95A;color:#8C5200"><span style="font:600 22px 'IBM Plex Sans'">41</span><span style="font-size:12px">con medidas pendientes</span></div></div>
+<button style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 16px 'IBM Plex Sans';cursor:pointer" style-hover="background:#76301F" style-active="background:#62281A"><i class="bi bi-plus-lg"></i>Nuevo grupo</button>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
+<a href="#" style="display:flex;flex-direction:column;gap:12px;padding:16px;background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;box-shadow:0 1px 2px rgba(80,52,30,.08);color:#2B2420;text-decoration:none" style-hover="box-shadow:0 2px 6px rgba(80,52,30,.08),0 8px 20px rgba(80,52,30,.08);border-color:#D4C6B3;color:#2B2420" style-active="transform:scale(.99)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font:500 24px/1.1 'Newsreader',Georgia,serif">{{ g.name }}</span><span style="display:flex;align-items:center;gap:6px;font-size:14px;color:#5F544B">{{ g.n }} bailarinas<i class="bi bi-chevron-right"></i></span></div>
+<div style="font-size:13px;color:#5F544B;margin-top:-6px">{{ g.cat }}</div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:8px;border-radius:999px;background:#E3D9CB;overflow:hidden;display:flex"><div style="width:{{ g.w1 }};background:#4E6B52"></div><div style="width:{{ g.w2 }};background:#C99A2E"></div></div><div style="display:flex;justify-content:space-between;font-size:13px;color:#5F544B"><span>{{ g.txt }}</span><span style="font-weight:600;color:#2B2420">{{ g.pct }}</span></div></div>
+</a>
+</sc-for>
+</div></div>
+<dc-import name="Hz Nav Inferior" active="grupos" hint-size="100%,64px"></dc-import>
+</div></div>
+
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Vacío (primer uso)</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="padding:12px 16px 0"><span style="font:500 32px/1 'Newsreader',Georgia,serif">Tus grupos</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 32px;text-align:center">
+<div style="width:88px;height:88px;border-radius:999px;border:1.5px dashed #C99A2E;background:#F7EBC6;display:flex;align-items:center;justify-content:center;color:#6B4E0A"><i class="bi bi-people" style="font-size:34px"></i></div>
+<div style="font:500 24px/1.2 'Newsreader',Georgia,serif;text-wrap:balance">Empezá creando tu primer grupo</div>
+<div style="font-size:15px;line-height:1.5;color:#5F544B;text-wrap:pretty">Un grupo reúne a las bailarinas que comparten vestuario, como Ágata o Jade.</div>
+<button style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 16px 'IBM Plex Sans';margin-top:6px"><i class="bi bi-plus-lg"></i>Nuevo grupo</button>
+</div>
+<dc-import name="Hz Nav Inferior" active="grupos" hint-size="100%,64px"></dc-import>
+</div></div>
+
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Cargando</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:12px 16px 24px">
+<span style="font:500 32px/1 'Newsreader',Georgia,serif">Tus grupos</span>
+<div style="display:flex;gap:8px"><div style="flex:1;height:62px;border-radius:10px;background:#EFE6D8"></div><div style="flex:1;height:62px;border-radius:10px;background:#EFE6D8"></div></div>
+<div style="height:48px;border-radius:10px;background:#EFE6D8"></div>
+<div style="display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:14px;background:#FFFCF7;border:1px solid #E3D9CB"><div style="height:22px;width:45%;border-radius:6px;background:#EFE6D8"></div><div style="height:8px;border-radius:999px;background:#EFE6D8"></div><div style="height:12px;width:60%;border-radius:6px;background:#EFE6D8"></div></div>
+<div style="display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:14px;background:#FFFCF7;border:1px solid #E3D9CB"><div style="height:22px;width:35%;border-radius:6px;background:#EFE6D8"></div><div style="height:8px;border-radius:999px;background:#EFE6D8"></div><div style="height:12px;width:50%;border-radius:6px;background:#EFE6D8"></div></div>
+<div style="display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:14px;background:#FFFCF7;border:1px solid #E3D9CB"><div style="height:22px;width:50%;border-radius:6px;background:#EFE6D8"></div><div style="height:8px;border-radius:999px;background:#EFE6D8"></div><div style="height:12px;width:40%;border-radius:6px;background:#EFE6D8"></div></div>
+</div>
+<dc-import name="Hz Nav Inferior" active="grupos" hint-size="100%,64px"></dc-import>
+</div></div>
+
+</div></section>
+
+<section class="dv-turn" id="s3">
+<div class="dv-thd"><a class="dv-tid" href="#s3">3</a><span class="dv-tname">Grupo · Ágata</span><span class="dv-tsub">Lista de bailarinas, alta, edición y borrado</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="3a"><div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Lista + éxito al guardar</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;position:relative;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:56px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font:500 24px/1 'Newsreader',Georgia,serif">Ágata</span><span style="font-size:12px;color:#5F544B">Juvenil · 12 bailarinas</span></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px"><i class="bi bi-three-dots-vertical" style="font-size:18px"></i></span></div>
+<div style="display:flex;gap:4px;margin:0 16px;padding:4px;border-radius:12px;background:#EAE3D8"><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:9px;background:#FFFFFF;box-shadow:0 1px 2px rgba(80,52,30,.08);font:600 14px 'IBM Plex Sans'">Bailarinas</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Producción</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Vestuario</span></div>
+<div style="display:flex;gap:8px;padding:14px 16px 8px;overflow:hidden"><span style="display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;background:#2B2420;color:#FFFCF7;font:500 14px 'IBM Plex Sans'">Todas 12</span><span style="display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid #E0A95A;background:#FCEBD0;color:#8C5200;font:500 14px 'IBM Plex Sans'"><i class="bi bi-circle-half"></i>Pendientes 3</span><span style="display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid #D4C6B3;font:500 14px 'IBM Plex Sans';color:#5F544B">T12 · 5</span></div>
+<div style="flex:1;display:flex;flex-direction:column;margin:4px 16px 200px;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden;flex:none">
+<sc-for list="{{ dancers }}" as="d" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:12px;min-height:66px;padding:10px 8px 10px 12px;border-bottom:1px solid #E3D9CB" style-hover="background:#F5F0E8">
+<sc-if value="{{ d.ok }}" hint-placeholder-val="{{ true }}"><div style="width:40px;height:40px;flex:none;border-radius:999px;background:#E3ECE2;color:#4E6B52;display:flex;align-items:center;justify-content:center;font:600 14px 'IBM Plex Sans'">{{ d.ini }}</div></sc-if>
+<sc-if value="{{ d.part }}" hint-placeholder-val="{{ false }}"><div style="width:40px;height:40px;flex:none;border-radius:999px;background:#FCEBD0;color:#8C5200;display:flex;align-items:center;justify-content:center;font:600 14px 'IBM Plex Sans'">{{ d.ini }}</div></sc-if>
+<sc-if value="{{ d.none }}" hint-placeholder-val="{{ false }}"><div style="width:40px;height:40px;flex:none;border-radius:999px;background:#F5F0E8;border:1.5px dashed #D4C6B3;color:#5F544B;display:flex;align-items:center;justify-content:center;font:600 14px 'IBM Plex Sans'">{{ d.ini }}</div></sc-if>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font:500 16px 'IBM Plex Sans';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.name }}</span>
+<sc-if value="{{ d.ok }}" hint-placeholder-val="{{ true }}"><span style="display:flex;align-items:center;gap:5px;min-width:0;white-space:nowrap;overflow:hidden;font-size:13px;color:#2F6B3A"><i class="bi bi-check-circle-fill"></i>Completa<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#5F544B">· {{ d.vest }}</span></span></sc-if>
+<sc-if value="{{ d.part }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:5px;font-size:13px;color:#8C5200"><i class="bi bi-circle-half"></i>{{ d.stat }}</span></sc-if>
+<sc-if value="{{ d.none }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:5px;font-size:13px;color:#5F544B"><i class="bi bi-circle"></i>Sin cargar</span></sc-if>
+</div>
+<sc-if value="{{ d.sug }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:999px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A;font:600 14px 'IBM Plex Sans'">{{ d.t }}</span></sc-if>
+<sc-if value="{{ d.man }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px;border-radius:999px;background:#2B2420;border:1.5px solid #2B2420;color:#FFFCF7;font:600 14px 'IBM Plex Sans'">{{ d.t }}<i class="bi bi-pencil-fill" style="font-size:9px"></i></span></sc-if>
+<sc-if value="{{ d.not }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:999px;border:1.5px dashed #D4C6B3;color:#5F544B;font:500 13px 'IBM Plex Sans'">—</span></sc-if>
+<span style="width:36px;height:44px;display:flex;align-items:center;justify-content:center;color:#5F544B"><i class="bi bi-three-dots-vertical"></i></span>
+</div>
+</sc-for>
+</div>
+<div style="position:absolute;right:16px;bottom:148px;display:flex;align-items:center;gap:8px;height:56px;padding:0 20px;border-radius:16px;background:#8E3B26;color:#FFFCF7;font:500 16px 'IBM Plex Sans';box-shadow:0 12px 32px rgba(142,59,38,.32)"><i class="bi bi-person-plus"></i>Bailarina</div>
+<div style="position:absolute;left:12px;right:12px;bottom:76px;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#2B2420;color:#FFFCF7;box-shadow:0 12px 32px rgba(80,52,30,.24)"><i class="bi bi-check-circle-fill" style="color:#A9D3A0"></i><span style="flex:1;font-size:14px">Camila Benítez guardada</span><span style="min-height:36px;display:flex;align-items:center;padding:0 8px;font:600 14px 'IBM Plex Sans';color:#F4C9B9">Deshacer</span></div>
+<div style="position:absolute;left:0;right:0;bottom:0"><dc-import name="Hz Nav Inferior" active="grupos" hint-size="100%,64px"></dc-import></div>
+</div></div>
+
+<div class="dv-opt" id="3b"><div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>Alta con error en línea</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;position:relative">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:56px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-x-lg" style="font-size:18px"></i></span><span style="flex:1;font:500 22px 'Newsreader',Georgia,serif">Nueva bailarina</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:18px;padding:8px 16px 24px">
+<div style="font-size:14px;color:#5F544B">En <strong style="color:#2B2420">Ágata</strong>. Las medidas se cargan después, en su ficha.</div>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#B3261E">Nombre y apellido</span><div style="display:flex;align-items:center;height:52px;border:1.5px solid #B3261E;border-radius:10px;background:#FFFFFF;padding:0 14px;font-size:16px">Martina López</div><span style="display:flex;gap:6px;font-size:13px;line-height:1.4;color:#B3261E"><i class="bi bi-x-circle"></i>Ya hay una Martina López en Ágata. Sumá un segundo apellido o apodo.</span></label>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Edad</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 14px"><span style="flex:1;font:600 20px 'IBM Plex Sans'">11</span><span style="font-size:14px;color:#5F544B">años</span></div></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Contacto</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 14px;font-size:15px;color:#5F544B">Opcional</div></label>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Vestuario asignado</span>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><span style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:10px;border:1.5px solid #8E3B26;background:#F4E1DA;color:#8E3B26;font:500 15px 'IBM Plex Sans'"><i class="bi bi-check2"></i>Vestido Aurora</span><span style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:10px;border:1.5px solid #8E3B26;background:#F4E1DA;color:#8E3B26;font:500 15px 'IBM Plex Sans'"><i class="bi bi-check2"></i>Pantalón</span><span style="display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font-size:15px">Top cruzado</span></div></div>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Observaciones</span><div style="min-height:80px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:12px 14px;font-size:15px;color:#5F544B">Alérgica al látex</div></label>
+</div>
+<div style="display:flex;gap:10px;padding:12px 16px 20px;background:#FFFFFF;border-top:1px solid #E3D9CB"><button style="flex:1;min-height:48px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;font:500 16px 'IBM Plex Sans'">Cancelar</button><button style="flex:1.4;min-height:48px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 16px 'IBM Plex Sans'">Guardar</button></div>
+</div></div>
+
+<div class="dv-opt" id="3c"><div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a>Confirmación de borrado</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;position:relative">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:56px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><span style="flex:1;font:500 24px 'Newsreader',Georgia,serif">Ágata</span></div>
+<div style="display:flex;flex-direction:column;gap:10px;padding:8px 16px"><div style="height:66px;border-radius:14px;background:#FFFFFF;border:1px solid #E3D9CB"></div><div style="height:66px;border-radius:14px;background:#FFFFFF;border:1px solid #E3D9CB"></div><div style="height:66px;border-radius:14px;background:#FFFFFF;border:1px solid #E3D9CB"></div></div>
+<div style="position:absolute;inset:0;background:rgba(43,36,32,.5)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:16px;padding:12px 20px 24px;border-radius:20px 20px 0 0;background:#FFFFFF;box-shadow:0 -12px 32px rgba(80,52,30,.2)">
+<div style="align-self:center;width:40px;height:4px;border-radius:999px;background:#D4C6B3"></div>
+<div style="width:48px;height:48px;border-radius:999px;background:#F9E1DE;color:#B3261E;display:flex;align-items:center;justify-content:center"><i class="bi bi-trash3" style="font-size:20px"></i></div>
+<div style="font:500 24px/1.2 'Newsreader',Georgia,serif">¿Borrar a Sofía Ferreyra?</div>
+<div style="font-size:15px;line-height:1.5;color:#5F544B">Esto no se puede deshacer. Se pierden:</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+<div style="display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:10px;background:#F9E1DE;color:#B3261E"><span style="font:600 24px 'IBM Plex Sans'">7</span><span style="font-size:12px">medidas</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:10px;background:#F9E1DE;color:#B3261E"><span style="font:600 24px 'IBM Plex Sans'">14</span><span style="font-size:12px">tomas de historial</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:10px;background:#F9E1DE;color:#B3261E"><span style="font:600 24px 'IBM Plex Sans'">2</span><span style="font-size:12px">prendas asignadas</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:4px"><button style="min-height:48px;border:0;border-radius:10px;background:#B3261E;color:#FFFFFF;font:500 16px 'IBM Plex Sans';display:flex;align-items:center;justify-content:center;gap:8px"><i class="bi bi-trash3"></i>Borrar para siempre</button><button style="min-height:48px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;font:500 16px 'IBM Plex Sans'">Cancelar</button></div>
+</div>
+</div></div>
+
+</div></section>
+
+<section class="dv-turn" id="s4">
+<div class="dv-thd"><a class="dv-tid" href="#s4">4</a><span class="dv-tname">Ficha de bailarina · Martina López</span><span class="dv-tsub">Medidas, talle, historial</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="4a"><div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>Medidas · edición rápida en línea</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:48px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><span style="flex:1;font-size:14px;color:#5F544B">Ágata</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-pencil" style="font-size:17px"></i></span></div>
+<div style="display:flex;flex-direction:column;gap:10px;padding:0 16px 14px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 30px/1.05 'Newsreader',Georgia,serif">Martina López</span><span style="font-size:14px;color:#5F544B">16 años · Vestido Aurora, Pantalón</span></div><span style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border-radius:12px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A"><span style="font:600 22px/1 'IBM Plex Sans'">T14</span><span style="font:600 9px 'IBM Plex Sans';letter-spacing:.08em">SUGERIDO</span></span></div>
+</div>
+<div style="display:flex;gap:4px;margin:0 16px;padding:4px;border-radius:12px;background:#EAE3D8"><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:9px;background:#FFFFFF;box-shadow:0 1px 2px rgba(80,52,30,.08);font:600 14px 'IBM Plex Sans'">Medidas</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Talle</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Historial</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;padding:14px 16px 20px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font:500 20px 'Newsreader',Georgia,serif">Medidas base</span><span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#6B4E0A"><i class="bi bi-rulers"></i>reales · en cm</span></div>
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<sc-for list="{{ measures }}" as="m" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 6px 6px 14px;border-bottom:1px solid #E3D9CB" style-hover="background:#F5F0E8"><span style="flex:1;font-size:16px">{{ m.n }}</span><span style="display:inline-flex;align-items:baseline;gap:3px;min-width:76px;justify-content:flex-end;padding:5px 10px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A"><span style="font:600 20px/1 'IBM Plex Sans'">{{ m.v }}</span><span style="font-size:12px">cm</span></span><span style="width:40px;height:44px;display:flex;align-items:center;justify-content:center;color:#5F544B"><i class="bi bi-clock-history"></i></span></div>
+</sc-for>
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:#FFFCF7;border-bottom:1px solid #E3D9CB"><div style="display:flex;align-items:center;gap:10px"><span style="flex:1;font:600 16px 'IBM Plex Sans';color:#8E3B26">Cuello</span><div style="display:flex;align-items:center;width:120px;height:48px;border:1.5px solid #8E3B26;border-radius:10px;background:#FFFFFF;padding:0 10px;box-shadow:0 0 0 3px rgba(142,59,38,.28)"><span style="flex:1;font:600 22px 'IBM Plex Sans'">36<span style="display:inline-block;width:2px;height:22px;background:#2B2420;vertical-align:-3px;margin-left:1px"></span></span><span style="font-size:13px;color:#5F544B">cm</span></div></div><div style="display:flex;justify-content:space-between;font-size:12px;color:#5F544B"><span>Anterior: 35,5 cm · 03/06</span><span>Enter → Espalda</span></div></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 6px 6px 14px;border-bottom:1px solid #E3D9CB"><span style="flex:1;font-size:16px">Largo de manga</span><span style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:1.5px dashed #D4C6B3;color:#5F544B;font:500 14px 'IBM Plex Sans'"><i class="bi bi-plus"></i>Cargar</span><span style="width:40px"></span></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px"><span style="font:500 20px 'Newsreader',Georgia,serif">Personalizadas</span></div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:12px 14px;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px"><div style="display:flex;align-items:center;gap:10px"><span style="flex:1;font-size:16px">Contorno de muslo</span><span style="display:inline-flex;align-items:baseline;gap:3px;padding:5px 10px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A"><span style="font:600 20px/1 'IBM Plex Sans'">52</span><span style="font-size:12px">cm</span></span></div><span style="font-size:13px;color:#5F544B"><i class="bi bi-chat-left-text"></i> Tomar con malla puesta</span></div>
+<button style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border:1.5px dashed #8E3B26;border-radius:10px;background:transparent;color:#8E3B26;font:500 15px 'IBM Plex Sans';cursor:pointer" style-hover="background:#F4E1DA"><i class="bi bi-plus-lg"></i>Agregar medida personalizada</button>
+</div>
+<dc-import name="Hz Nav Inferior" active="grupos" hint-size="100%,64px"></dc-import>
+</div></div>
+
+<div class="dv-opt" id="4b"><div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>Panel de talle · desglose</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:48px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><span style="flex:1;font:500 20px 'Newsreader',Georgia,serif">Martina López</span></div>
+<div style="display:flex;gap:4px;margin:0 16px;padding:4px;border-radius:12px;background:#EAE3D8"><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Medidas</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:9px;background:#FFFFFF;box-shadow:0 1px 2px rgba(80,52,30,.08);font:600 14px 'IBM Plex Sans'">Talle</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Historial</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:14px 16px 20px">
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<div style="display:grid;grid-template-columns:1fr auto 20px auto;gap:10px;align-items:center;padding:10px 14px;background:#F5F0E8;font:600 11px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#5F544B"><span>Medida</span><span style="color:#6B4E0A">Real</span><span></span><span style="color:#963D5A">Da talle</span></div>
+<sc-for list="{{ breakdown }}" as="b" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:1fr auto 20px auto;gap:10px;align-items:center;min-height:54px;padding:6px 14px;border-top:1px solid #E3D9CB"><span style="font-size:15px">{{ b.n }}</span><span style="display:inline-flex;align-items:baseline;gap:3px;padding:4px 8px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A"><span style="font:600 18px/1 'IBM Plex Sans'">{{ b.v }}</span><span style="font-size:11px">cm</span></span><i class="bi bi-arrow-right" style="color:#8A7D6F"></i><span style="display:inline-flex;justify-content:center;min-width:48px;height:28px;align-items:center;padding:0 8px;border-radius:999px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A;font:600 14px 'IBM Plex Sans'">{{ b.t }}</span></div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A"><div style="display:flex;flex-direction:column;align-items:center"><span style="font:600 36px/1 'IBM Plex Sans'">T14</span><span style="font:600 10px 'IBM Plex Sans';letter-spacing:.08em">SUGERIDO</span></div><span style="font-size:14px;line-height:1.4">Se toma el mayor entre pecho y cadera: 3 de 4 medidas dan T14.</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Talle a mano</span>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px"><span style="display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font:500 15px 'IBM Plex Sans'">T10</span><span style="display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font:500 15px 'IBM Plex Sans'">T12</span><span style="display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;border:1.5px dotted #963D5A;background:#F7E4EA;color:#963D5A;font:600 15px 'IBM Plex Sans'">T14</span><span style="display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font:500 15px 'IBM Plex Sans'">T16</span><span style="display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;border:1px dashed #5F544B;background:#FFFFFF;font:500 13px 'IBM Plex Sans'">Otro</span></div>
+<span style="font-size:12px;color:#5F544B">Sin talle a mano: se usa el sugerido.</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Talle por prenda</span>
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 14px"><span style="flex:1;font-size:15px">Vestido Aurora</span><span style="display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:999px;background:#F7E4EA;border:1.5px dotted #963D5A;color:#963D5A;font:600 14px 'IBM Plex Sans'">T14</span><i class="bi bi-chevron-down" style="color:#5F544B"></i></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 14px;border-top:1px solid #E3D9CB"><div style="flex:1;display:flex;flex-direction:column"><span style="font-size:15px">Pantalón</span><span style="font-size:12px;color:#5F544B">Cintura da T12, largo aparte</span></div><span style="display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px;border-radius:999px;background:#2B2420;color:#FFFCF7;font:600 14px 'IBM Plex Sans'">T12<i class="bi bi-pencil-fill" style="font-size:9px"></i></span><i class="bi bi-chevron-down" style="color:#5F544B"></i></div>
+</div></div>
+</div>
+<dc-import name="Hz Nav Inferior" active="grupos" hint-size="100%,64px"></dc-import>
+</div></div>
+
+<div class="dv-opt" id="4c"><div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a>Historial · comparar dos tomas</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:48px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><span style="flex:1;font:500 20px 'Newsreader',Georgia,serif">Martina López</span></div>
+<div style="display:flex;gap:4px;margin:0 16px;padding:4px;border-radius:12px;background:#EAE3D8"><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Medidas</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Talle</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:9px;background:#FFFFFF;box-shadow:0 1px 2px rgba(80,52,30,.08);font:600 14px 'IBM Plex Sans'">Historial</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:14px 16px 20px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:500 20px 'Newsreader',Georgia,serif">Pecho</span>
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 8px 6px 14px"><span style="width:22px;height:22px;border-radius:6px;background:#8E3B26;color:#FFFCF7;display:flex;align-items:center;justify-content:center;font-size:13px"><i class="bi bi-check"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font-size:15px;font-weight:500">12/09/2026</span><span style="font-size:12px;color:#2F6B3A">Vigente</span></div><span style="font:600 20px 'IBM Plex Sans';color:#6B4E0A">88</span><span style="font-size:12px;color:#5F544B;width:24px">cm</span></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 8px 6px 14px;border-top:1px solid #E3D9CB"><span style="width:22px;height:22px;border-radius:6px;background:#8E3B26;color:#FFFCF7;display:flex;align-items:center;justify-content:center;font-size:13px"><i class="bi bi-check"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font-size:15px;font-weight:500">03/06/2026</span><a href="#" style="font-size:12px;font-weight:500">Restaurar</a></div><span style="font:600 20px 'IBM Plex Sans';color:#6B4E0A">86</span><span style="font-size:12px;color:#5F544B;width:24px">cm</span></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 8px 6px 14px;border-top:1px solid #E3D9CB"><span style="width:22px;height:22px;border-radius:6px;border:1.5px solid #D4C6B3;background:#FFFFFF"></span><div style="flex:1;display:flex;flex-direction:column"><span style="font-size:15px;font-weight:500">14/03/2026</span><a href="#" style="font-size:12px;font-weight:500">Restaurar</a></div><span style="font:600 20px 'IBM Plex Sans';color:#6B4E0A">84,5</span><span style="font-size:12px;color:#5F544B;width:24px">cm</span></div>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:0;background:#FFFFFF;border-radius:14px;box-shadow:0 2px 6px rgba(80,52,30,.08),0 8px 20px rgba(80,52,30,.08);overflow:hidden">
+<div style="display:grid;grid-template-columns:1fr 64px 64px 52px;gap:6px;align-items:end;padding:12px 14px;background:#2B2420;color:#FFFCF7"><span style="font:500 16px 'Newsreader',Georgia,serif">Comparar tomas</span><span style="font-size:11px;text-align:right">03/06</span><span style="font-size:11px;text-align:right">12/09</span><span style="font-size:11px;text-align:right">Dif.</span></div>
+<sc-for list="{{ compare }}" as="c" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:1fr 64px 64px 52px;gap:6px;align-items:center;min-height:44px;padding:4px 14px;border-top:1px solid #E3D9CB;font-size:15px"><span>{{ c.n }}</span><span style="text-align:right;color:#5F544B">{{ c.a }}</span><span style="text-align:right;font-weight:600;color:#6B4E0A">{{ c.b }}</span><span style="text-align:right;font-weight:600">{{ c.d }}</span></div>
+</sc-for>
+</div>
+</div>
+<dc-import name="Hz Nav Inferior" active="grupos" hint-size="100%,64px"></dc-import>
+</div></div>
+
+<div class="dv-opt" id="4d"><div class="dv-olabel"><a class="dv-oid" href="#4d">4d</a>Medida personalizada + fuera de rango</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;position:relative;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:48px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><span style="flex:1;font:500 20px 'Newsreader',Georgia,serif">Camila Benítez</span></div>
+<div style="display:flex;flex-direction:column;gap:12px;padding:6px 16px">
+<div style="display:flex;gap:10px;padding:14px;border-radius:14px;background:#FCEBD0;border:1px solid #E0A95A;color:#8C5200"><i class="bi bi-exclamation-triangle" style="font-size:18px"></i><div style="display:flex;flex-direction:column;gap:6px"><span style="font-weight:600;font-size:15px">Cadera fuera de rango</span><span style="font-size:14px;line-height:1.45">104 cm supera el T16 de la tabla (100 cm). El talle se extrapoló.</span><span style="display:inline-flex;align-self:flex-start;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:999px;background:#FFFFFF;border:1.5px dashed #8C5200;font:600 14px 'IBM Plex Sans'"><i class="bi bi-exclamation-triangle" style="font-size:11px"></i>T16+ extrapolado</span></div></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 14px;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px"><span style="flex:1;font-size:16px">Cadera</span><span style="display:inline-flex;align-items:baseline;gap:3px;padding:5px 10px;border-radius:8px;background:#FCEBD0;border:1.5px solid #E0A95A;color:#8C5200"><span style="font:600 20px/1 'IBM Plex Sans'">104</span><span style="font-size:12px">cm</span></span></div>
+</div>
+<div style="position:absolute;inset:0;background:rgba(43,36,32,.5)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:14px;padding:12px 20px 24px;border-radius:20px 20px 0 0;background:#FFFFFF;box-shadow:0 -12px 32px rgba(80,52,30,.2)">
+<div style="align-self:center;width:40px;height:4px;border-radius:999px;background:#D4C6B3"></div>
+<div style="font:500 22px 'Newsreader',Georgia,serif">Nueva medida personalizada</div>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Nombre</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 14px;font-size:16px">Contorno de rodilla</div></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#B3261E">Valor</span><div style="display:flex;align-items:center;height:52px;border:1.5px solid #B3261E;border-radius:10px;background:#FFFFFF;padding:0 14px"><span style="flex:1;font:600 22px 'IBM Plex Sans';color:#5F544B"></span><span style="font-size:14px;color:#5F544B">cm</span></div><span style="display:flex;gap:6px;font-size:13px;color:#B3261E"><i class="bi bi-x-circle"></i>Cargá un valor entre 1 y 250 cm.</span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Observación</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 14px;font-size:15px;color:#5F544B">Ej.: con rodilla flexionada</div></label>
+<div style="display:flex;gap:10px"><button style="flex:1;min-height:48px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;font:500 16px 'IBM Plex Sans'">Cancelar</button><button style="flex:1.4;min-height:48px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 16px 'IBM Plex Sans'">Agregar</button></div>
+</div>
+</div></div>
+
+</div></section>
+
+<section class="dv-turn" id="s5">
+<div class="dv-thd"><a class="dv-tid" href="#s5">5</a><span class="dv-tname">Hoja de molde</span><span class="dv-tsub">La pantalla más importante · real → fórmula → resultado</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="5a"><div class="dv-olabel"><a class="dv-oid" href="#5a">5a</a>Lista para cortar</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:52px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font:500 22px/1 'Newsreader',Georgia,serif">Hoja de molde</span><span style="font-size:12px;color:#5F544B">Martina López · Ágata</span></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-printer" style="font-size:18px"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:6px 16px 20px">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 14px;border-radius:12px;background:#FFFFFF;border:1px solid #D4C6B3"><i class="bi bi-scissors" style="color:#8E3B26"></i><div style="flex:1;display:flex;flex-direction:column"><span style="font-size:11px;color:#5F544B;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Molde</span><span style="font:500 16px 'IBM Plex Sans'">Vestido Aurora · corpiño + falda</span></div><i class="bi bi-chevron-down"></i></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Medidas requeridas</span><span style="display:flex;gap:4px;font-size:12px;color:#2F6B3A"><i class="bi bi-check-circle-fill"></i>6 de 6</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ req }}" as="r" hint-placeholder-count="6"><span style="display:inline-flex;align-items:baseline;gap:4px;padding:5px 9px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A;font-size:13px">{{ r.n }}<strong style="font:600 15px 'IBM Plex Sans'">{{ r.v }}</strong></span></sc-for></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Sisa dibujada</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 12px"><span style="flex:1;font:600 22px 'IBM Plex Sans'">21,5</span><span style="font-size:13px;color:#5F544B">cm</span></div></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Largo de canesú</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;padding:0 12px"><span style="flex:1;font:600 22px 'IBM Plex Sans'">12</span><span style="font-size:13px;color:#5F544B">cm</span></div></label>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Vuelo de la falda</span>
+<div style="display:flex;gap:4px;padding:4px;border-radius:12px;background:#EAE3D8"><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;font:500 14px 'IBM Plex Sans';color:#5F544B">½ campana</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:9px;background:#8E3B26;color:#FFFCF7;font:600 14px 'IBM Plex Sans'">Campana</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;font:500 14px 'IBM Plex Sans';color:#5F544B">Doble</span></div></div>
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden;margin-top:4px">
+<div style="display:flex;justify-content:space-between;padding:10px 14px;background:#F5F0E8;font:600 11px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase"><span style="color:#6B4E0A"><i class="bi bi-rulers"></i> Real · fórmula</span><span style="color:#2E4A6E">= Resultado</span></div>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-top:1px solid #E3D9CB">
+<span style="font:500 14px 'IBM Plex Sans';color:#5F544B">{{ r.p }}</span>
+<div style="display:flex;align-items:center;gap:8px"><span style="display:inline-flex;align-items:baseline;gap:3px;padding:4px 8px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A"><span style="font-size:12px">{{ r.m }}</span><span style="font:600 18px/1 'IBM Plex Sans'">{{ r.real }}</span></span><span style="font:500 17px 'IBM Plex Mono';color:#2E4A6E;white-space:nowrap">{{ r.f }}</span><span style="flex:1"></span><span style="display:inline-flex;align-items:baseline;gap:3px;padding:4px 10px;border-radius:8px;background:#E6ECF4;border:1px dashed #7D93B3;color:#2E4A6E"><span style="font:600 32px/1 'IBM Plex Sans'">{{ r.res }}</span><span style="font-size:13px">cm</span></span></div>
+</div>
+</sc-for>
+</div>
+<button style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;font:500 15px 'IBM Plex Sans';cursor:pointer" style-hover="background:#F5F0E8"><i class="bi bi-arrows-fullscreen"></i>Modo mesa de corte (números XL)</button>
+</div>
+<dc-import name="Hz Nav Inferior" active="moldes" hint-size="100%,64px"></dc-import>
+</div></div>
+
+<div class="dv-opt" id="5b"><div class="dv-olabel"><a class="dv-oid" href="#5b">5b</a>Faltan medidas · cálculo bloqueado</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:52px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font:500 22px/1 'Newsreader',Georgia,serif">Hoja de molde</span><span style="font-size:12px;color:#5F544B">Sofía Ferreyra · Ágata</span></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#8A7D6F"><i class="bi bi-printer" style="font-size:18px"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:6px 16px 20px">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 14px;border-radius:12px;background:#FFFFFF;border:1px solid #D4C6B3"><i class="bi bi-scissors" style="color:#8E3B26"></i><div style="flex:1;display:flex;flex-direction:column"><span style="font-size:11px;color:#5F544B;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Molde</span><span style="font:500 16px 'IBM Plex Sans'">Vestido Aurora · corpiño + falda</span></div><i class="bi bi-chevron-down"></i></div>
+<div style="display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:14px;background:#FCEBD0;border:1px solid #E0A95A;color:#8C5200">
+<div style="display:flex;align-items:center;gap:8px;font:600 16px 'IBM Plex Sans'"><i class="bi bi-lock-fill"></i>No se puede calcular todavía</div>
+<div style="font-size:14px;line-height:1.45">Faltan 2 de las 6 medidas que pide este molde. Tocá una para cargarla en la ficha de Sofía.</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<a href="#" style="display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 14px;border-radius:10px;background:#FFFFFF;border:1px solid #E0A95A;color:#8C5200;font:500 15px 'IBM Plex Sans'" style-hover="background:#FFF7EA">Cadera<i class="bi bi-arrow-right"></i></a>
+<a href="#" style="display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 14px;border-radius:10px;background:#FFFFFF;border:1px solid #E0A95A;color:#8C5200;font:500 15px 'IBM Plex Sans'" style-hover="background:#FFF7EA">Largo de talle<i class="bi bi-arrow-right"></i></a>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Medidas requeridas</span>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><span style="display:inline-flex;align-items:baseline;gap:4px;padding:5px 9px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A;font-size:13px">Pecho<strong style="font:600 15px 'IBM Plex Sans'">76</strong></span><span style="display:inline-flex;align-items:baseline;gap:4px;padding:5px 9px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A;font-size:13px">Cintura<strong style="font:600 15px 'IBM Plex Sans'">62</strong></span><span style="display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border-radius:8px;border:1.5px dashed #8C5200;color:#8C5200;font:500 13px 'IBM Plex Sans'"><i class="bi bi-exclamation-triangle"></i>Cadera</span><span style="display:inline-flex;align-items:baseline;gap:4px;padding:5px 9px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A;font-size:13px">Cuello<strong style="font:600 15px 'IBM Plex Sans'">31</strong></span><span style="display:inline-flex;align-items:baseline;gap:4px;padding:5px 9px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A;font-size:13px">Espalda<strong style="font:600 15px 'IBM Plex Sans'">33</strong></span><span style="display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border-radius:8px;border:1.5px dashed #8C5200;color:#8C5200;font:500 13px 'IBM Plex Sans'"><i class="bi bi-exclamation-triangle"></i>Largo de talle</span></div></div>
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px"><span style="font:500 14px 'IBM Plex Sans';color:#5F544B">Ancho de delantero</span><div style="display:flex;align-items:center;gap:8px"><span style="display:inline-flex;align-items:baseline;gap:3px;padding:4px 8px;border-radius:8px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A"><span style="font-size:12px">Pecho</span><span style="font:600 18px/1 'IBM Plex Sans'">76</span></span><span style="font:500 17px 'IBM Plex Mono';color:#2E4A6E">÷ 4</span><span style="flex:1"></span><span style="display:inline-flex;align-items:baseline;gap:3px;padding:4px 10px;border-radius:8px;background:#E6ECF4;border:1px dashed #7D93B3;color:#2E4A6E"><span style="font:600 32px/1 'IBM Plex Sans'">19</span><span style="font-size:13px">cm</span></span></div></div>
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-top:1px solid #E3D9CB;background:repeating-linear-gradient(135deg,#FFFFFF 0 10px,#F7F2EA 10px 20px)"><span style="font:500 14px 'IBM Plex Sans';color:#5F544B">Cadera delantera</span><div style="display:flex;align-items:center;gap:8px"><span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;border:1.5px dashed #8C5200;color:#8C5200;font:500 13px 'IBM Plex Sans'">Cadera ?</span><span style="font:500 17px 'IBM Plex Mono';color:#5F544B">÷ 4 + 1</span><span style="flex:1"></span><span style="display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:8px;border:1px dashed #D4C6B3;color:#5F544B;font:500 14px 'IBM Plex Sans'"><i class="bi bi-lock"></i>—</span></div></div>
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-top:1px solid #E3D9CB;background:repeating-linear-gradient(135deg,#FFFFFF 0 10px,#F7F2EA 10px 20px)"><span style="font:500 14px 'IBM Plex Sans';color:#5F544B">Largo de talle</span><div style="display:flex;align-items:center;gap:8px"><span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;border:1.5px dashed #8C5200;color:#8C5200;font:500 13px 'IBM Plex Sans'">Largo ?</span><span style="font:500 17px 'IBM Plex Mono';color:#5F544B">+ 1</span><span style="flex:1"></span><span style="display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:8px;border:1px dashed #D4C6B3;color:#5F544B;font:500 14px 'IBM Plex Sans'"><i class="bi bi-lock"></i>—</span></div></div>
+</div>
+</div>
+<dc-import name="Hz Nav Inferior" active="moldes" hint-size="100%,64px"></dc-import>
+</div></div>
+
+</div></section>
+
+
+<section class="dv-turn" id="s6">
+<div class="dv-thd"><a class="dv-tid" href="#s6">6</a><span class="dv-tname">Producción del grupo</span><span class="dv-tsub">Tocá un talle para ver los nombres (interactivo)</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="6a"><div class="dv-olabel"><a class="dv-oid" href="#6a">6a</a>Ágata · por prenda y talle</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:56px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font:500 24px/1 'Newsreader',Georgia,serif">Ágata</span><span style="font-size:12px;color:#5F544B">Juvenil · 12 bailarinas</span></div></div>
+<div style="display:flex;gap:4px;margin:0 16px;padding:4px;border-radius:12px;background:#EAE3D8"><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Bailarinas</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:9px;background:#FFFFFF;box-shadow:0 1px 2px rgba(80,52,30,.08);font:600 14px 'IBM Plex Sans'">Producción</span><span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;font:500 14px 'IBM Plex Sans';color:#5F544B">Vestuario</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:14px 16px 20px">
+<div style="display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:14px;background:#FCEBD0;border:1px solid #E0A95A;color:#8C5200"><div style="display:flex;align-items:center;gap:8px;font:600 15px 'IBM Plex Sans'"><i class="bi bi-hourglass-split"></i>2 pendientes, no entran en el conteo</div>
+<a href="#" style="display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:0 12px;border-radius:10px;background:#FFFFFF;border:1px solid #E0A95A;color:#8C5200;font-size:15px"><span><strong>Lucía Gómez</strong> · sin medidas</span><i class="bi bi-arrow-right"></i></a>
+<a href="#" style="display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:0 12px;border-radius:10px;background:#FFFFFF;border:1px solid #E0A95A;color:#8C5200;font-size:15px"><span><strong>Sofía Ferreyra</strong> · faltan 2</span><i class="bi bi-arrow-right"></i></a></div>
+<sc-for list="{{ garments }}" as="g" hint-placeholder-count="2">
+<div style="display:flex;flex-direction:column;gap:12px;padding:16px;background:#FFFCF7;border:1px solid #E3D9CB;border-radius:14px;box-shadow:0 1px 2px rgba(80,52,30,.08)">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font:500 22px 'Newsreader',Georgia,serif">{{ g.g }}</span><span style="font-size:14px;color:#5F544B">{{ g.tot }} prendas</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+<sc-for list="{{ g.sizes }}" as="s" hint-placeholder-count="4">
+<sc-if value="{{ s.on }}" hint-placeholder-val="{{ false }}"><button onClick="{{ s.toggle }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:64px;border:1.5px solid #2B2420;border-radius:12px;background:#2B2420;color:#FFFCF7;cursor:pointer;font-family:'IBM Plex Sans'"><span style="font:500 13px 'IBM Plex Sans'">{{ s.t }}</span><span style="font:600 24px/1 'IBM Plex Sans'">{{ s.q }}</span></button></sc-if>
+<sc-if value="{{ s.off }}" hint-placeholder-val="{{ true }}"><button onClick="{{ s.toggle }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:64px;border:1px solid #D4C6B3;border-radius:12px;background:#FFFFFF;color:#2B2420;cursor:pointer;font-family:'IBM Plex Sans'" style-hover="border-color:#8E3B26;background:#FFF9F6" style-active="background:#F4E1DA"><span style="font:500 13px 'IBM Plex Sans';color:#5F544B">{{ s.t }}</span><span style="font:600 24px/1 'IBM Plex Sans'">{{ s.q }}</span></button></sc-if>
+</sc-for>
+</div>
+<sc-if value="{{ g.hasOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:10px;background:#F5F0E8"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">{{ g.openLabel }}</span><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ g.openNames }}" as="n" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;min-height:32px;padding:0 10px;border-radius:999px;background:#FFFFFF;border:1px solid #E3D9CB;font-size:14px">{{ n }}</span></sc-for></div></div></sc-if>
+</div>
+</sc-for>
+<button style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 16px 'IBM Plex Sans';cursor:pointer" style-hover="background:#76301F" style-active="background:#62281A"><i class="bi bi-file-earmark-pdf"></i>Exportar PDF</button>
+</div>
+<dc-import name="Hz Nav Inferior" active="grupos" hint-size="100%,64px"></dc-import>
+</div></div>
+</div></section>
+
+<section class="dv-turn" id="s7">
+<div class="dv-thd"><a class="dv-tid" href="#s7">7</a><span class="dv-tname">Diseños de vestuario</span><span class="dv-tsub">Ficha técnica + galería de referencia</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="7a"><div class="dv-olabel"><a class="dv-oid" href="#7a">7a</a>Ficha · Vestido Aurora</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:52px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font:500 22px/1 'Newsreader',Georgia,serif">Vestido Aurora</span><span style="font-size:12px;color:#5F544B">Ágata · 10 prendas</span></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-pencil" style="font-size:17px"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:4px 16px 20px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="height:220px;border-radius:14px;background:repeating-linear-gradient(135deg,#EFE6D8 0 10px,#F7F2EA 10px 20px);border:1px solid #E3D9CB;display:flex;align-items:flex-end;justify-content:space-between;padding:10px"><span style="font:12px 'IBM Plex Mono';color:#5F544B">boceto frente · tocar para ampliar</span><span style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center"><i class="bi bi-arrows-angle-expand"></i></span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+<div style="aspect-ratio:1;border-radius:10px;border:2px solid #8E3B26;background:repeating-linear-gradient(135deg,#EFE6D8 0 6px,#F7F2EA 6px 12px)"></div>
+<div style="aspect-ratio:1;border-radius:10px;border:1px solid #E3D9CB;background:repeating-linear-gradient(135deg,#EFE6D8 0 6px,#F7F2EA 6px 12px);display:flex;align-items:flex-end;padding:4px;font:10px 'IBM Plex Mono';color:#5F544B">espalda</div>
+<div style="aspect-ratio:1;border-radius:10px;border:1px solid #E3D9CB;background:repeating-linear-gradient(135deg,#EFE6D8 0 6px,#F7F2EA 6px 12px);display:flex;align-items:flex-end;padding:4px;font:10px 'IBM Plex Mono';color:#5F544B">tela</div>
+<div style="aspect-ratio:1;border-radius:10px;border:1.5px dashed #8E3B26;background:#F4E1DA;color:#8E3B26;display:flex;flex-direction:column;align-items:center;justify-content:center;font:500 11px 'IBM Plex Sans'"><i class="bi bi-camera" style="font-size:18px"></i>Subir</div>
+</div></div>
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<div style="display:flex;justify-content:space-between;gap:12px;min-height:48px;align-items:center;padding:6px 14px"><span style="font-size:14px;color:#5F544B">Escote</span><span style="font:500 15px 'IBM Plex Sans'">Corazón</span></div>
+<div style="display:flex;justify-content:space-between;gap:12px;min-height:48px;align-items:center;padding:6px 14px;border-top:1px solid #E3D9CB"><span style="font-size:14px;color:#5F544B">Manga</span><span style="font:500 15px 'IBM Plex Sans'">Farol corta</span></div>
+<div style="display:flex;justify-content:space-between;gap:12px;min-height:48px;align-items:center;padding:6px 14px;border-top:1px solid #E3D9CB"><span style="font-size:14px;color:#5F544B">Falda</span><span style="font:500 15px 'IBM Plex Sans'">Campana, a la rodilla</span></div>
+<div style="display:flex;justify-content:space-between;gap:12px;min-height:48px;align-items:center;padding:6px 14px;border-top:1px solid #E3D9CB"><span style="font-size:14px;color:#5F544B">Volado</span><span style="font:500 15px 'IBM Plex Sans'">Doble, en el ruedo</span></div>
+<div style="display:flex;justify-content:space-between;gap:12px;min-height:48px;align-items:center;padding:6px 14px;border-top:1px solid #E3D9CB"><span style="font-size:14px;color:#5F544B">Asimetría</span><span style="font:500 15px 'IBM Plex Sans';text-align:right">Hombro izquierdo descubierto</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font:500 20px 'Newsreader',Georgia,serif">Detalles de confección</span>
+<div style="display:flex;flex-direction:column;gap:6px;padding:14px;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;font-size:15px;line-height:1.45">
+<span style="display:flex;gap:8px"><i class="bi bi-dot" style="color:#8E3B26"></i>Forro de lycra en corpiño</span>
+<span style="display:flex;gap:8px"><i class="bi bi-dot" style="color:#8E3B26"></i>Cierre invisible en espalda, 35 cm</span>
+<span style="display:flex;gap:8px"><i class="bi bi-dot" style="color:#8E3B26"></i>Lentejuela en tira sobre el escote</span></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font:500 20px 'Newsreader',Georgia,serif">Medidas especiales</span>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><span style="display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A;font-size:14px"><i class="bi bi-rulers"></i>Hombro a rodilla</span><span style="display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;background:#F7EBC6;border:1px solid #C99A2E;color:#6B4E0A;font-size:14px"><i class="bi bi-rulers"></i>Contorno de brazo</span></div>
+<span style="font-size:13px;color:#5F544B">Se piden en la ficha de cada bailarina con este diseño.</span></div>
+</div>
+<dc-import name="Hz Nav Inferior" active="disenos" hint-size="100%,64px"></dc-import>
+</div></div>
+
+<div class="dv-opt" id="7b"><div class="dv-olabel"><a class="dv-oid" href="#7b">7b</a>Foto ampliada</div>
+<div style="width:360px;min-height:740px;background:#1E1916;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;color:#FFFCF7">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:56px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-x-lg" style="font-size:18px"></i></span><span style="flex:1;font-size:15px">Boceto frente · 1 de 3</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-trash3"></i></span></div>
+<div style="flex:1;margin:12px 0;background:repeating-linear-gradient(135deg,#2E2622 0 12px,#27201C 12px 24px);display:flex;align-items:center;justify-content:center;font:12px 'IBM Plex Mono';color:#B8AA9A">imagen de referencia a pantalla completa</div>
+<div style="display:flex;justify-content:center;gap:8px;padding:12px 16px 28px"><span style="width:52px;height:52px;border-radius:10px;border:2px solid #FFFCF7;background:#3A302A"></span><span style="width:52px;height:52px;border-radius:10px;background:#3A302A;opacity:.6"></span><span style="width:52px;height:52px;border-radius:10px;background:#3A302A;opacity:.6"></span></div>
+</div></div>
+</div></section>
+
+<section class="dv-turn" id="s8">
+<div class="dv-thd"><a class="dv-tid" href="#s8">8</a><span class="dv-tname">Editor de fórmulas</span><span class="dv-tsub">Vista previa en vivo (interactivo: probá cambiar operación y ajuste)</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="8a"><div class="dv-olabel"><a class="dv-oid" href="#8a">8a</a>Ancho de delantero</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:52px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font:500 22px/1 'Newsreader',Georgia,serif">Ancho de delantero</span><span style="font-size:12px;color:#5F544B">Molde · Corpiño base</span></div></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:6px 16px 20px">
+<div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;min-height:64px;padding:12px;border-radius:14px;background:#E6ECF4;border:1px dashed #7D93B3;color:#2E4A6E;font:500 20px 'IBM Plex Mono'"><span>{{ fMed }}</span><span>{{ fOp }}</span><span>{{ fNum }}</span><span>{{ fAdj }} cm</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">1 · Medida</span>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px"><sc-for list="{{ medList }}" as="m" hint-placeholder-count="4">
+<sc-if value="{{ m.on }}" hint-placeholder-val="{{ false }}"><button onClick="{{ m.pick }}" style="min-height:44px;border:1.5px solid #C99A2E;border-radius:10px;background:#F7EBC6;color:#6B4E0A;font:600 14px 'IBM Plex Sans';cursor:pointer">{{ m.n }}</button></sc-if>
+<sc-if value="{{ m.off }}" hint-placeholder-val="{{ true }}"><button onClick="{{ m.pick }}" style="min-height:44px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;color:#2B2420;font:500 14px 'IBM Plex Sans';cursor:pointer" style-hover="border-color:#5F544B">{{ m.n }}</button></sc-if>
+</sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">2 · Operación</span>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px"><sc-for list="{{ opList }}" as="o" hint-placeholder-count="4">
+<sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}"><button onClick="{{ o.pick }}" style="min-height:48px;border:1.5px solid #2E4A6E;border-radius:10px;background:#2E4A6E;color:#FFFFFF;font:500 22px 'IBM Plex Mono';cursor:pointer">{{ o.o }}</button></sc-if>
+<sc-if value="{{ o.off }}" hint-placeholder-val="{{ true }}"><button onClick="{{ o.pick }}" style="min-height:48px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;color:#2E4A6E;font:500 22px 'IBM Plex Mono';cursor:pointer" style-hover="border-color:#2E4A6E">{{ o.o }}</button></sc-if>
+</sc-for></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">3 · Operando</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;overflow:hidden"><button onClick="{{ numDec }}" style="width:44px;height:100%;border:0;background:transparent;font-size:20px;cursor:pointer" style-hover="background:#F5F0E8">−</button><span style="flex:1;text-align:center;font:600 22px 'IBM Plex Sans'">{{ fNum }}</span><button onClick="{{ numInc }}" style="width:44px;height:100%;border:0;background:transparent;font-size:20px;cursor:pointer" style-hover="background:#F5F0E8">+</button></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">4 · Ajuste (cm)</span><div style="display:flex;align-items:center;height:52px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;overflow:hidden"><button onClick="{{ adjDec }}" style="width:44px;height:100%;border:0;background:transparent;font-size:20px;cursor:pointer" style-hover="background:#F5F0E8">−</button><span style="flex:1;text-align:center;font:600 20px 'IBM Plex Sans'">{{ fAdj }}</span><button onClick="{{ adjInc }}" style="width:44px;height:100%;border:0;background:transparent;font-size:20px;cursor:pointer" style-hover="background:#F5F0E8">+</button></div></div>
+</div>
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border-radius:14px;box-shadow:0 2px 6px rgba(80,52,30,.08),0 8px 20px rgba(80,52,30,.08);overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font:600 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Vista previa · Martina</span><span style="display:inline-flex;align-items:baseline;gap:3px;color:#6B4E0A"><span style="font-size:13px">{{ fMed }}</span><span style="font:600 18px 'IBM Plex Sans'">{{ fBase }}</span></span></div><span style="display:inline-flex;align-items:baseline;gap:3px;padding:4px 10px;border-radius:8px;background:#E6ECF4;border:1px dashed #7D93B3;color:#2E4A6E"><span style="font:600 34px/1 'IBM Plex Sans'">{{ fRes }}</span><span style="font-size:13px">cm</span></span></div>
+<sc-for list="{{ fOthers }}" as="x" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 14px;border-top:1px solid #E3D9CB;font-size:14px"><span style="flex:1">{{ x.n }}</span><span style="color:#6B4E0A;font-weight:600">{{ x.v }}</span><i class="bi bi-arrow-right" style="color:#8A7D6F"></i><span style="min-width:48px;text-align:right;color:#2E4A6E;font-weight:600">{{ x.r }}</span></div></sc-for>
+</div>
+<sc-if value="{{ changed }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:10px"><button onClick="{{ restore }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;border:1px solid #D4C6B3;border-radius:10px;background:#FFFFFF;font:500 15px 'IBM Plex Sans';cursor:pointer" style-hover="background:#F5F0E8"><i class="bi bi-arrow-counterclockwise"></i>Restaurar original</button><button style="flex:1;min-height:48px;border:0;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 15px 'IBM Plex Sans';cursor:pointer" style-hover="background:#76301F">Guardar</button></div><span style="font-size:12px;color:#5F544B;text-align:center">Original: Pecho ÷ 4 + 0 cm</span></sc-if>
+<sc-if value="{{ unchanged }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;font-size:14px;color:#2F6B3A"><i class="bi bi-check-circle"></i>Es la fórmula original</div></sc-if>
+</div>
+<dc-import name="Hz Nav Inferior" active="ajustes" hint-size="100%,64px"></dc-import>
+</div></div>
+</div></section>
+
+<section class="dv-turn" id="s9">
+<div class="dv-thd"><a class="dv-tid" href="#s9">9</a><span class="dv-tname">Editor de tablas de talles</span><span class="dv-tsub">Grilla talle × medida con origen por celda</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="9a"><div class="dv-olabel"><a class="dv-oid" href="#9a">9a</a>Tabla infantil-juvenil</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:52px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font:500 22px/1 'Newsreader',Georgia,serif">Infantil-juvenil 2026</span><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#2F6B3A"><i class="bi bi-check-circle-fill"></i>Tabla activa</span></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-three-dots-vertical"></i></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:6px 16px 20px">
+<div style="display:flex;gap:8px"><span style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font:500 14px 'IBM Plex Sans'"><i class="bi bi-copy"></i>Duplicar</span><span style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #D4C6B3;background:#FFFFFF;font:500 14px 'IBM Plex Sans'"><i class="bi bi-arrow-counterclockwise"></i>Restaurar</span></div>
+<div style="background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<div style="display:grid;grid-template-columns:52px repeat(4,66px);min-width:max-content">
+<span style="position:sticky;left:0;padding:10px 8px;background:#F5F0E8;font:600 11px 'IBM Plex Sans';color:#5F544B">TALLE</span><span style="padding:10px 8px;background:#F5F0E8;font:600 11px 'IBM Plex Sans';color:#5F544B;text-align:right">PECHO</span><span style="padding:10px 8px;background:#F5F0E8;font:600 11px 'IBM Plex Sans';color:#5F544B;text-align:right">CINTURA</span><span style="padding:10px 8px;background:#F5F0E8;font:600 11px 'IBM Plex Sans';color:#5F544B;text-align:right">CADERA</span><span style="padding:10px 8px;background:#F5F0E8;font:600 11px 'IBM Plex Sans';color:#5F544B;text-align:right">L. TALLE</span>
+</div>
+<sc-for list="{{ tallas }}" as="r" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:52px repeat(4,66px);border-top:1px solid #E3D9CB">
+<span style="display:flex;align-items:center;padding:0 8px;min-height:48px;font:600 15px 'IBM Plex Sans';background:#FFFCF7;border-right:1px solid #E3D9CB">{{ r.t }}</span>
+<sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="4">
+<sc-if value="{{ c.f }}" hint-placeholder-val="{{ true }}"><span style="display:flex;align-items:center;justify-content:flex-end;padding:0 10px;min-height:48px;font:500 16px 'IBM Plex Sans'">{{ c.v }}</span></sc-if>
+<sc-if value="{{ c.i }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;justify-content:flex-end;gap:4px;padding:0 10px;min-height:48px;background:#E6ECF4;color:#2E4A6E;font:italic 500 16px 'IBM Plex Sans'"><span style="font-size:11px">≈</span>{{ c.v }}</span></sc-if>
+<sc-if value="{{ c.e }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;justify-content:flex-end;gap:4px;padding:0 10px;min-height:48px;background:#F4E1DA;color:#8E3B26;font:600 16px 'IBM Plex Sans';box-shadow:inset 0 0 0 1.5px #8E3B26"><i class="bi bi-pencil-fill" style="font-size:9px"></i>{{ c.v }}</span></sc-if>
+<sc-if value="{{ c.x }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;justify-content:flex-end;gap:4px;padding:0 10px;min-height:48px;background:#FCEBD0;color:#8C5200;font:500 16px 'IBM Plex Sans'"><i class="bi bi-exclamation-triangle" style="font-size:10px"></i>{{ c.v }}</span></sc-if>
+</sc-for>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+<span style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:5px;border:1px solid #D4C6B3;background:#FFFFFF"></span>Fuente</span>
+<span style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:5px;background:#E6ECF4;color:#2E4A6E;display:flex;align-items:center;justify-content:center;font-size:11px">≈</span>Interpolado</span>
+<span style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:5px;background:#FCEBD0;color:#8C5200;display:flex;align-items:center;justify-content:center;font-size:10px"><i class="bi bi-exclamation-triangle"></i></span>Extrapolado</span>
+<span style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:5px;background:#F4E1DA;box-shadow:inset 0 0 0 1.5px #8E3B26;color:#8E3B26;display:flex;align-items:center;justify-content:center;font-size:9px"><i class="bi bi-pencil-fill"></i></span>Editado</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:12px;background:#FFFCF7;border:1px solid #E3D9CB"><span style="font-size:13px;color:#5F544B">Otra tabla</span><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font:500 16px 'IBM Plex Sans'">Adultas 2026</span><span style="display:inline-flex;align-items:center;min-height:40px;padding:0 12px;border-radius:10px;border:1px solid #8E3B26;color:#8E3B26;font:500 14px 'IBM Plex Sans'">Activar</span></div></div>
+</div>
+<dc-import name="Hz Nav Inferior" active="ajustes" hint-size="100%,64px"></dc-import>
+</div></div>
+</div></section>
+
+<section class="dv-turn" id="s10">
+<div class="dv-thd"><a class="dv-tid" href="#s10">10</a><span class="dv-tname">Inventario y costos</span><span class="dv-tsub">Stock, faltantes, consumo y costo por grupo</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="10a"><div class="dv-olabel"><a class="dv-oid" href="#10a">10a</a>Materiales · faltantes para Ágata</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px"><span style="font:500 30px/1 'Newsreader',Georgia,serif">Inventario</span><span style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:10px;background:#8E3B26;color:#FFFCF7;font:500 14px 'IBM Plex Sans'"><i class="bi bi-plus-lg"></i>Material</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:6px 16px 20px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:#FFFCF7;border:1px solid #E3D9CB"><span style="font-size:12px;color:#5F544B">Valor en stock</span><span style="font:600 22px 'IBM Plex Sans'">$ 247.100</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:#F9E1DE;border:1px solid #E3A39C;color:#B3261E"><span style="font-size:12px">Faltantes</span><span style="font:600 22px 'IBM Plex Sans'">2 materiales</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border-radius:12px;background:#FFFFFF;border:1px solid #D4C6B3"><span style="font-size:13px;color:#5F544B">Calcular para</span><span style="flex:1;font:500 15px 'IBM Plex Sans'">Ágata · Vestido + Pantalón</span><i class="bi bi-chevron-down"></i></div>
+<div style="display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden">
+<sc-for list="{{ materials }}" as="m" hint-placeholder-count="5">
+<sc-if value="{{ m.ok }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:10px;min-height:68px;padding:8px 14px;border-bottom:1px solid #E3D9CB"><div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font:500 15px 'IBM Plex Sans'">{{ m.n }}</span><span style="font-size:12px;color:#5F544B">{{ m.d }} · {{ m.cost }}</span></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span style="font:600 18px 'IBM Plex Sans'">{{ m.stock }}</span><span style="font-size:12px;color:#2F6B3A">{{ m.need }}</span></div></div></sc-if>
+<sc-if value="{{ m.low }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px;min-height:68px;padding:8px 14px;border-bottom:1px solid #E3A39C;background:#F9E1DE"><i class="bi bi-exclamation-octagon" style="color:#B3261E"></i><div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font:500 15px 'IBM Plex Sans'">{{ m.n }}</span><span style="font-size:12px;color:#5F544B">{{ m.d }} · {{ m.cost }}</span></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span style="font:600 18px 'IBM Plex Sans'">{{ m.stock }}</span><span style="font:600 12px 'IBM Plex Sans';color:#B3261E">{{ m.need }}</span></div></div></sc-if>
+</sc-for>
+</div>
+</div>
+<dc-import name="Hz Nav Inferior" active="inventario" hint-size="100%,64px"></dc-import>
+</div></div>
+
+<div class="dv-opt" id="10b"><div class="dv-olabel"><a class="dv-oid" href="#10b">10b</a>Costo del grupo · consumo por prenda y talle</div>
+<div style="width:360px;min-height:740px;background:#F5F0E8;border-radius:28px;overflow:hidden;border:1px solid #D4C6B3;box-shadow:0 12px 32px rgba(80,52,30,.14);display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font:600 12px 'IBM Plex Sans'"><span>9:41</span><span style="display:flex;gap:6px"><i class="bi bi-reception-4"></i><i class="bi bi-battery-full"></i></span></div>
+<div style="display:flex;align-items:center;gap:4px;height:52px;padding:0 8px"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><i class="bi bi-arrow-left" style="font-size:20px"></i></span><div style="flex:1;display:flex;flex-direction:column"><span style="font:500 22px/1 'Newsreader',Georgia,serif">Costo · Ágata</span><span style="font-size:12px;color:#5F544B">10 vestidos + 10 pantalones</span></div></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:6px 16px 20px">
+<div style="display:flex;flex-direction:column;gap:4px;padding:16px;border-radius:14px;background:#2B2420;color:#FFFCF7"><span style="font-size:13px;opacity:.85">Costo de materiales del grupo</span><span style="font:600 36px/1.1 'IBM Plex Sans'">$ 312.480</span><span style="font-size:13px;opacity:.85">≈ $ 31.250 por bailarina</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Por material</span>
+<div style="display:flex;flex-direction:column;gap:10px;padding:14px;background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px">
+<div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Lycra negra</span><strong>$ 77.520</strong></div><div style="height:8px;border-radius:999px;background:#EFE6D8"><div style="width:62%;height:100%;border-radius:999px;background:#8E3B26"></div></div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Tul ilusión nude</span><strong>$ 44.800</strong></div><div style="height:8px;border-radius:999px;background:#EFE6D8"><div style="width:36%;height:100%;border-radius:999px;background:#8E3B26"></div></div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Lentejuela en tira</span><strong>$ 37.700</strong></div><div style="height:8px;border-radius:999px;background:#EFE6D8"><div style="width:30%;height:100%;border-radius:999px;background:#8E3B26"></div></div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Otros (cierres, elástico, hilo)</span><strong>$ 152.460</strong></div><div style="height:8px;border-radius:999px;background:#EFE6D8"><div style="width:100%;height:100%;border-radius:999px;background:#C99A2E"></div></div></div>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font:600 12px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#5F544B">Consumo de lycra · pantalón</span>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);background:#FFFFFF;border:1px solid #E3D9CB;border-radius:14px;overflow:hidden;text-align:center">
+<div style="display:flex;flex-direction:column;gap:2px;padding:10px 4px"><span style="font-size:12px;color:#5F544B">T8</span><span style="font:600 18px 'IBM Plex Sans'">0,8 m</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;padding:10px 4px;border-left:1px solid #E3D9CB"><span style="font-size:12px;color:#5F544B">T10</span><span style="font:600 18px 'IBM Plex Sans'">0,9 m</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;padding:10px 4px;border-left:1px solid #E3D9CB"><span style="font-size:12px;color:#5F544B">T12</span><span style="font:600 18px 'IBM Plex Sans'">1,0 m</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;padding:10px 4px;border-left:1px solid #E3D9CB"><span style="font-size:12px;color:#5F544B">T14</span><span style="font:600 18px 'IBM Plex Sans'">1,15 m</span></div>
+</div></div>
+</div>
+<dc-import name="Hz Nav Inferior" active="inventario" hint-size="100%,64px"></dc-import>
+</div></div>
+</div></section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { open: 'Pantalón|T10', med: 'Pecho', op: '÷', num: 4, adj: 0.5 };
+  fmt(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+  calc(v) { const { op, num, adj } = this.state; let r = op === '÷' ? v / num : op === '×' ? v * num : op === '+' ? v + num : v - num; return r + adj; }
+  extra() {
+    const s = this.state;
+    const garments = [
+      { g: 'Pantalón', tot: 10, sizes: [['T8', ['Mía Sosa', 'Abril Ríos', 'Zoe Díaz']], ['T10', ['Emma Paz', 'Julieta Díaz', 'Renata Vera', 'Olivia Sanz']], ['T12', ['Camila Benítez', 'Martina López']], ['T14', ['Valentina Ruiz']]] },
+      { g: 'Vestido Aurora', tot: 10, sizes: [['T10', ['Emma Paz', 'Julieta Díaz', 'Mía Sosa']], ['T12', ['Camila Benítez', 'Renata Vera', 'Abril Ríos', 'Zoe Díaz']], ['T14', ['Martina López', 'Valentina Ruiz', 'Olivia Sanz']]] }
+    ].map(x => {
+      let openNames = [], openLabel = '';
+      const sizes = x.sizes.map(([t, names]) => { const k = x.g + '|' + t, on = s.open === k; if (on) { openNames = names; openLabel = x.g + ' ' + t; } return { t, q: '×' + names.length, on, off: !on, toggle: () => this.setState({ open: on ? '' : k }) }; });
+      return { g: x.g, tot: x.tot, sizes, openNames, hasOpen: openNames.length > 0, openLabel };
+    });
+    const meds = { Pecho: 88, Cintura: 70, Cadera: 94, Espalda: 40 };
+    const medList = Object.keys(meds).map(n => ({ n, on: s.med === n, off: s.med !== n, pick: () => this.setState({ med: n }) }));
+    const opList = ['÷', '×', '+', '−'].map(o => ({ o, on: s.op === o, off: s.op !== o, pick: () => this.setState({ op: o }) }));
+    const base = meds[s.med];
+    const others = [['Sofía Ferreyra', { Pecho: 76, Cintura: 62, Cadera: 80, Espalda: 33 }], ['Valentina Ruiz', { Pecho: 92, Cintura: 74, Cadera: 98, Espalda: 42 }], ['Camila Benítez', { Pecho: 82, Cintura: 68, Cadera: 88, Espalda: 38 }]];
+    const isOrig = s.med === 'Pecho' && s.op === '÷' && s.num === 4 && s.adj === 0;
+    const adjTxt = (s.adj >= 0 ? '+ ' : '− ') + this.fmt(Math.abs(s.adj));
+    return {
+      garments,
+      medList, opList,
+      fNum: this.fmt(s.num), fAdj: adjTxt, fMed: s.med, fOp: s.op,
+      fBase: this.fmt(base), fRes: this.fmt(this.calc(base)),
+      fOthers: others.map(([n, m]) => ({ n, v: this.fmt(m[s.med]), r: this.fmt(this.calc(m[s.med])) })),
+      changed: !isOrig, unchanged: isOrig,
+      numDec: () => this.setState(x => ({ num: Math.max(1, x.num - 1) })), numInc: () => this.setState(x => ({ num: x.num + 1 })),
+      adjDec: () => this.setState(x => ({ adj: x.adj - 0.5 })), adjInc: () => this.setState(x => ({ adj: x.adj + 0.5 })),
+      restore: () => this.setState({ med: 'Pecho', op: '÷', num: 4, adj: 0 }),
+      tallas: [
+        { t: 'T8', c: [['64', 'f'], ['56', 'f'], ['68', 'f'], ['29', 'i']] },
+        { t: 'T10', c: [['70', 'f'], ['60', 'f'], ['74', 'f'], ['31', 'f']] },
+        { t: 'T12', c: [['76', 'f'], ['64', 'e'], ['82', 'f'], ['34', 'i']] },
+        { t: 'T14', c: [['84', 'f'], ['69', 'f'], ['90', 'f'], ['37', 'f']] },
+        { t: 'T16', c: [['92', 'f'], ['74', 'i'], ['100', 'f'], ['40', 'f']] },
+        { t: 'T18', c: [['100', 'x'], ['79', 'x'], ['108', 'x'], ['43', 'x']] }
+      ].map(r => ({ t: r.t, cells: r.c.map(([v, k]) => ({ v, f: k === 'f', i: k === 'i', e: k === 'e', x: k === 'x' })) })),
+      materials: [
+        { n: 'Lycra negra', d: '150 cm de ancho', stock: '18 m', cost: '$ 6.800 /m', need: 'Usa 11,4 m', low: false, ok: true },
+        { n: 'Tul ilusión nude', d: '180 cm', stock: '6 m', cost: '$ 3.200 /m', need: 'Faltan 8 m', low: true, ok: false },
+        { n: 'Lentejuela en tira', d: 'Plateada 1 cm', stock: '40 m', cost: '$ 1.450 /m', need: 'Usa 26 m', low: false, ok: true },
+        { n: 'Cierre invisible 35 cm', d: 'Negro', stock: '4 u', cost: '$ 900 c/u', need: 'Faltan 6 u', low: true, ok: false },
+        { n: 'Elástico 2 cm', d: 'Blanco', stock: '25 m', cost: '$ 520 /m', need: 'Usa 8 m', low: false, ok: true }
+      ]
+    };
+  }
+  renderVals() {
+    return { ...this.extra(),
+      groups: [
+        { name: 'Ágata', n: 12, cat: 'Juvenil · 13 a 17 años', w1: '75%', w2: '8%', txt: '9 completas · 1 parcial', pct: '75 %' },
+        { name: 'Jade', n: 14, cat: 'Adultas', w1: '100%', w2: '0%', txt: '14 completas', pct: '100 %' },
+        { name: 'Turmalina', n: 10, cat: 'Infantil · 8 a 10 años', w1: '40%', w2: '30%', txt: '4 completas · 3 parciales', pct: '40 %' },
+        { name: 'Amatista', n: 15, cat: 'Infantil · 6 a 8 años', w1: '0%', w2: '0%', txt: 'Sin medidas cargadas', pct: '0 %' },
+        { name: 'Ónix', n: 11, cat: 'Juvenil', w1: '64%', w2: '18%', txt: '7 completas · 2 parciales', pct: '64 %' }
+      ],
+      dancers: [
+        { ini: 'CB', name: 'Camila Benítez', ok: true, part: false, none: false, vest: 'Vestido Aurora', stat: '', t: 'T12', sug: true, man: false, not: false },
+        { ini: 'ML', name: 'Martina López', ok: true, part: false, none: false, vest: 'Vestido Aurora', stat: '', t: 'T14', sug: true, man: false, not: false },
+        { ini: 'SF', name: 'Sofía Ferreyra', ok: false, part: true, none: false, vest: '', stat: 'Parcial · faltan 2', t: 'T10', sug: true, man: false, not: false },
+        { ini: 'VR', name: 'Valentina Ruiz', ok: true, part: false, none: false, vest: 'Pantalón', stat: '', t: 'T14', sug: false, man: true, not: false },
+        { ini: 'LG', name: 'Lucía Gómez', ok: false, part: false, none: true, vest: '', stat: '', t: '', sug: false, man: false, not: true },
+        { ini: 'EP', name: 'Emma Paz', ok: true, part: false, none: false, vest: 'Vestido Aurora', stat: '', t: 'T10', sug: false, man: true, not: false }
+      ],
+      measures: [
+        { n: 'Pecho', v: '88' }, { n: 'Cintura', v: '70' }, { n: 'Cadera', v: '94' }
+      ],
+      breakdown: [
+        { n: 'Pecho', v: '88', t: 'T14' }, { n: 'Cintura', v: '70', t: 'T12' }, { n: 'Cadera', v: '94', t: 'T14' }, { n: 'Largo de talle', v: '38', t: 'T14' }
+      ],
+      compare: [
+        { n: 'Pecho', a: '86', b: '88', d: '+2' }, { n: 'Cintura', a: '69', b: '70', d: '+1' }, { n: 'Cadera', a: '92', b: '94', d: '+2' }, { n: 'Cuello', a: '35,5', b: '36', d: '+0,5' }, { n: 'Espalda', a: '40', b: '40', d: '0' }
+      ],
+      req: [
+        { n: 'Pecho', v: '88' }, { n: 'Cintura', v: '70' }, { n: 'Cuello', v: '36' }, { n: 'Espalda', v: '40' }, { n: 'Largo talle', v: '38' }, { n: 'Largo falda', v: '52' }
+      ],
+      rows: [
+        { p: 'Ancho de delantero', m: 'Pecho', real: '88', f: '÷ 4', res: '22' },
+        { p: 'Ancho de espalda', m: 'Espalda', real: '40', f: '÷ 2', res: '20' },
+        { p: 'Ancho de escote', m: 'Cuello', real: '36', f: '÷ 6 + 0,5', res: '6,5' },
+        { p: 'Cintura con pinza', m: 'Cintura', real: '70', f: '÷ 4 + 1', res: '18,5' },
+        { p: 'Largo de talle', m: 'Largo', real: '38', f: '+ 1', res: '39' },
+        { p: 'Copa de manga', m: 'Sisa', real: '21,5', f: '− 0,5', res: '21' },
+        { p: 'Radio de cintura (campana)', m: 'Cintura', real: '70', f: '÷ 2π', res: '11,1' },
+        { p: 'Largo de falda + dobladillo', m: 'Largo', real: '52', f: '+ 1,5', res: '53,5' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<nav style="display:flex;flex-direction:column;gap:4px;height:100%;padding:24px 16px;background:#FFFCF7;border-right:1px solid #E3D9CB;font-family:'IBM Plex Sans',system-ui,sans-serif">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px 24px"><span style="width:36px;height:36px;border-radius:10px;background:#8E3B26;color:#FFFCF7;display:flex;align-items:center;justify-content:center"><i class="bi bi-scissors"></i></span><span style="font:italic 500 26px/1 'Newsreader',Georgia,serif;color:#2B2420">Hilanzapp</span></div>
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+<sc-if value="{{ it.on }}" hint-placeholder-val="{{ false }}"><a href="#" style="display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:10px;background:#F4E1DA;color:#8E3B26;font-weight:600;font-size:15px;text-decoration:none"><i class="{{ it.icon }}" style="font-size:17px"></i>{{ it.label }}</a></sc-if>
+<sc-if value="{{ it.off }}" hint-placeholder-val="{{ true }}"><a href="#" style="display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:10px;color:#5F544B;font-weight:500;font-size:15px;text-decoration:none" style-hover="background:#F5F0E8;color:#2B2420;text-decoration:none"><i class="{{ it.icon }}" style="font-size:17px"></i>{{ it.label }}</a></sc-if>
+</sc-for>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:#E3ECE2;color:#2F6B3A;font-size:13px"><i class="bi bi-cloud-check"></i>Todo guardado</div>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:240,&quot;height&quot;:720},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;grupos&quot;,&quot;moldes&quot;,&quot;disenos&quot;,&quot;inventario&quot;,&quot;formulas&quot;,&quot;tablas&quot;],&quot;default&quot;:&quot;grupos&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const a = this.props.active ?? 'grupos';
+    const base = [['grupos','Grupos','bi bi-people'],['moldes','Hojas de molde','bi bi-scissors'],['disenos','Diseños','bi bi-brush'],['inventario','Inventario y costos','bi bi-box-seam'],['formulas','Fórmulas','bi bi-calculator'],['tablas','Tablas de talles','bi bi-table']];
+    return { items: base.map(([k,l,i]) => ({ label: l, icon: i, on: k === a, off: k !== a })) };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);height:64px;background:#FFFFFF;border-top:1px solid #E3D9CB;box-shadow:0 -4px 16px rgba(80,52,30,.06);font-family:'IBM Plex Sans',system-ui,sans-serif">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+<a href="#" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#5F544B;font-size:11px;font-weight:500;text-decoration:none" style-hover="color:#8E3B26;text-decoration:none">
+<sc-if value="{{ it.on }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;justify-content:center;width:52px;height:30px;border-radius:999px;background:#F4E1DA;color:#8E3B26"><i class="{{ it.iconOn }}" style="font-size:18px"></i></span><span style="color:#8E3B26;font-weight:600">{{ it.label }}</span></sc-if>
+<sc-if value="{{ it.off }}" hint-placeholder-val="{{ true }}"><span style="display:flex;align-items:center;justify-content:center;width:52px;height:30px"><i class="{{ it.icon }}" style="font-size:18px"></i></span><span>{{ it.label }}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:360,&quot;height&quot;:64},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;grupos&quot;,&quot;moldes&quot;,&quot;disenos&quot;,&quot;inventario&quot;,&quot;ajustes&quot;],&quot;default&quot;:&quot;grupos&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const a = this.props.active ?? 'grupos';
+    const base = [['grupos','Grupos','bi bi-people'],['moldes','Moldes','bi bi-scissors'],['disenos','Diseños','bi bi-brush'],['inventario','Inventario','bi bi-box-seam'],['ajustes','Ajustes','bi bi-sliders2']];
+    const fill = ['bi bi-people','bi bi-brush','bi bi-box-seam'];
+    return { items: base.map(([k,l,i]) => ({ label: l, icon: i, iconOn: fill.includes(i) ? i + '-fill' : i, on: k === a, off: k !== a })) };
+  }
+}
+</script>
+</body>
+</html>
