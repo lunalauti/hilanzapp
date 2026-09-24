@@ -16,7 +16,7 @@
     "test:db": "supabase test db"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "devDependencies": {
     "supabase": "^2.117.0"
