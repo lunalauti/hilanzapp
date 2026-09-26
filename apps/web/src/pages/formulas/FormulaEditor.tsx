@@ -12,6 +12,8 @@ import { formatCm, parseDecimal } from '../../lib/format';
 import { keys, useGroupDancers, useGroups, useMolds } from '../../lib/queries';
 import type { Calculation, Mold, MoldFormula, Op } from '../../lib/types';
 import { useDebounced } from '../../lib/useDebounced';
+import { LinkMoldModal } from '../../components/molds/LinkMoldModal';
+import { NoPatternBadge } from '../../components/ui/NoPatternBadge';
 import { MoldMetaModal } from './MoldMetaModal';
 import { InputsPanel } from './InputsPanel';
 
@@ -34,7 +36,7 @@ export function FormulaEditor() {
       <div className="hz-card hz-panel mb-4">
         <label htmlFor="mold-select" className="hz-label">Molde</label>
         <select id="mold-select" className="hz-input" value={moldId} onChange={(e) => setParams({ mold: e.target.value })}>
-          {molds.data.map((m) => <option key={m.id} value={m.id}>{m.name}{m.templateKey ? '' : ' (propio)'}</option>)}
+          {molds.data.map((m) => <option key={m.id} value={m.id}>{m.name}{m.hasPattern === false ? ' · sin molde' : m.templateKey ? '' : ' (propio)'}</option>)}
         </select>
       </div>
       {mold && <Editor key={mold.id} mold={mold} onCreated={(id) => setParams({ mold: id })} />}
@@ -58,6 +60,7 @@ function Editor({ mold, onCreated }: { mold: Mold; onCreated: (id: string) => vo
   const [restoring, setRestoring] = useState(false);
   const [meta, setMeta] = useState<'rename' | 'duplicate' | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [linking, setLinking] = useState(false);
 
   useEffect(() => { setDraft(saved.map(({ original: _o, ...f }) => f)); setInputs(mold.inputs); }, [mold]);
 
@@ -164,6 +167,13 @@ function Editor({ mold, onCreated }: { mold: Mold; onCreated: (id: string) => vo
       </aside>
 
       <main className="col-12 col-lg-8 d-flex flex-column gap-4">
+        {mold.hasPattern === false && (
+          <div className="hz-notice warning" role="status" style={{ flexDirection: 'column' }}>
+            <strong><NoPatternBadge /> Molde nuevo desde “{mold.name}”</strong>
+            <span>Las {inputs.filter((i) => i.source === 'measure').length} medidas que pedía ya están como entradas; escribí las fórmulas de cada pieza. Al guardar la primera, la prenda pasa a tener molde.</span>
+            <button type="button" className="hz-btn align-self-start" onClick={() => setLinking(true)}><i className="bi bi-link-45deg" />Vincular a un molde existente</button>
+          </div>
+        )}
         {current ? (
           <section className="hz-card hz-panel" aria-label="Editor de la fórmula">
             <div className="d-flex flex-column gap-1">
@@ -247,6 +257,7 @@ function Editor({ mold, onCreated }: { mold: Mold; onCreated: (id: string) => vo
         </section>
       </main>
 
+      <LinkMoldModal show={linking} mold={mold} onClose={() => setLinking(false)} onLinked={(t) => { toast.show(`${mold.name} quedó vinculado a “${t.name}”`); onCreated(t.id); }} />
       <MoldMetaModal show={meta !== null} mode={meta ?? 'rename'} mold={mold} draft={draft} inputs={inputs} onClose={() => setMeta(null)} onDone={(id) => { setMeta(null); if (id) onCreated(id); }} />
       <ConfirmDialog show={restoring} title="Restaurar el molde" confirmLabel="Restaurar" busy={busy} onCancel={() => setRestoring(false)} onConfirm={() => void restoreMold()} body={<p className="mb-0">Todas las fórmulas de <strong>{mold.name}</strong> vuelven a su versión original. Las hojas ya guardadas no cambian.</p>} />
       <ConfirmDialog show={deleting} title="Eliminar el molde" confirmLabel="Eliminar molde" busy={busy} onCancel={() => setDeleting(false)} onConfirm={() => void removeMold()} body={<p className="mb-0">Se elimina <strong>{mold.name}</strong> con sus fórmulas, las prendas asignadas y las hojas guardadas de este molde. No se puede deshacer.</p>} />

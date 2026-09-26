@@ -55,7 +55,7 @@ sizingRouter.get('/dancers/:id/assignments', async (req, res) => {
   const rows = await assignments.listForDancer(db, dancer.id);
   res.json(await Promise.all(rows.map(async (a) => {
     const s = await dancerSizing(db, dancer, { id: a.mold_type_id, ...a.mold_types }, a.manual_size_label);
-    return { id: a.id, moldTypeId: a.mold_type_id, moldKey: a.mold_types.key, moldName: a.mold_types.name, designId: a.design_id, designName: a.designs?.name ?? null, manualSizeLabel: a.manual_size_label, suggested: s.suggested, effective: s.effective, needsReview: s.needsReview };
+    return { id: a.id, moldTypeId: a.mold_type_id, moldKey: a.mold_types.key, moldName: a.mold_types.name, hasPattern: a.mold_types.has_pattern, designId: a.design_id, designName: a.designs?.name ?? null, manualSizeLabel: a.manual_size_label, suggested: s.suggested, effective: s.effective, needsReview: s.needsReview };
   })));
 });
 

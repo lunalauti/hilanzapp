@@ -8,6 +8,8 @@ export interface ProductionAssignment {
   moldKey: string;
   moldName: string;
   sizeLabel: string | null;
+  /** false = prenda propia sin molde todavía (por defecto true). */
+  hasPattern?: boolean;
 }
 
 export interface ProductionSize {
@@ -19,6 +21,7 @@ export interface ProductionSize {
 export interface ProductionGarment {
   moldKey: string;
   moldName: string;
+  hasPattern: boolean;
   total: number;
   sizes: ProductionSize[];
 }
@@ -40,7 +43,7 @@ export function aggregateProduction(input: {
   assignments: ProductionAssignment[];
 }): ProductionSummary {
   const names = new Map(input.dancers.map((d) => [d.id, d.name]));
-  const garments = new Map<string, { moldName: string; sizes: Map<string, string[]> }>();
+  const garments = new Map<string, { moldName: string; hasPattern: boolean; sizes: Map<string, string[]> }>();
   const noSize = new Map<string, Set<string>>();
 
   for (const a of input.assignments) {
@@ -52,7 +55,7 @@ export function aggregateProduction(input: {
       noSize.set(a.dancerId, set);
       continue;
     }
-    const g = garments.get(a.moldKey) ?? { moldName: a.moldName, sizes: new Map<string, string[]>() };
+    const g = garments.get(a.moldKey) ?? { moldName: a.moldName, hasPattern: a.hasPattern ?? true, sizes: new Map<string, string[]>() };
     const list = g.sizes.get(a.sizeLabel) ?? [];
     list.push(dancerName);
     g.sizes.set(a.sizeLabel, list);
@@ -64,7 +67,7 @@ export function aggregateProduction(input: {
       const sizes = [...g.sizes.entries()]
         .sort(([x], [y]) => sizeOrder(x, y))
         .map(([label, dancers]) => ({ label, count: dancers.length, dancers: [...dancers].sort((p, q) => p.localeCompare(q, 'es')) }));
-      return { moldKey, moldName: g.moldName, total: sizes.reduce((n, s) => n + s.count, 0), sizes };
+      return { moldKey, moldName: g.moldName, hasPattern: g.hasPattern, total: sizes.reduce((n, s) => n + s.count, 0), sizes };
     })
     .sort((x, y) => x.moldName.localeCompare(y.moldName, 'es'));
 

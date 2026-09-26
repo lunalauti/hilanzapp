@@ -6,7 +6,7 @@ import { groupDancersView } from './dancers';
 const r3 = (n: number) => Math.round(n * 1000) / 1000;
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
-interface Unit { designId: string; moldTypeId: string; moldName: string; designName: string; size: string; count: number }
+interface Unit { designId: string; moldTypeId: string; moldName: string; hasPattern: boolean; designName: string; size: string; count: number }
 
 /** Qué prendas hay que producir en un grupo, agrupadas por diseño, molde y talle efectivo. */
 async function groupUnits(db: SupabaseClient, groupId: string, designId?: string | null) {
@@ -19,7 +19,7 @@ async function groupUnits(db: SupabaseClient, groupId: string, designId?: string
       if (!g.designId) { if (!designId) withoutDesign++; continue; }
       if (designId && g.designId !== designId) continue;
       const k = `${g.designId}|${g.moldTypeId}|${g.sizeLabel}`;
-      const u = map.get(k) ?? { designId: g.designId, moldTypeId: g.moldTypeId, moldName: g.moldName, designName: g.designName ?? '', size: g.sizeLabel, count: 0 };
+      const u = map.get(k) ?? { designId: g.designId, moldTypeId: g.moldTypeId, moldName: g.moldName, hasPattern: g.hasPattern, designName: g.designName ?? '', size: g.sizeLabel, count: 0 };
       u.count++;
       map.set(k, u);
     }
@@ -34,13 +34,13 @@ export async function groupCosts(db: SupabaseClient, groupId: string, designId?:
   const garmentOf = new Map(garments.filter((g) => designIds.includes(g.design_id)).map((g) => [`${g.design_id}|${g.mold_type_id}`, g]));
 
   const need = new Map<string, number>();
-  const perGarment = new Map<string, { designId: string; designName: string; moldTypeId: string; moldName: string; units: number; materialsCost: number; laborCost: number }>();
+  const perGarment = new Map<string, { designId: string; designName: string; moldTypeId: string; moldName: string; hasPattern: boolean; units: number; materialsCost: number; laborCost: number }>();
   const matById = new Map(materials.map((m) => [m.id, m]));
 
   for (const u of units) {
     const garment = garmentOf.get(`${u.designId}|${u.moldTypeId}`);
     const key = `${u.designId}|${u.moldTypeId}`;
-    const pg = perGarment.get(key) ?? { designId: u.designId, designName: u.designName, moldTypeId: u.moldTypeId, moldName: u.moldName, units: 0, materialsCost: 0, laborCost: 0 };
+    const pg = perGarment.get(key) ?? { designId: u.designId, designName: u.designName, moldTypeId: u.moldTypeId, moldName: u.moldName, hasPattern: u.hasPattern, units: 0, materialsCost: 0, laborCost: 0 };
     pg.units += u.count;
     if (garment) {
       pg.laborCost += Number(garment.labor_cost ?? 0) * u.count;
@@ -75,7 +75,7 @@ export async function groupCosts(db: SupabaseClient, groupId: string, designId?:
       const mine = rules.filter((r) => r.design_garment_id === garment.id && r.material_id === x.materialId);
       if (!mine.length) return [];
       const sizes = [...new Set(units.filter((u) => `${u.designId}|${u.moldTypeId}` === key).map((u) => u.size))];
-      return [{ designName: garment.designs.name, moldName: garment.mold_types.name, sizes: sizes.map((s) => ({ label: s, quantity: Number((mine.find((r) => r.size_label === s) ?? mine.find((r) => r.size_label === null))?.quantity ?? 0) })) }];
+      return [{ designName: garment.designs.name, moldName: garment.mold_types.name, hasPattern: units.find((u) => `${u.designId}|${u.moldTypeId}` === key)?.hasPattern ?? true, sizes: sizes.map((s) => ({ label: s, quantity: Number((mine.find((r) => r.size_label === s) ?? mine.find((r) => r.size_label === null))?.quantity ?? 0) })) }];
     }),
   }));
 

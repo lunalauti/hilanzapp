@@ -15,7 +15,7 @@ export interface CalcRequest {
 
 export interface Calculation {
   dancer: { id: string; name: string; age: number | null };
-  mold: { id: string; key: string; name: string; sizePriority: string };
+  mold: { id: string; key: string; name: string; sizePriority: string; hasPattern: boolean };
   table: { id: string; name: string; ageRange: string } | null;
   size: { label: string | null; origin: string | null; suggested: string | null };
   inputs: { key: string; label: string; source: string; value: number | string | null }[];
@@ -64,7 +64,7 @@ export async function calculate(db: SupabaseClient, req: CalcRequest, override?:
 
   return {
     dancer: { id: dancer.id, name: dancer.name, age: dancer.age },
-    mold: { id: stored.id, key: mold.key, name: mold.name, sizePriority: mold.sizePriority },
+    mold: { id: stored.id, key: mold.key, name: mold.name, sizePriority: mold.sizePriority, hasPattern: stored.hasPattern },
     table: loaded ? { id: loaded.id, name: loaded.table.name, ageRange: loaded.ageRange } : null,
     size: { label: view.label, origin: view.origin, suggested: view.suggested },
     inputs, rows: result.rows, manualInputs, choices, formulas: mold.formulas,

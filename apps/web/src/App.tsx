@@ -7,6 +7,8 @@ import { DesignsList } from './pages/designs/DesignsList';
 import { FormulaEditor } from './pages/formulas/FormulaEditor';
 import { GroupDancers } from './pages/GroupDancers';
 import { GroupLayout } from './pages/GroupLayout';
+import { GroupMissing } from './pages/measures/GroupMissing';
+import { DancerTakeRoute, GroupTakeRoute } from './pages/measures/TakeRoutes';
 import { GettingStarted } from './pages/GettingStarted';
 import { Home } from './pages/Home';
 import { Inventory } from './pages/inventory/Inventory';
@@ -27,8 +29,11 @@ export function App() {
           <Route path="groups/:groupId" element={<GroupLayout />}>
             <Route index element={<GroupDancers />} />
             <Route path="production" element={<Production />} />
+            <Route path="medir" element={<><GroupDancers /><GroupTakeRoute /></>} />
+            <Route path="faltantes" element={<GroupMissing />} />
           </Route>
           <Route path="dancers/:dancerId" element={<DancerPage />} />
+          <Route path="dancers/:dancerId/medir" element={<><DancerPage /><DancerTakeRoute /></>} />
           <Route path="moldes" element={<MoldSheet />} />
           <Route path="disenos" element={<DesignsList />} />
           <Route path="disenos/:designId" element={<DesignPage />} />

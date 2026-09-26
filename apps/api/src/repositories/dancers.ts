@@ -38,15 +38,11 @@ export async function dependentsOf(db: SupabaseClient, dancerId: string): Promis
 export async function listGroupDancers(db: SupabaseClient, groupId: string) {
   const dancers = unwrap(await db.from('dancers').select(COLS).eq('group_id', groupId).order('name')) as DancerRow[];
   const ids = dancers.map((d) => d.id);
-  const status = ids.length
-    ? (unwrap(await db.from('dancer_measure_status').select('dancer_id, status, required_done, required_total').in('dancer_id', ids)) as
-        { dancer_id: string; status: string; required_done: number; required_total: number }[])
-    : [];
   const assignments = ids.length
-    ? (unwrap(await db.from('assignments').select('id, dancer_id, design_id, mold_type_id, manual_size_label, mold_types(key, name, size_priority), designs(name)').in('dancer_id', ids)) as unknown as
-        { id: string; dancer_id: string; design_id: string | null; mold_type_id: string; manual_size_label: string | null; mold_types: { key: string; name: string; size_priority: 'pecho' | 'cadera' | 'both' }; designs: { name: string } | null }[])
+    ? (unwrap(await db.from('assignments').select('id, dancer_id, design_id, mold_type_id, manual_size_label, mold_types(key, name, size_priority, has_pattern), designs(name)').in('dancer_id', ids)) as unknown as
+        { id: string; dancer_id: string; design_id: string | null; mold_type_id: string; manual_size_label: string | null; mold_types: { key: string; name: string; size_priority: 'pecho' | 'cadera' | 'both'; has_pattern: boolean }; designs: { name: string } | null }[])
     : [];
-  return { dancers, status, assignments };
+  return { dancers, assignments };
 }
 
 /** Qué se pierde al borrar a la bailarina: se muestra antes de pedir la confirmación. */

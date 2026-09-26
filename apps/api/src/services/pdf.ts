@@ -25,10 +25,12 @@ export interface SheetPdfData {
   createdAt: string; measuredOn: string | null; rows: SheetRow[];
   manualInputs: { label: string; value: string }[]; choiceText: string | null; notes: string[];
   images: { buffer: Buffer; filename: string }[];
+  /** Presente cuando la prenda todavía no tiene molde: hoja simplificada para trazar a mano. */
+  noPattern?: { designName: string | null; category: string; sizeBasis: string; measures: { label: string; value: string | null; takenOn: string | null }[] };
 }
 export interface ProductionPdfData {
   groupName: string; generatedAt: string; totalUnits: number;
-  byGarment: { moldName: string; total: number; sizes: { label: string; count: number; dancers: string[] }[] }[];
+  byGarment: { moldName: string; hasPattern?: boolean; total: number; sizes: { label: string; count: number; dancers: string[] }[] }[];
   pending: { name: string; reason: string }[];
 }
 
@@ -62,7 +64,68 @@ function finish(doc: PDFKit.PDFDocument, footer: (page: number) => string): Prom
   });
 }
 
+const SIZE_BASIS: Record<string, string> = { pecho: 'pecho', cadera: 'cadera', both: 'pecho y cadera' };
+
+/** P2 del diseño: prenda sin molde. Medidas para trazar a mano y un espacio grande para el dibujo. */
+function drawNoPatternSheet(doc: PDFKit.PDFDocument, s: SheetPdfData) {
+  const np = s.noPattern!;
+  const W = doc.page.width - 2 * MARGIN;
+  const right = doc.page.width - MARGIN;
+  let y = MARGIN;
+  doc.font('bold').fontSize(8).fillColor(MUTED).text(`HOJA DE PRENDA${np.designName ? ` · DISEÑO ${np.designName.toUpperCase()}` : ''}`, MARGIN, y);
+  doc.font('bold').fontSize(26).fillColor(INK).text(s.dancerName, MARGIN, y + 14, { width: W - 150 });
+  doc.font('sans').fontSize(10).fillColor(MUTED).text(s.groupName ? `Grupo ${s.groupName}` : '', MARGIN, y + 50, { width: W });
+  doc.font('bold').fontSize(14).fillColor(INK).text('Hilanzapp', right - 140, y + 4, { width: 140, align: 'right' });
+  doc.font('sans').fontSize(8).fillColor(MUTED).text(`Impreso ${formatDate(s.createdAt)}`, right - 140, y + 24, { width: 140, align: 'right' });
+  y += 72;
+  doc.moveTo(MARGIN, y).lineWidth(1.5).strokeColor(INK).lineTo(right, y).stroke();
+  y += 14;
+
+  const half = (W - 14) / 2;
+  doc.font('bold').fontSize(7.5).fillColor(MUTED).text('PRENDA', MARGIN, y, { lineBreak: false });
+  doc.font('bold').fontSize(16).fillColor(INK).text(s.moldName, MARGIN, y + 12, { width: half - 90, lineBreak: false, ellipsis: true });
+  doc.lineWidth(1).strokeColor(INK).dash(1.5, { space: 2 }).roundedRect(MARGIN + half - 84, y + 12, 84, 18, 4).stroke().undash();
+  doc.font('bold').fontSize(7.5).fillColor(INK).text('SIN MOLDE', MARGIN + half - 84, y + 18, { width: 84, align: 'center', lineBreak: false });
+  const x2 = MARGIN + half + 14;
+  doc.font('bold').fontSize(7.5).fillColor(MUTED).text('TALLE', x2, y, { lineBreak: false });
+  const sizeText = s.sizeLabel ? `T${s.sizeLabel}` : 'sin talle';
+  doc.font('bold').fontSize(16).fillColor(INK).text(sizeText, x2, y + 12, { lineBreak: false });
+  doc.font('sans').fontSize(8.5).fillColor(MUTED).text(
+    s.sizeLabel ? `${s.sizeOrigin === 'suggested' ? 'Sugerido' : 'Asignado a mano'} · según ${np.sizeBasis}` : `según ${np.sizeBasis}`, x2, y + 32, { width: half, lineBreak: false });
+  y += 56;
+
+  const cols = [W * 0.5, W * 0.25, W * 0.25];
+  doc.rect(MARGIN, y, W, 20).fillColor(BASE).fill();
+  doc.font('bold').fontSize(7.5).fillColor(INK);
+  ['MEDIDA', 'REAL (CM)', 'TOMADA'].forEach((t, i) => doc.text(t, MARGIN + cols.slice(0, i).reduce((a, b) => a + b, 0) + 8, y + 6, { width: cols[i]! - 16, lineBreak: false }));
+  doc.lineWidth(1.5).strokeColor(INK).undash().rect(MARGIN, y, W, 20).stroke();
+  y += 20;
+  for (const m of np.measures) {
+    if (y + 30 > doc.page.height - MARGIN - 40) { doc.addPage(); y = MARGIN; }
+    doc.font('sans').fontSize(10.5).fillColor(INK).text(m.label, MARGIN + 8, y + 9, { width: cols[0]! - 16, lineBreak: false, ellipsis: true });
+    const x1 = MARGIN + cols[0]!;
+    if (m.value !== null) {
+      doc.lineWidth(1.2).strokeColor(INK).undash().rect(x1 + 8, y + 3, 70, 24).stroke();
+      doc.font('bold').fontSize(13).fillColor(INK).text(m.value, x1 + 12, y + 9, { width: 62, lineBreak: false });
+      doc.font('sans').fontSize(9).fillColor(MUTED).text(m.takenOn ? formatDate(m.takenOn) : '', x1 + cols[1]! + 8, y + 10, { lineBreak: false });
+    } else {
+      doc.lineWidth(1.2).strokeColor(INK).dash(3, { space: 2 }).rect(x1 + 8, y + 3, 70, 24).stroke().undash();
+      doc.font('sans').fontSize(9).fillColor(MUTED).text('falta · anotar', x1 + cols[1]! + 8, y + 10, { lineBreak: false });
+    }
+    doc.lineWidth(0.5).strokeColor(LINE).undash().moveTo(MARGIN, y + 30).lineTo(right, y + 30).stroke();
+    y += 30;
+  }
+  if (!np.measures.length) { doc.font('sans').fontSize(10).fillColor(MUTED).text('Esta prenda no tiene medidas requeridas.', MARGIN + 8, y + 9); y += 30; }
+  y += 14;
+  const room = doc.page.height - MARGIN - 24 - y;
+  if (room > 80) {
+    doc.font('bold').fontSize(7.5).fillColor(INK).text('TRAZADO Y NOTAS', MARGIN, y, { lineBreak: false });
+    doc.lineWidth(0.8).strokeColor(LINE).undash().rect(MARGIN, y + 14, W, room - 14).stroke();
+  }
+}
+
 function drawSheet(doc: PDFKit.PDFDocument, s: SheetPdfData) {
+  if (s.noPattern) { drawNoPatternSheet(doc, s); return; }
   const W = doc.page.width - 2 * MARGIN;
   const right = doc.page.width - MARGIN;
   let y = MARGIN;
@@ -192,7 +255,7 @@ export function renderProduction(p: ProductionPdfData): Promise<Buffer> {
   for (const g of p.byGarment) {
     ensure(40 + g.sizes.length * 16);
     doc.font('bold').fontSize(14).fillColor(INK).text(g.moldName, MARGIN, y, { continued: true });
-    doc.font('sans').fontSize(10).fillColor(MUTED).text(`   ${g.total} ${g.total === 1 ? 'prenda' : 'prendas'}`);
+    doc.font('sans').fontSize(10).fillColor(MUTED).text(`   ${g.hasPattern === false ? 'Sin molde · ' : ''}${g.total} ${g.total === 1 ? 'prenda' : 'prendas'}`);
     y += 24;
     for (const s of g.sizes) {
       const names = s.dancers.join(', ');
@@ -214,4 +277,55 @@ export function renderProduction(p: ProductionPdfData): Promise<Buffer> {
     for (const x of p.pending) { doc.font('sans').fontSize(10).fillColor(INK).text(`${x.name} · ${x.reason}`, MARGIN, y); y += 14; }
   }
   return finish(doc, () => `Hilanzapp · Producción · ${p.groupName}`);
+}
+
+export interface MissingPdfData {
+  groupName: string; generatedAt: string;
+  dancers: { name: string; missing: string[] }[];
+}
+
+/** P1 del diseño: faltantes del grupo, con casilleros para anotar a mano. */
+export function renderMissing(d: MissingPdfData): Promise<Buffer> {
+  const doc = newDoc(`Medidas que faltan · ${d.groupName}`);
+  const W = doc.page.width - 2 * MARGIN;
+  const right = doc.page.width - MARGIN;
+  const total = d.dancers.reduce((n, x) => n + x.missing.length, 0);
+  let y = MARGIN;
+  doc.font('bold').fontSize(8).fillColor(MUTED).text('MEDIDAS QUE FALTAN', MARGIN, y);
+  doc.font('bold').fontSize(26).fillColor(INK).text(`Grupo ${d.groupName}`, MARGIN, y + 14, { width: W - 150 });
+  doc.font('sans').fontSize(10).fillColor(MUTED).text(`${d.dancers.length} ${d.dancers.length === 1 ? 'bailarina' : 'bailarinas'} con faltantes · ${total} ${total === 1 ? 'medida' : 'medidas'} por tomar`, MARGIN, y + 50, { width: W });
+  doc.font('bold').fontSize(14).fillColor(INK).text('Hilanzapp', right - 140, y + 4, { width: 140, align: 'right' });
+  doc.font('sans').fontSize(8).fillColor(MUTED).text(`Impreso ${formatDate(d.generatedAt)}`, right - 140, y + 24, { width: 140, align: 'right' })
+    .text('Tomadas por: ____________', right - 140, y + 38, { width: 140, align: 'right' });
+  y += 72;
+  doc.moveTo(MARGIN, y).lineWidth(1.5).strokeColor(INK).lineTo(right, y).stroke();
+  y += 10;
+  doc.font('sans').fontSize(9).fillColor(MUTED).text('Anotá cada valor en cm. Después cargalo en “Tomar medidas”: se guarda como versión nueva, sin pisar la anterior.', MARGIN, y, { width: W });
+  y += 30;
+
+  if (d.dancers.length === 0) doc.font('sans').fontSize(12).fillColor(INK).text('No falta ninguna medida.', MARGIN, y);
+  const colW = (W - 20) / 2;
+  for (const dancer of d.dancers) {
+    const rows = Math.ceil(dancer.missing.length / 2);
+    const h = 26 + rows * 24 + 8;
+    if (y + h > doc.page.height - MARGIN - 30) { doc.addPage(); y = MARGIN; }
+    doc.font('bold').fontSize(12).fillColor(INK).text(dancer.name, MARGIN, y, { continued: true });
+    doc.font('sans').fontSize(9).fillColor(MUTED).text(`   Faltan ${dancer.missing.length}`);
+    y += 20;
+    dancer.missing.forEach((label, i) => {
+      const x = MARGIN + (i % 2) * (colW + 20);
+      const yy = y + Math.floor(i / 2) * 24;
+      doc.font('sans').fontSize(10).fillColor(INK).text(label, x, yy + 6, { width: colW - 90, lineBreak: false, ellipsis: true });
+      doc.lineWidth(1.2).strokeColor(INK).undash().rect(x + colW - 84, yy, 60, 20).stroke();
+      doc.font('sans').fontSize(8).fillColor(MUTED).text('cm', x + colW - 20, yy + 6, { lineBreak: false });
+    });
+    y += rows * 24 + 12;
+    doc.lineWidth(0.5).strokeColor(LINE).moveTo(MARGIN, y - 4).lineTo(right, y - 4).stroke();
+  }
+  const room = doc.page.height - MARGIN - 30 - y;
+  if (room > 70) {
+    doc.font('bold').fontSize(7.5).fillColor(INK).text('NOTAS', MARGIN, y + 6, { lineBreak: false });
+    doc.lineWidth(0.8).strokeColor(LINE).rect(MARGIN, y + 20, W, room - 20).stroke();
+  }
+  return finish(doc, () => `Hilanzapp · ${d.groupName} · Faltantes`);
 }

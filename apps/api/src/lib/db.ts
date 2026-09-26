@@ -13,6 +13,10 @@ const STATUS_BY_CODE: Record<string, [number, string]> = {
   P0002: [404, 'NOT_FOUND'],
   '42501': [403, 'FORBIDDEN'],
   HZ001: [409, 'INSUFFICIENT_STOCK'],
+  HZ002: [409, 'ALREADY_IN_DESIGN'],
+  HZ003: [409, 'ALREADY_ASSIGNED'],
+  HZ004: [422, 'NOT_A_PLACEHOLDER'],
+  HZ005: [422, 'TARGET_HAS_NO_PATTERN'],
 };
 
 export function unwrap<T>(result: DbResult<T>): T {

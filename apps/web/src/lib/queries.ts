@@ -26,6 +26,10 @@ export const useHistory = (id: string, def: string | null) =>
 export const useSizing = (id: string, mold?: string) =>
   useQuery({ queryKey: keys.sizing(id, mold), queryFn: () => api.get<Sizing>(`/dancers/${id}/sizing${mold ? `?mold_type_id=${mold}` : ''}`) });
 export const useAssignments = (id: string) => useQuery({ queryKey: keys.assignments(id), queryFn: () => api.get<AssignmentView[]>(`/dancers/${id}/assignments`) });
+export const useMeasurePlan = (id: string) =>
+  useQuery({ queryKey: ['measure-plan', id], queryFn: () => api.get<import('./types').MeasurePlan>(`/dancers/${id}/measure-plan`), enabled: Boolean(id) });
+export const useGroupPlan = (id: string, onlyMissing = false) =>
+  useQuery({ queryKey: ['group-plan', id, onlyMissing], queryFn: () => api.get<import('./types').GroupPlan>(`/groups/${id}/measure-plan${onlyMissing ? '?solo_faltantes=1' : ''}`), enabled: Boolean(id) });
 export const useMolds = () => useQuery({ queryKey: keys.molds, queryFn: () => api.get<Mold[]>('/mold-types'), staleTime: 5 * 60_000 });
 export const useCompare = (id: string, from: string, to: string, enabled: boolean) =>
   useQuery({ queryKey: ['compare', id, from, to], queryFn: () => api.get<CompareRow[]>(`/dancers/${id}/measurements/compare?from=${from}&to=${to}`), enabled });
@@ -34,9 +38,9 @@ export const useCompare = (id: string, from: string, to: string, enabled: boolea
 export function useInvalidateDancerData() {
   const qc = useQueryClient();
   return (dancerId?: string, groupId?: string) => {
-    const all = ['groups', 'group-dancers', 'production'];
+    const all = ['groups', 'group-dancers', 'production', 'group-plan'];
     for (const k of all) void qc.invalidateQueries({ queryKey: [k] });
-    if (dancerId) for (const k of ['dancer', 'measurements', 'history', 'sizing', 'assignments', 'compare']) void qc.invalidateQueries({ queryKey: [k, dancerId] });
+    if (dancerId) for (const k of ['dancer', 'measurements', 'history', 'sizing', 'assignments', 'compare', 'measure-plan']) void qc.invalidateQueries({ queryKey: [k, dancerId] });
     void groupId;
   };
 }
@@ -69,6 +73,8 @@ export function useInvalidateDesigns() {
     if (id) void qc.invalidateQueries({ queryKey: ['design', id] });
     void qc.invalidateQueries({ queryKey: ['catalog'] });
     void qc.invalidateQueries({ queryKey: ['measure-defs'] });
+    // Las prendas sin molde crean/quitan moldes y asignaciones: se refleja en listas y planes.
+    for (const k of ['molds', 'measure-plan', 'group-plan', 'group-dancers', 'groups', 'production', 'assignments']) void qc.invalidateQueries({ queryKey: [k] });
   };
 }
 

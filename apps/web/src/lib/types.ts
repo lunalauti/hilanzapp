@@ -8,11 +8,11 @@ export interface Group {
 }
 
 export interface SizeInfo { label: string | null; origin: SizeOrigin; suggested: string | null; manual: string | null; outOfRange: boolean }
-export interface Garment { assignmentId: string; moldKey: string; moldName: string; designName: string | null; sizeLabel: string | null }
+export interface Garment { assignmentId: string; moldKey: string; moldName: string; hasPattern?: boolean; designName: string | null; sizeLabel: string | null }
 
 export interface GroupDancer {
   id: string; name: string; age: number | null; notes: string | null; contact?: string | null; groupId: string;
-  measureStatus: MeasureStatus; requiredDone: number; requiredTotal: number;
+  measureStatus: MeasureStatus; requiredDone: number; requiredTotal: number; missingCount?: number;
   size: SizeInfo; garments: Garment[];
 }
 
@@ -43,7 +43,7 @@ export interface Sizing {
 }
 
 export interface AssignmentView {
-  id: string; moldTypeId: string; moldKey: string; moldName: string; designId: string | null; designName: string | null;
+  id: string; moldTypeId: string; moldKey: string; moldName: string; hasPattern?: boolean; designId: string | null; designName: string | null;
   manualSizeLabel: string | null; suggested: string | null; effective: { label: string | null; origin: SizeOrigin }; needsReview: boolean;
 }
 
@@ -54,14 +54,14 @@ export interface MoldInput {
 export type Op = 'direct' | 'div' | 'mul' | 'add' | 'sub';
 export interface MoldFormula { key: string; label: string; section?: string; operandA: string; op: Op; operandB?: string; adjustmentCm?: number; decimals?: number }
 export interface Mold {
-  id: string; key: string; name: string; category: string; sizePriority: Priority; templateKey?: string | null;
+  id: string; key: string; name: string; category: string; sizePriority: Priority; hasPattern?: boolean; templateKey?: string | null;
   inputs: MoldInput[]; formulas: (MoldFormula & { original: MoldFormula | null })[];
 }
 
 export interface CalcRow { key: string; label: string; section: string | null; realLabel: string | null; realValue: number | null; formula: string; result: number; display: string }
 export interface Calculation {
   dancer: { id: string; name: string; age: number | null };
-  mold: { id: string; key: string; name: string; sizePriority: Priority };
+  mold: { id: string; key: string; name: string; sizePriority: Priority; hasPattern?: boolean };
   table: { id: string; name: string; ageRange: string } | null;
   size: { label: string | null; origin: SizeOrigin; suggested: string | null };
   inputs: { key: string; label: string; source: string; value: number | string | null }[];
@@ -75,18 +75,23 @@ export interface MissingItem { key: string; label: string; source: string }
 export interface ProductionSize { label: string; count: number; dancers: string[] }
 export interface Production {
   dancerCount: number; totalUnits: number;
-  byGarment: { moldKey: string; moldName: string; total: number; sizes: ProductionSize[] }[];
+  byGarment: { moldKey: string; moldName: string; hasPattern?: boolean; total: number; sizes: ProductionSize[] }[];
   pending: { dancerId: string; name: string; reason: 'no_assignment' | 'no_size'; moldNames: string[] }[];
 }
 
 export interface CatalogOption { id: string; category: 'neckline' | 'sleeve' | 'skirt'; label: string; isCustom: boolean }
-export interface MeasureDef { id: string; key: string; name: string; kind: 'body' | 'standard'; isBase: boolean; required: boolean }
+export interface MeasureDef { id: string; key: string; name: string; kind: 'body' | 'standard'; isBase: boolean; required: boolean; sort?: number; help?: string | null }
 export interface DesignImage { id: string; filename: string; mime: string; sizeBytes: number; url: string | null }
+export interface DesignGarment {
+  id: string; moldTypeId: string; moldKey: string; moldName: string; laborCost: number | null;
+  hasPattern?: boolean; category?: string; sizePriority?: Priority; assignedCount?: number;
+  requiredMeasures?: { definitionId: string; key: string; name: string }[];
+}
 export interface Design {
   id: string; name: string; notes: string | null; constructionDetails: string | null;
   neckline: { id: string; label: string; isCustom: boolean } | null; sleeve: { id: string; label: string; isCustom: boolean } | null; skirt: { id: string; label: string; isCustom: boolean } | null;
   hasRuffle: boolean; isAsymmetric: boolean; createdAt: string;
-  garments: { id: string; moldTypeId: string; moldKey: string; moldName: string; laborCost: number | null }[];
+  garments: DesignGarment[];
   specialMeasures: { definitionId: string; key: string; name: string }[];
   images: DesignImage[];
 }
@@ -106,8 +111,8 @@ export interface Costs {
   dancerCount: number; totalUnits: number; unassignedUnits: number;
   materials: MaterialCostRow[]; shortages: { materialId: string; name: string; unit: string; shortfall: number }[];
   materialsCost: number; laborCost: number; totalCost: number; costPerDancer: number;
-  perGarment: { designId: string; designName: string; moldTypeId: string; moldName: string; units: number; materialsCost: number; laborCost: number }[];
-  consumption: { materialId: string; name: string; unit: string; byGarment: { designName: string; moldName: string; sizes: { label: string; quantity: number }[] }[] }[];
+  perGarment: { designId: string; designName: string; moldTypeId: string; moldName: string; hasPattern?: boolean; units: number; materialsCost: number; laborCost: number }[];
+  consumption: { materialId: string; name: string; unit: string; byGarment: { designName: string; moldName: string; hasPattern?: boolean; sizes: { label: string; quantity: number }[] }[] }[];
 }
 export interface ConsumptionRule { id: string; designGarmentId: string; designId: string; designName: string; moldTypeId: string; moldName: string; materialId: string; sizeLabel: string | null; quantity: number }
 export interface StockMovement { id: string; delta: number; reason: 'manual' | 'production'; note: string | null; groupId: string | null; designId: string | null; createdAt: string }
@@ -117,3 +122,16 @@ export interface Stats {
   garmentsBySize: { moldName: string; total: number; sizes: { label: string; count: number }[] }[];
   costByGroup: { groupId: string; name: string; dancers: number; units: number; materialsCost: number; laborCost: number; totalCost: number }[];
 }
+
+export type PlanSourceKind = 'garment' | 'design' | 'base';
+export interface PlanItem {
+  definitionId: string; key: string; name: string; sort: number; isBase: boolean;
+  requiredBy: { kind: PlanSourceKind; label: string }[]; value: number | null; takenOn: string | null;
+}
+export interface MeasurePlan { items: PlanItem[]; total: number; done: number; missing: number; status: MeasureStatus }
+export interface GroupPlan {
+  measures: { definitionId: string; key: string; name: string }[];
+  dancers: { id: string; name: string; missing: number; total: number; status: MeasureStatus; cells: { definitionId: string; required: boolean; value: number | null }[]; missingKeys: string[] }[];
+  totals: { required: number; done: number; percent: number };
+}
+export interface LinkPreview { newMeasures: { key: string; name: string }[]; assignments: number; garments: number; dancersMissing: number; dancerNames: string[] }

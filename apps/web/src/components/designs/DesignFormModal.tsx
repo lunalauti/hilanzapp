@@ -1,10 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Modal } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { ApiError } from '../../lib/api';
 import { api } from '../../lib/apiClient';
 import { parseDecimal } from '../../lib/format';
 import { useCatalog, useInvalidateDesigns, useMeasureDefs, useMolds } from '../../lib/queries';
 import type { CatalogOption, Design } from '../../lib/types';
+import { LinkMoldModal } from '../molds/LinkMoldModal';
+import { NoPatternBadge } from '../ui/NoPatternBadge';
+import { PlaceholderGarmentModal, type CustomGarment } from './PlaceholderGarmentModal';
 
 const OTHER = '__other__';
 type Cat = CatalogOption['category'];
@@ -29,6 +33,11 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
   const [details, setDetails] = useState('');
   const [garments, setGarments] = useState<Record<string, string>>({});
   const [specials, setSpecials] = useState<Set<string>>(new Set());
+  const [specialQuery, setSpecialQuery] = useState('');
+  const [customs, setCustoms] = useState<CustomGarment[]>([]);
+  const [editingCustom, setEditingCustom] = useState<{ index: number | null; garment: CustomGarment | null } | null>(null);
+  const [removing, setRemoving] = useState<number | null>(null);
+  const [linking, setLinking] = useState<CustomGarment | null>(null);
   const [errors, setErrors] = useState<{ name?: string; other?: Partial<Record<Cat, string>>; labor?: Record<string, string>; form?: string }>({});
   const [busy, setBusy] = useState(false);
 
@@ -41,8 +50,16 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
     setIsAsymmetric(design?.isAsymmetric ?? false);
     setNotes(design?.notes ?? '');
     setDetails(design?.constructionDetails ?? '');
-    setGarments(Object.fromEntries((design?.garments ?? []).map((g) => [g.moldTypeId, g.laborCost === null ? '' : String(g.laborCost).replace('.', ',')])));
+    const real = (design?.garments ?? []).filter((g) => g.hasPattern !== false);
+    setGarments(Object.fromEntries(real.map((g) => [g.moldTypeId, g.laborCost === null ? '' : String(g.laborCost).replace('.', ',')])));
+    setCustoms((design?.garments ?? []).filter((g) => g.hasPattern === false).map((g) => ({
+      moldTypeId: g.moldTypeId, name: g.moldName, category: (g.category ?? 'otro') as CustomGarment['category'], sizePriority: g.sizePriority ?? 'pecho',
+      measureIds: (g.requiredMeasures ?? []).map((m) => m.definitionId), labor: g.laborCost === null ? '' : String(g.laborCost).replace('.', ','), assignedCount: g.assignedCount ?? 0,
+    })));
+    setEditingCustom(null);
+    setRemoving(null);
     setSpecials(new Set((design?.specialMeasures ?? []).map((s) => s.definitionId)));
+    setSpecialQuery('');
     setErrors({});
   }, [show, design]);
 
@@ -60,6 +77,12 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
       const n = parseDecimal(raw);
       if (n === null) (next.labor ??= {})[moldId] = 'Ingresá un monto, por ejemplo 15000.'; else laborByMold[moldId] = n;
     }
+    const customLabor: (number | null)[] = customs.map((g, i) => {
+      if (g.labor.trim() === '') return null;
+      const n = parseDecimal(g.labor);
+      if (n === null) (next.labor ??= {})[`custom-${i}`] = 'Ingresá un monto, por ejemplo 15000.';
+      return n;
+    });
     setErrors(next);
     if (next.name || next.other || next.labor) return;
 
@@ -72,7 +95,13 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
       }
       const body = {
         name, ...ids, hasRuffle, isAsymmetric, notes: notes.trim() || null, constructionDetails: details.trim() || null,
-        garments: Object.entries(laborByMold).map(([moldTypeId, laborCost]) => ({ moldTypeId, laborCost })),
+        garments: [
+          ...Object.entries(laborByMold).map(([moldTypeId, laborCost]) => ({ moldTypeId, laborCost })),
+          ...customs.map((g, i) => ({
+            ...(g.moldTypeId ? { moldTypeId: g.moldTypeId } : {}), laborCost: customLabor[i] ?? null,
+            custom: { name: g.name, category: g.category, sizePriority: g.sizePriority, measureIds: g.measureIds },
+          })),
+        ],
         specialMeasureIds: [...specials],
       };
       const saved = design ? await api.patch<Design>(`/designs/${design.id}`, body) : await api.post<Design>('/designs', body);
@@ -88,6 +117,12 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
 
   const options = (cat: Cat) => (catalog.data ?? []).filter((c) => c.category === cat);
   const bodyDefs = (defs.data ?? []).filter((d) => d.kind === 'body');
+  const fold = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const needle = fold(specialQuery.trim());
+  // Las ya elegidas siguen visibles aunque no coincidan con la búsqueda.
+  const matches = (d: { name: string }) => !needle || fold(d.name).includes(needle);
+  const visibleDefs = bodyDefs.filter((d) => specials.has(d.id) || matches(d));
+  const noMatches = needle !== '' && !bodyDefs.some(matches);
 
   return (
     <Modal show={show} onHide={onClose} centered size="lg" scrollable>
@@ -136,7 +171,7 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
 
           <fieldset className="d-flex flex-column gap-2">
             <legend className="hz-label mb-1">Prendas que lo componen</legend>
-            {(molds.data ?? []).map((m) => {
+            {(molds.data ?? []).filter((m) => m.hasPattern !== false).map((m) => {
               const on = m.id in garments;
               return (
                 <div key={m.id} className="d-flex flex-wrap align-items-center gap-2 justify-content-between">
@@ -150,14 +185,50 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
                 </div>
               );
             })}
+
+            {customs.map((g, i) => (
+              <div key={g.moldTypeId ?? `new-${i}`} className="hz-garment-row" data-testid="custom-garment">
+                <div className="d-flex flex-wrap align-items-center gap-2 justify-content-between">
+                  <span className="d-flex flex-column">
+                    <span className="d-flex align-items-center gap-2 fw-semibold">{g.name}<NoPatternBadge /></span>
+                    <span className="small text-secondary">Talle según {g.sizePriority === 'both' ? 'pecho y cadera' : g.sizePriority} · {g.measureIds.length} {g.measureIds.length === 1 ? 'medida' : 'medidas'}</span>
+                  </span>
+                  <span className="d-flex flex-column">
+                    <input aria-label={`Mano de obra de ${g.name}`} inputMode="decimal" className={`hz-input ${errors.labor?.[`custom-${i}`] ? 'is-invalid' : ''}`} style={{ width: 170, height: 40 }} placeholder="Mano de obra ($)" value={g.labor}
+                      onChange={(e) => setCustoms((c) => c.map((x, j) => (j === i ? { ...x, labor: e.target.value } : x)))} />
+                    {errors.labor?.[`custom-${i}`] && <span className="hz-field-error">{errors.labor[`custom-${i}`]}</span>}
+                  </span>
+                </div>
+                {removing === i ? (
+                  <div className="hz-notice warning" role="alert" style={{ flexDirection: 'column' }}>
+                    <strong>¿Quitar {g.name} del diseño?</strong>
+                    <span>Se pierden {g.assignedCount} {g.assignedCount === 1 ? 'asignación' : 'asignaciones'}, con sus talles manuales y la mano de obra cargada. Las medidas de las bailarinas no se tocan.</span>
+                    <span className="d-flex gap-2"><button type="button" className="hz-btn danger" onClick={() => { setCustoms((c) => c.filter((_, j) => j !== i)); setRemoving(null); }}>Quitar prenda</button><button type="button" className="hz-btn" onClick={() => setRemoving(null)}>Cancelar</button></span>
+                  </div>
+                ) : (
+                  <div className="d-flex flex-wrap gap-2">
+                    <button type="button" className="hz-btn" onClick={() => setEditingCustom({ index: i, garment: g })}><i className="bi bi-pencil" />Editar</button>
+                    {g.moldTypeId && <Link className="hz-btn" to={`/formulas?mold=${g.moldTypeId}`}><i className="bi bi-magic" />Crear molde</Link>}
+                    {g.moldTypeId && <button type="button" className="hz-btn" onClick={() => setLinking(g)}><i className="bi bi-link-45deg" />Vincular a molde</button>}
+                    <button type="button" className="hz-btn" onClick={() => ((g.assignedCount ?? 0) > 0 ? setRemoving(i) : setCustoms((c) => c.filter((_, j) => j !== i)))}><i className="bi bi-trash3" />Quitar</button>
+                  </div>
+                )}
+              </div>
+            ))}
+            <button type="button" className="hz-btn dashed align-self-start" onClick={() => setEditingCustom({ index: null, garment: null })}><i className="bi bi-plus-lg" />Prenda sin molde</button>
           </fieldset>
 
           <fieldset className="d-flex flex-column gap-2">
-            <legend className="hz-label mb-1">Medidas especiales</legend>
+            <legend className="hz-label mb-1">Medidas especiales{specials.size > 0 && <span className="text-secondary fw-normal"> · {specials.size} {specials.size === 1 ? 'elegida' : 'elegidas'}</span>}</legend>
+            <label className="hz-search">
+              <i className="bi bi-search" />
+              <input type="search" placeholder="Buscar medida" aria-label="Buscar medida especial" value={specialQuery} onChange={(e) => setSpecialQuery(e.target.value)} />
+            </label>
             <div className="d-flex flex-wrap gap-2">
-              {bodyDefs.map((d) => (
+              {visibleDefs.map((d) => (
                 <button key={d.id} type="button" className={`hz-pill ${specials.has(d.id) ? 'active' : ''}`} aria-pressed={specials.has(d.id)} onClick={() => toggleSpecial(d.id)}>{d.name}</button>
               ))}
+              {noMatches && <span className="small text-secondary">Ninguna medida coincide con “{specialQuery.trim()}”.</span>}
             </div>
             <span className="small text-secondary">Se piden en la ficha de cada bailarina con este diseño.</span>
           </fieldset>
@@ -169,6 +240,15 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
           <button type="submit" className="hz-btn primary" disabled={busy}>{busy ? 'Guardando…' : 'Guardar diseño'}</button>
         </Modal.Footer>
       </form>
+      <PlaceholderGarmentModal
+        show={editingCustom !== null} initial={editingCustom?.garment ?? null} defs={bodyDefs}
+        takenNames={[...(molds.data ?? []).filter((m) => m.id in garments).map((m) => m.name), ...customs.filter((_, i) => i !== editingCustom?.index).map((c) => c.name)]}
+        onClose={() => setEditingCustom(null)}
+        onSave={(g) => setCustoms((c) => (editingCustom?.index === null || editingCustom === null ? [...c, g] : c.map((x, i) => (i === editingCustom.index ? { ...g, labor: x.labor } : x))))}
+      />
+      {linking?.moldTypeId && (molds.data ?? []).find((m) => m.id === linking.moldTypeId) && (
+        <LinkMoldModal show mold={(molds.data ?? []).find((m) => m.id === linking.moldTypeId)!} onClose={() => setLinking(null)} onLinked={() => { setLinking(null); invalidate(design?.id); onClose(); }} />
+      )}
     </Modal>
   );
 }

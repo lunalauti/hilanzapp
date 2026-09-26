@@ -3,21 +3,22 @@ import type { ChoiceOption, Formula, MoldDefinition, MoldInput, Op } from '@hila
 import { unwrap } from '../lib/db';
 
 interface MoldRow {
-  id: string; key: string; name: string; category: MoldDefinition['category']; size_priority: MoldDefinition['sizePriority'];
+  id: string; key: string; name: string; category: MoldDefinition['category']; size_priority: MoldDefinition['sizePriority']; has_pattern: boolean;
   mold_inputs: { key: string; label: string; source: MoldInput['source']; options: ChoiceOption[] | null; default_option_id: string | null; required: boolean; sort: number; measure_definitions: { key: string } | null }[];
   mold_formulas: { key: string; label: string; section: string | null; operand_a: string; op: Op; operand_b: string | null; adjustment_cm: number | string; decimals: number; sort: number; template_default: Formula | null }[];
   template_key: string | null;
 }
 
-const COLS = `id, key, name, category, size_priority, template_key,
+const COLS = `id, key, name, category, size_priority, has_pattern, template_key,
   mold_inputs(key, label, source, options, default_option_id, required, sort, measure_definitions(key)),
   mold_formulas(key, label, section, operand_a, op, operand_b, adjustment_cm, decimals, sort, template_default)`;
 
-export interface StoredMold { id: string; def: MoldDefinition; templateKey: string | null; originals: Record<string, Formula> }
+export interface StoredMold { id: string; def: MoldDefinition; hasPattern: boolean; templateKey: string | null; originals: Record<string, Formula> }
 
 function toMold(r: MoldRow): StoredMold {
   return {
     id: r.id,
+    hasPattern: r.has_pattern,
     templateKey: r.template_key,
     originals: Object.fromEntries(r.mold_formulas.filter((f) => f.template_default).map((f) => [f.key, f.template_default as Formula])),
     def: {
@@ -73,15 +74,15 @@ export async function definitionIdsByKey(db: SupabaseClient): Promise<Map<string
 }
 
 export async function getMoldRow(db: SupabaseClient, id: string) {
-  return unwrap(await db.from('mold_types').select('id, key, name, category, size_priority, template_key').eq('id', id).maybeSingle()) as
-    { id: string; key: string; name: string; category: string; size_priority: string; template_key: string | null } | null;
+  return unwrap(await db.from('mold_types').select('id, key, name, category, size_priority, has_pattern, template_key').eq('id', id).maybeSingle()) as
+    { id: string; key: string; name: string; category: string; size_priority: string; has_pattern: boolean; template_key: string | null } | null;
 }
 
 export async function moldKeys(db: SupabaseClient): Promise<Set<string>> {
   return new Set((unwrap(await db.from('mold_types').select('key')) as { key: string }[]).map((m) => m.key));
 }
 
-export async function insertMold(db: SupabaseClient, row: { key: string; name: string; category: string; size_priority: string }) {
+export async function insertMold(db: SupabaseClient, row: { key: string; name: string; category: string; size_priority: string; has_pattern?: boolean }) {
   return unwrap(await db.from('mold_types').insert(row).select('id').single()) as { id: string };
 }
 

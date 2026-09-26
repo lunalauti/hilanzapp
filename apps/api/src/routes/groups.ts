@@ -3,14 +3,19 @@ import { z } from 'zod';
 import { AppError, notFound } from '../lib/errors';
 import { isTrue, parseUuid } from '../lib/params';
 import { ctxOf } from '../middleware/auth';
+import { unwrap } from '../lib/db';
 import * as groups from '../repositories/groups';
+import { plansForDancers } from '../services/measurePlan';
 
 const body = z.object({ name: z.string().trim().min(1, 'El nombre es obligatorio').max(80) });
 
 export const groupsRouter = Router();
 
 groupsRouter.get('/groups', async (req, res) => {
-  res.json(await groups.listGroups(ctxOf(req).db));
+  const { db } = ctxOf(req);
+  const dancers = unwrap(await db.from('dancers').select('id, group_id')) as { id: string; group_id: string }[];
+  const plans = await plansForDancers(db, dancers);
+  res.json(await groups.listGroups(db, dancers.map((d) => ({ group_id: d.group_id, status: plans.get(d.id)!.status }))));
 });
 
 groupsRouter.post('/groups', async (req, res) => {

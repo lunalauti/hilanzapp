@@ -9,6 +9,7 @@ import { exportsRouter } from './exports';
 import { groupsRouter } from './groups';
 import { inventoryRouter } from './inventory';
 import { measurementsRouter } from './measurements';
+import { measurePlanRouter } from './measurePlan';
 import { moldEditorRouter } from './moldEditor';
 import { moldsRouter } from './molds';
 import { productionRouter } from './production';
@@ -32,6 +33,7 @@ export function apiRouter(config: Config, verify: TokenVerifier): Router {
   router.use(groupsRouter);
   router.use(dancersRouter);
   router.use(measurementsRouter);
+  router.use(measurePlanRouter);
   router.use(sizingRouter);
   router.use(sizeTablesRouter);
   router.use(moldsRouter);

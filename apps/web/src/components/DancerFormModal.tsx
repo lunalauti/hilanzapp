@@ -1,6 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { NeededMeasures } from './measures/NeededMeasures';
 import { api } from '../lib/apiClient';
 import { ApiError } from '../lib/api';
 import type { GroupDancer } from '../lib/types';
@@ -22,9 +24,11 @@ export function DancerFormModal({ show, groupId, groupName, siblings = [], dance
   const invalidate = useInvalidateDancerData();
   const qc = useQueryClient();
   const toast = useToast();
+  const navigate = useNavigate();
+  const [created, setCreated] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
-    if (show) { setName(dancer?.name ?? ''); setAge(dancer?.age?.toString() ?? ''); setContact(dancer?.contact ?? ''); setPicked(new Set()); setErrors({}); }
+    if (show) { setCreated(null); setName(dancer?.name ?? ''); setAge(dancer?.age?.toString() ?? ''); setContact(dancer?.contact ?? ''); setPicked(new Set()); setErrors({}); }
   }, [show, dancer]);
 
   const toggle = (id: string) => setPicked((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
@@ -45,21 +49,41 @@ export function DancerFormModal({ show, groupId, groupName, siblings = [], dance
     try {
       const body = { name: clean, age: ageNum, contact: contact.trim() || null };
       let failed = 0;
+      let newId: string | null = null;
+      let assigned = 0;
       if (dancer) await api.patch(`/dancers/${dancer.id}`, body);
       else {
-        const created = await api.post<{ id: string }>('/dancers', { groupId, ...body });
-        const jobs = assignable.filter((d) => picked.has(d.id)).flatMap((d) => d.garments.map((g) => api.post('/assignments', { dancerId: created.id, moldTypeId: g.moldTypeId, designId: d.id }).catch(() => { failed++; })));
+        const made = await api.post<{ id: string }>('/dancers', { groupId, ...body });
+        newId = made.id;
+        const jobs = assignable.filter((d) => picked.has(d.id)).flatMap((d) => d.garments.map((g) => { assigned++; return api.post('/assignments', { dancerId: made.id, moldTypeId: g.moldTypeId, designId: d.id }).catch(() => { failed++; }); }));
         await Promise.all(jobs);
       }
-      invalidate(dancer?.id, groupId);
+      invalidate(dancer?.id ?? newId ?? undefined, groupId);
       void qc.invalidateQueries({ queryKey: ['group-dancers', groupId] });
       toast.show(failed ? `${clean} guardada, pero ${failed} prendas no se pudieron asignar` : `${clean} guardada`);
-      onClose();
+      // Con vestuario asignado, se le dice enseguida qué medidas necesita y se ofrece tomarlas.
+      if (newId && assigned - failed > 0) setCreated({ id: newId, name: clean });
+      else onClose();
     } catch (err) {
       setErrors({ form: err instanceof ApiError ? err.message : 'No pudimos guardar la bailarina.' });
     } finally {
       setBusy(false);
     }
+  }
+
+  if (created) {
+    return (
+      <Modal show={show} onHide={onClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title as="h2" className="h4 d-flex flex-column">Nueva bailarina<span className="fs-6 fw-normal text-secondary">{created.name} guardada{groupName ? ` en ${groupName}` : ''}.</span></Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="d-flex flex-column gap-3"><NeededMeasures dancerId={created.id} /></Modal.Body>
+        <Modal.Footer>
+          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Después</button>
+          <button type="button" className="hz-btn primary" onClick={() => { onClose(); navigate(`/dancers/${created.id}/medir?volver=${encodeURIComponent(`/groups/${groupId}`)}`); }}><i className="bi bi-rulers" />Tomar medidas ahora</button>
+        </Modal.Footer>
+      </Modal>
+    );
   }
 
   return (

@@ -217,3 +217,8 @@ Convenciones: TypeScript estricto, Vitest en todos los paquetes, un test primero
 - [ ] 38. Prueba de extremo a extremo (Playwright)
   - Flujo completo: login, crear grupo, cargar bailarina y medidas, generar hoja de molde, ver producción, exportar PDF. Se ejecuta en CI contra Supabase local.
   - _Reqs: 1, 2, 3, 4, 5, 6, 7, 14_
+
+
+## Extensión posterior
+
+Toma de medidas guiada y prendas sin molde: ver `specs/toma-de-medidas-y-moldes-propios/` (requirements, design, tasks).

@@ -5,6 +5,7 @@ import { BatchPdfModal } from '../components/BatchPdfModal';
 import { DancerFormModal } from '../components/DancerFormModal';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { MeasureStatusLabel } from '../components/ui/MeasureStatusLabel';
+import { NoPatternBadge } from '../components/ui/NoPatternBadge';
 import { SizeChip } from '../components/ui/SizeChip';
 import { EmptyState, ErrorState, Loading } from '../components/ui/States';
 import { useToast } from '../components/ui/Toast';
@@ -58,7 +59,9 @@ export function GroupDancers() {
         </div>
         <div className="d-flex flex-wrap gap-2">
           <button type="button" className="hz-btn" onClick={() => setBatch(true)} disabled={all.length === 0}><i className="bi bi-file-earmark-pdf" />Hojas de molde en PDF</button>
-          <button type="button" className="hz-btn primary" onClick={() => setEditing('new')}><i className="bi bi-person-plus" />Agregar bailarina</button>
+          <Link to={`/groups/${groupId}/faltantes`} className="hz-btn"><i className="bi bi-list-check" />Faltantes del grupo</Link>
+          <button type="button" className="hz-btn" onClick={() => setEditing('new')}><i className="bi bi-person-plus" />Agregar bailarina</button>
+          <Link to={`/groups/${groupId}/medir`} className="hz-btn primary"><i className="bi bi-rulers" />Tomar medidas del grupo</Link>
         </div>
       </div>
 
@@ -77,12 +80,14 @@ export function GroupDancers() {
               </span>
               <span className="d-none d-lg-block"><MeasureStatusLabel status={d.measureStatus} done={d.requiredDone} total={d.requiredTotal} /></span>
               <span><SizeChip label={d.size.label} origin={d.size.origin} outOfRange={d.size.outOfRange} /></span>
-              <span className="vest">{d.garments.length ? d.garments.map((g) => g.moldName).join(', ') : '—'}</span>
+              <span className="vest">{d.garments.length ? d.garments.map((g, i) => <span key={g.assignmentId}>{i > 0 && ', '}{g.moldName}{g.hasPattern === false && <> <NoPatternBadge /></>}</span>) : '—'}</span>
               <span className="d-none d-lg-flex justify-content-end gap-1">
+                <Link to={`/dancers/${d.id}/medir?volver=${encodeURIComponent(`/groups/${groupId}`)}`} className="hz-icon-btn" aria-label={`Tomar medidas de ${d.name}`}><i className="bi bi-rulers" /></Link>
                 <button type="button" className="hz-icon-btn" aria-label={`Editar ${d.name}`} onClick={() => setEditing(d)}><i className="bi bi-pencil" /></button>
                 <button type="button" className="hz-icon-btn danger" aria-label={`Eliminar ${d.name}`} onClick={() => setDeleting(d)}><i className="bi bi-trash3" /></button>
               </span>
               <span className="d-flex d-lg-none gap-1" style={{ gridColumn: '2 / -1' }}>
+                <Link to={`/dancers/${d.id}/medir?volver=${encodeURIComponent(`/groups/${groupId}`)}`} className="hz-icon-btn" aria-label={`Tomar medidas de ${d.name}`}><i className="bi bi-rulers" /></Link>
                 <button type="button" className="hz-icon-btn" aria-label={`Editar ${d.name}`} onClick={() => setEditing(d)}><i className="bi bi-pencil" /></button>
                 <button type="button" className="hz-icon-btn danger" aria-label={`Eliminar ${d.name}`} onClick={() => setDeleting(d)}><i className="bi bi-trash3" /></button>
               </span>

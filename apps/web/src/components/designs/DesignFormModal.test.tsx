@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderApp } from '../../test/utils';
@@ -14,7 +14,8 @@ const catalog = [
   { id: 'k2', category: 'skirt', label: 'Falda con godets', isCustom: true },
 ];
 const molds = [{ id: 'm1', key: 'pantalon', name: 'Pantalón', inputs: [] }, { id: 'm2', key: 'vestido', name: 'Vestido', inputs: [] }];
-const defs = [{ id: 'd1', key: 'brazo', name: 'Contorno de brazo', kind: 'body', isBase: true, required: false }, { id: 'd2', key: 'altura_tiro', name: 'Altura de tiro', kind: 'standard', isBase: false, required: false }];
+const defs = [{ id: 'd1', key: 'brazo', name: 'Contorno de brazo', kind: 'body', isBase: true, required: false }, { id: 'd2', key: 'altura_tiro', name: 'Altura de tiro', kind: 'standard', isBase: false, required: false },
+  { id: 'd3', key: 'muneca', name: 'Contorno de muñeca', kind: 'body', isBase: false, required: false }];
 
 const design = {
   id: 'ds1', name: 'Aurora', notes: 'Hombro descubierto', constructionDetails: 'Cierre invisible', neckline: { id: 'n1', label: 'Corazón', isCustom: false }, sleeve: null, skirt: { id: 'k1', label: 'Campana', isCustom: false },
@@ -42,7 +43,7 @@ describe('Formulario de diseño', () => {
     expect(screen.getByLabelText('Falda')).toHaveTextContent('Falda con godets (propio)');
     expect(await screen.findByRole('checkbox', { name: 'Pantalón' })).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: 'Contorno de brazo' })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Altura de tiro' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Largo hombro a rodilla' })).not.toBeInTheDocument();
   });
 
   it('exige el nombre antes de guardar', async () => {
@@ -112,5 +113,99 @@ describe('Formulario de diseño', () => {
     await userEvent.type(await screen.findByLabelText('Nombre del diseño'), 'X');
     await userEvent.click(screen.getByRole('button', { name: 'Guardar diseño' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Una de las prendas ya no existe');
+  });
+
+  it('busca medidas especiales sin importar tildes ni mayúsculas y conserva las elegidas', async () => {
+    setup();
+    const search = await screen.findByLabelText('Buscar medida especial');
+    await userEvent.click(await screen.findByRole('button', { name: 'Contorno de brazo' }));
+    await userEvent.type(search, 'MUNECA');
+    expect(screen.getByRole('button', { name: 'Contorno de muñeca' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Contorno de brazo' })).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.clear(search);
+    await userEvent.type(search, 'zzz');
+    expect(screen.getByText(/Ninguna medida coincide con “zzz”/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Contorno de muñeca' })).not.toBeInTheDocument();
+  });
+
+  describe('prendas sin molde', () => {
+    const modal = () => within(screen.getByRole('heading', { name: 'Prenda sin molde' }).closest('form')!);
+    const openModal = async () => {
+      await userEvent.click(await screen.findByRole('button', { name: /Prenda sin molde/ }));
+      return screen.findByRole('heading', { name: 'Prenda sin molde' });
+    };
+
+    it('crea una prenda sin molde con categoría, talle según y medidas en orden, y la envía al guardar', async () => {
+      api.post.mockResolvedValue({ ...design, id: 'ds9' });
+      setup();
+      await userEvent.type(await screen.findByLabelText('Nombre del diseño'), 'Jardín');
+      await openModal();
+      await userEvent.type(screen.getByLabelText('Nombre'), 'Vestido evasé');
+      await userEvent.click(screen.getByRole('button', { name: 'Falda' }));
+      expect(screen.getByRole('button', { name: 'Cadera' })).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByText(/Todavía no elegiste medidas/)).toBeInTheDocument();
+      await userEvent.type(screen.getAllByLabelText('Buscar medida').at(-1)!, 'MUNECA');
+      await userEvent.click(modal().getByRole('button', { name: /Contorno de muñeca/ }));
+      expect(screen.getByText(/· 1 elegida/)).toBeInTheDocument();
+      await userEvent.clear(screen.getAllByLabelText('Buscar medida').at(-1)!);
+      await userEvent.click(modal().getByRole('button', { name: /Contorno de brazo/ }));
+      await userEvent.click(screen.getByRole('button', { name: 'Guardar prenda' }));
+
+      const row = await screen.findByTestId('custom-garment');
+      expect(row).toHaveTextContent('Vestido evasé');
+      expect(row).toHaveTextContent('SIN MOLDE');
+      expect(row).toHaveTextContent('Talle según cadera · 2 medidas');
+      await userEvent.type(screen.getByLabelText('Mano de obra de Vestido evasé'), '14000');
+      await userEvent.click(screen.getByRole('button', { name: 'Guardar diseño' }));
+      await waitFor(() => expect(api.post).toHaveBeenCalledWith('/designs', expect.objectContaining({
+        garments: [{ laborCost: 14000, custom: { name: 'Vestido evasé', category: 'falda', sizePriority: 'cadera', measureIds: expect.arrayContaining(['d1', 'd3']) } }],
+      })));
+    });
+
+    it('permite reordenar y quitar medidas elegidas', async () => {
+      setup();
+      await openModal();
+      await userEvent.click(modal().getByRole('button', { name: /Contorno de brazo/ }));
+      await userEvent.click(modal().getByRole('button', { name: /Contorno de muñeca/ }));
+      const list = screen.getByRole('list', { name: 'Medidas elegidas, en orden' });
+      expect(within(list).getAllByRole('listitem').map((li) => li.textContent)).toEqual(expect.arrayContaining([expect.stringContaining('brazo'), expect.stringContaining('muñeca')]));
+      const before = within(list).getAllByRole('listitem')[0]!.textContent;
+      await userEvent.click(within(list).getAllByRole('button', { name: /Bajar/ })[0]!);
+      expect(within(list).getAllByRole('listitem')[0]!.textContent).not.toBe(before);
+      await userEvent.click(within(list).getAllByRole('button', { name: /Quitar/ })[0]!);
+      expect(screen.getByText(/· 1 elegida/)).toBeInTheDocument();
+    });
+
+    it('rechaza un nombre vacío o repetido en el diseño', async () => {
+      setup();
+      await userEvent.click(await screen.findByRole('checkbox', { name: 'Pantalón' }));
+      await openModal();
+      await userEvent.click(screen.getByRole('button', { name: 'Guardar prenda' }));
+      expect(await screen.findByText('Poné un nombre para la prenda.')).toBeInTheDocument();
+      await userEvent.type(screen.getByLabelText('Nombre'), 'pantalón');
+      expect(await screen.findByText('Ya hay una prenda “pantalón” en este diseño. Elegí otro nombre.')).toBeInTheDocument();
+      await userEvent.click(screen.getByRole('button', { name: 'Guardar prenda' }));
+      expect(screen.queryByTestId('custom-garment')).not.toBeInTheDocument();
+    });
+
+    it('al editar un diseño muestra la prenda sin molde y avisa cuántas asignaciones se pierden al quitarla', async () => {
+      api.patch.mockResolvedValue({ ...design });
+      const withPlaceholder = {
+        ...design,
+        garments: [...design.garments, { id: 'g9', moldTypeId: 'p1', moldKey: 'propia_evase', moldName: 'Vestido evasé', laborCost: 14000, hasPattern: false, category: 'vestido', sizePriority: 'cadera', assignedCount: 12, requiredMeasures: [{ definitionId: 'd1', key: 'brazo', name: 'Contorno de brazo' }] }],
+      };
+      setup({ design: withPlaceholder as never });
+      const row = await screen.findByTestId('custom-garment');
+      expect(row).toHaveTextContent('Vestido evasé');
+      expect(row).toHaveTextContent('Talle según cadera · 1 medida');
+      expect(screen.getByLabelText('Mano de obra de Vestido evasé')).toHaveValue('14000');
+      await userEvent.click(within(row).getByRole('button', { name: /Quitar/ }));
+      expect(await screen.findByText('¿Quitar Vestido evasé del diseño?')).toBeInTheDocument();
+      expect(screen.getByText(/Se pierden 12 asignaciones/)).toBeInTheDocument();
+      await userEvent.click(screen.getByRole('button', { name: 'Quitar prenda' }));
+      expect(screen.queryByTestId('custom-garment')).not.toBeInTheDocument();
+      await userEvent.click(screen.getByRole('button', { name: 'Guardar diseño' }));
+      await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/designs/ds1', expect.objectContaining({ garments: [{ moldTypeId: 'm2', laborCost: 15000 }] })));
+    });
   });
 });

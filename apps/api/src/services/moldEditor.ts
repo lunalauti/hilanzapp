@@ -59,5 +59,6 @@ export async function replaceDefinition(db: SupabaseClient, ownerId: string, mol
     await molds.restoreRawChildren(db, moldId, raw);
     throw e;
   }
+  await molds.updateMold(db, moldId, { has_pattern: def.formulas.length > 0 });
   return true;
 }

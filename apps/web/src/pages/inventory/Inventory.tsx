@@ -1,3 +1,4 @@
+import { NoPatternBadge } from '../../components/ui/NoPatternBadge';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
@@ -171,7 +172,7 @@ export function Inventory() {
                 <span className="hz-label">{maxNeed.name} por talle</span>
                 {maxNeed.byGarment.map((g) => (
                   <div key={`${g.designName}${g.moldName}`} className="d-flex flex-column gap-2">
-                    <span className="small text-secondary">{g.moldName} · {g.designName}</span>
+                    <span className="small text-secondary d-flex align-items-center gap-2">{g.moldName}{g.hasPattern === false && <NoPatternBadge />} · {g.designName}</span>
                     <div className="d-flex flex-wrap gap-2">
                       {g.sizes.map((s) => <span key={s.label} className="hz-req hz-real"><strong>T{s.label}</strong>{formatQty(s.quantity)} {maxNeed.unit}</span>)}
                     </div>

@@ -4,7 +4,7 @@ import { api } from '../../lib/apiClient';
 import { ApiError } from '../../lib/api';
 import { parseDecimal } from '../../lib/format';
 
-export function CustomMeasureModal({ show, dancerId, onClose, onSaved }: { show: boolean; dancerId: string; onClose: () => void; onSaved: (name: string) => void }) {
+export function CustomMeasureModal({ show, dancerId, onClose, onSaved }: { show: boolean; dancerId: string; onClose: () => void; onSaved: (name: string, info?: { definitionId: string; valueCm: number }) => void }) {
   const [name, setName] = useState('');
   const [value, setValue] = useState('');
   const [note, setNote] = useState('');
@@ -25,7 +25,7 @@ export function CustomMeasureModal({ show, dancerId, onClose, onSaved }: { show:
     try {
       const def = await api.post<{ id: string }>('/measure-definitions', { name });
       await api.put(`/dancers/${dancerId}/measurements/${def.id}`, { valueCm: v, note: note.trim() || null });
-      onSaved(name.trim());
+      onSaved(name.trim(), { definitionId: def.id, valueCm: v });
       onClose();
     } catch (err) {
       setErrors({ form: err instanceof ApiError ? err.message : 'No pudimos guardar la medida.' });

@@ -8,6 +8,7 @@ import { calculate } from '../services/calculations';
 import { assertValidDefinition, createMold, replaceDefinition } from '../services/moldEditor';
 import { restoreTemplate } from '../services/bootstrap';
 import { moldView } from '../services/moldView';
+import { linkMold, linkPreview } from '../services/placeholderMolds';
 
 const key = z.string().regex(/^[a-z][a-z0-9_]*$/, 'Usá minúsculas, números y guion bajo (empezando con letra)');
 const option = z.object({ id: key, label: z.string().trim().min(1).max(60), value: z.number().finite() });
@@ -65,6 +66,21 @@ moldEditorRouter.post('/mold-types/:id/restore-defaults', async (req, res) => {
   if (!row.template_key) throw new AppError(422, 'NO_TEMPLATE', 'Este molde es propio y no tiene una versión original para restaurar');
   await restoreTemplate(db, user.id, 'mold', row.template_key);
   res.json(moldView((await molds.getMold(db, row.id))!));
+});
+
+const linkBody = z.object({ targetMoldTypeId: uuid });
+
+moldEditorRouter.get('/mold-types/:id/link-preview', async (req, res) => {
+  const { db } = ctxOf(req);
+  res.json(await linkPreview(db, parseUuid(req.params.id), parseUuid(req.query.target)));
+});
+
+moldEditorRouter.post('/mold-types/:id/link', async (req, res) => {
+  const { db } = ctxOf(req);
+  const { targetMoldTypeId } = linkBody.parse(req.body);
+  const result = await linkMold(db, parseUuid(req.params.id), targetMoldTypeId);
+  const target = (await molds.getMold(db, targetMoldTypeId))!;
+  res.json({ ...result, target: { id: target.id, name: target.def.name } });
 });
 
 moldEditorRouter.delete('/mold-types/:id', async (req, res) => {

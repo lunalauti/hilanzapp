@@ -10,6 +10,9 @@ import { openPdf } from '../lib/files';
 import { formatCm, parseDecimal } from '../lib/format';
 import { useCalculation, useDancer, useDesigns, useGroupDancers, useGroups, useMeasurements, useMolds, type CalcRequest } from '../lib/queries';
 import type { CalcRow, MissingItem, Mold } from '../lib/types';
+import { LinkMoldModal } from '../components/molds/LinkMoldModal';
+import { NoPatternSheet } from '../components/molds/NoPatternSheet';
+import { NoPatternBadge } from '../components/ui/NoPatternBadge';
 
 export function MoldSheet() {
   const [params, setParams] = useSearchParams();
@@ -58,7 +61,7 @@ export function MoldSheet() {
             <label htmlFor="pick-mold" className="hz-label">Molde</label>
             <select id="pick-mold" className="hz-input" value={moldId} disabled={!dancerId} onChange={(e) => set('mold', e.target.value)}>
               <option value="">Elegí un molde…</option>
-              {(molds.data ?? []).map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+              {[...(molds.data ?? [])].sort((a, b) => Number(a.hasPattern === false) - Number(b.hasPattern === false)).map((m) => <option key={m.id} value={m.id}>{m.name}{m.hasPattern === false ? ' · sin molde' : ''}</option>)}
             </select>
           </div>
           <div className="col-12 col-md-4 d-flex flex-column gap-1">
@@ -75,13 +78,26 @@ export function MoldSheet() {
       {!dancerId || !mold ? (
         <EmptyState icon="bi-scissors" title="Elegí una bailarina y un molde" note="Vas a ver sus medidas reales y todos los resultados calculados, sin hacer cuentas a mano." />
       ) : (
-        <Sheet key={`${dancerId}-${moldId}-${designId}`} dancerId={dancerId} dancerName={dancer.data?.name ?? ''} mold={mold} designId={designId || null} />
+        mold.hasPattern === false
+          ? <NoPatternWrapper key={`${dancerId}-${moldId}-${designId}`} dancerId={dancerId} dancerName={dancer.data?.name ?? ''} mold={mold} designId={designId || null} backTo={`/moldes?${params.toString()}`} onLinked={(id) => set('mold', id)} />
+          : <Sheet key={`${dancerId}-${moldId}-${designId}`} dancerId={dancerId} dancerName={dancer.data?.name ?? ''} mold={mold} designId={designId || null} justMeasured={params.get('medidas') === 'nuevas'} onDismissMeasured={() => set('medidas', '')} backTo={`/moldes?${params.toString()}`} />
       )}
     </>
   );
 }
 
-function Sheet({ dancerId, dancerName, mold, designId }: { dancerId: string; dancerName: string; mold: Mold; designId: string | null }) {
+function NoPatternWrapper({ dancerId, dancerName, mold, designId, backTo, onLinked }: { dancerId: string; dancerName: string; mold: Mold; designId: string | null; backTo: string; onLinked: (moldId: string) => void }) {
+  const [linking, setLinking] = useState(false);
+  const toast = useToast();
+  return (
+    <>
+      <NoPatternSheet dancerId={dancerId} dancerName={dancerName} mold={mold} designId={designId} backTo={backTo} onLink={() => setLinking(true)} />
+      <LinkMoldModal show={linking} mold={mold} onClose={() => setLinking(false)} onLinked={(t) => { toast.show(`${mold.name} quedó vinculado a “${t.name}”`); onLinked(t.id); }} />
+    </>
+  );
+}
+
+function Sheet({ dancerId, dancerName, mold, designId, justMeasured, onDismissMeasured, backTo }: { dancerId: string; dancerName: string; mold: Mold; designId: string | null; justMeasured?: boolean; onDismissMeasured?: () => void; backTo: string }) {
   const measures = useMeasurements(dancerId);
   const toast = useToast();
   const manualInputs = mold.inputs.filter((i) => i.source === 'manual');
@@ -148,12 +164,19 @@ function Sheet({ dancerId, dancerName, mold, designId }: { dancerId: string; dan
       {blocked && (
         <div className="hz-notice warning mb-4" role="alert" style={{ flexDirection: 'column' }}>
           <strong><i className="bi bi-lock-fill" /> No se puede calcular todavía</strong>
-          <span>Faltan {missingBody.length} de las {measureInputs.length} medidas que pide este molde. Tocá una para cargarla en la ficha de {dancerName}.</span>
-          <div className="d-flex flex-wrap gap-2">
-            {missingBody.map((m) => (
-              <Link key={m.key} to={`/dancers/${dancerId}?tab=medidas`} className="hz-req missing text-decoration-none">{m.label}<i className="bi bi-arrow-right ms-1" /></Link>
-            ))}
-          </div>
+          <span>
+            Faltan {missingBody.length} de las {measureInputs.length} medidas que pide este molde: {missingBody.map((m) => m.label).join(', ')}. Tomalas ahora y volvés acá con la hoja lista.
+          </span>
+          <Link
+            to={`/dancers/${dancerId}/medir?solo=${missingBody.map((m) => mold.inputs.find((i) => i.key === m.key)?.measureKey ?? m.key).join(',')}&volver=${encodeURIComponent(backTo)}`}
+            className="hz-btn primary align-self-start"
+          ><i className="bi bi-rulers" />{missingBody.length === 1 ? 'Tomar la que falta' : `Tomar las ${missingBody.length} que faltan`}</Link>
+        </div>
+      )}
+      {justMeasured && result && (
+        <div className="hz-notice ok mb-4 hz-no-print" role="status">
+          <i className="bi bi-check-circle" /><span className="flex-grow-1"><strong>Hoja calculada con las medidas nuevas.</strong> Lista para imprimir.</span>
+          <button type="button" className="btn-close" aria-label="Cerrar aviso" onClick={onDismissMeasured} />
         </div>
       )}
       {missingStandard && <div className="hz-notice warning mb-4" role="alert"><i className="bi bi-exclamation-triangle" />La tabla de talles no tiene el valor estándar que necesita este molde. Completalo en Tablas de talles.</div>}
@@ -213,6 +236,7 @@ function Sheet({ dancerId, dancerName, mold, designId }: { dancerId: string; dan
             <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 p-3">
               <div className="d-flex align-items-center gap-2">
                 <h2 className="hz-panel-title">{mold.name}</h2>
+                {mold.hasPattern === false && <NoPatternBadge />}
                 {result && <SizeChip label={result.size.label} origin={result.size.origin} small />}
               </div>
               <span className="small text-secondary">Todos los valores en cm</span>

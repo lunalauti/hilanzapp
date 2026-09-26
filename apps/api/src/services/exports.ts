@@ -5,8 +5,11 @@ import * as designs from '../repositories/designs';
 import * as images from '../repositories/images';
 import * as molds from '../repositories/molds';
 import { unwrap } from '../lib/db';
+import { groupPlan } from './groupPlan';
+import { plansForDancers } from './measurePlan';
+import { resolveDancerSizing } from './sizing';
 import { groupProduction } from './production';
-import { formatDate, type ProductionPdfData, type SheetPdfData } from './pdf';
+import { formatDate, type MissingPdfData, type ProductionPdfData, type SheetPdfData } from './pdf';
 
 interface Snapshot {
   dancer: { name: string }; mold: { name: string };
@@ -55,7 +58,22 @@ export async function sheetPdfData(db: SupabaseClient, sheetId: string): Promise
     }
   }
 
+  let noPattern: SheetPdfData['noPattern'];
+  if (stored && !stored.hasPattern) {
+    const plan = dancer ? (await plansForDancers(db, [dancer])).get(dancer.id) : undefined;
+    const taken = new Map((plan?.items ?? []).map((i) => [i.key, i.takenOn]));
+    const design = sheet.design_id ? (await designs.listDesigns(db, sheet.design_id))[0] : undefined;
+    noPattern = {
+      designName: design?.name ?? null, category: stored.def.category,
+      sizeBasis: ({ pecho: 'pecho', cadera: 'cadera', both: 'pecho y cadera' } as const)[stored.def.sizePriority],
+      measures: snap.inputs.filter((i) => i.source === 'measure').map((i) => ({
+        label: i.label, value: i.value === null ? null : fmt(Number(i.value)), takenOn: taken.get(stored.def.inputs.find((x) => x.key === i.key)?.measureKey ?? i.key) ?? null,
+      })),
+    };
+  }
+
   return {
+    ...(noPattern ? { noPattern } : {}),
     dancerName: snap.dancer.name, groupName: group?.name ?? null, moldName: snap.mold.name,
     sizeLabel: sheet.size_label ?? snap.size.label, sizeOrigin: snap.size.origin,
     createdAt: sheet.created_at, measuredOn: dancer?.measured_on ?? null,
@@ -69,8 +87,50 @@ export async function productionPdfData(db: SupabaseClient, groupId: string): Pr
   const p = await groupProduction(db, groupId);
   return {
     groupName: group.name, generatedAt: new Date().toISOString(), totalUnits: p.totalUnits,
-    byGarment: p.byGarment.map((g) => ({ moldName: g.moldName, total: g.total, sizes: g.sizes })),
+    byGarment: p.byGarment.map((g) => ({ moldName: g.moldName, hasPattern: g.hasPattern, total: g.total, sizes: g.sizes })),
     pending: p.pending.map((x) => ({ name: x.name, reason: x.reason === 'no_assignment' ? 'sin prendas asignadas' : `sin talle (${x.moldNames.join(', ')})` })),
+  };
+}
+
+export async function missingPdfData(db: SupabaseClient, groupId: string): Promise<MissingPdfData> {
+  const group = unwrap(await db.from('groups').select('name').eq('id', groupId).maybeSingle()) as { name: string } | null;
+  if (!group) throw notFound('Grupo no encontrado');
+  const plan = await groupPlan(db, groupId, { onlyMissing: true });
+  return {
+    groupName: group.name, generatedAt: new Date().toISOString(),
+    dancers: plan.dancers.map((d) => ({
+      name: d.name,
+      missing: d.cells.flatMap((c, i) => (c.required && c.value === null ? [plan.measures[i]!.name] : [])),
+    })),
+  };
+}
+
+/** Hoja simplificada de una prenda sin molde, sin guardarla: sirve aunque falten medidas ("falta · anotar"). */
+export async function garmentSheetPdfData(db: SupabaseClient, dancerId: string, moldTypeId: string, designId: string | null): Promise<SheetPdfData> {
+  const dancer = await dancersRepo.getDancer(db, dancerId);
+  if (!dancer) throw notFound('Bailarina no encontrada');
+  const stored = await molds.getMold(db, moldTypeId);
+  if (!stored) throw notFound('Molde no encontrado');
+  if (stored.hasPattern) throw new AppError(422, 'HAS_PATTERN', 'Esta prenda tiene molde: exportá su hoja de molde');
+  const group = unwrap(await db.from('groups').select('name').eq('id', dancer.group_id).maybeSingle()) as { name: string } | null;
+  const assignmentManual = await molds.findAssignmentSize(db, dancer.id, stored.id, designId);
+  const { view, measures } = await resolveDancerSizing(db, dancer, { size_priority: stored.def.sizePriority }, assignmentManual);
+  const plan = (await plansForDancers(db, [dancer])).get(dancer.id);
+  const taken = new Map((plan?.items ?? []).map((i) => [i.key, i.takenOn]));
+  const design = designId ? (await designs.listDesigns(db, designId))[0] : undefined;
+  return {
+    dancerName: dancer.name, groupName: group?.name ?? null, moldName: stored.def.name,
+    sizeLabel: view.label, sizeOrigin: view.origin, createdAt: new Date().toISOString(), measuredOn: dancer.measured_on,
+    rows: [], manualInputs: [], choiceText: null, notes: [], images: [],
+    noPattern: {
+      designName: design?.name ?? null, category: stored.def.category,
+      sizeBasis: ({ pecho: 'pecho', cadera: 'cadera', both: 'pecho y cadera' } as const)[stored.def.sizePriority],
+      measures: stored.def.inputs.filter((i) => i.source === 'measure').map((i) => {
+        const key = i.measureKey ?? i.key;
+        const v = measures[key];
+        return { label: i.label, value: v === undefined ? null : fmt(v), takenOn: taken.get(key) ?? null };
+      }),
+    },
   };
 }
 

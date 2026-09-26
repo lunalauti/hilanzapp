@@ -35,6 +35,25 @@ const view = () => renderApp(<DesignPage />, { route: '/disenos/ds1', path: '/di
 describe('Ficha del diseño', () => {
   beforeEach(() => { vi.clearAllMocks(); mockGets(); });
 
+  it('lista las prendas con la etiqueta "Sin molde", su talle según y cuántas hay asignadas', async () => {
+    api.get.mockImplementation(async (p: string) => (p === '/designs/ds1' ? {
+      ...design,
+      garments: [
+        { ...design.garments[0]!, hasPattern: true, assignedCount: 8 },
+        { id: 'g2', moldTypeId: 'p1', moldKey: 'propia_evase', moldName: 'Vestido evasé', laborCost: 14000, hasPattern: false, category: 'vestido', sizePriority: 'cadera', assignedCount: 12, requiredMeasures: [{ definitionId: 'a', key: 'pecho', name: 'Contorno de pecho' }, { definitionId: 'b', key: 'cadera', name: 'Contorno de cadera' }] },
+      ],
+    } : p === '/groups' ? [] : []));
+    view();
+    const prendas = await screen.findByRole('region', { name: 'Prendas' });
+    expect(prendas).toHaveTextContent('Vestido campana con canesú');
+    expect(prendas).toHaveTextContent('8 asignadas');
+    expect(prendas).toHaveTextContent('Vestido evasé');
+    expect(prendas).toHaveTextContent('SIN MOLDE');
+    expect(prendas).toHaveTextContent('Talle según cadera · 2 medidas · 12 asignadas');
+    expect(prendas).toHaveTextContent('Mano de obra $ 14.000');
+    expect(within(prendas).getAllByText('SIN MOLDE')).toHaveLength(1);
+  });
+
   it('muestra la ficha técnica, los detalles como lista y las medidas especiales', async () => {
     view();
     expect(await screen.findByRole('heading', { name: 'Vestido Aurora' })).toBeInTheDocument();

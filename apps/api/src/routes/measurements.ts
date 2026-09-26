@@ -1,3 +1,4 @@
+import { MEASURE_HELP, measureOrder } from '@hilanzapp/seed-data';
 import { Router } from 'express';
 import { z } from 'zod';
 import { notFound } from '../lib/errors';
@@ -20,7 +21,11 @@ const compareQuery = z.object({ from: date, to: date });
 export const measurementsRouter = Router();
 
 measurementsRouter.get('/measure-definitions', async (req, res) => {
-  res.json((await repo.listDefinitions(ctxOf(req).db)).map((d) => ({ id: d.id, key: d.key, name: d.name, kind: d.kind, isBase: d.is_base, required: d.required })));
+  const list = (await repo.listDefinitions(ctxOf(req).db)).map((d) => ({
+    id: d.id, key: d.key, name: d.name, kind: d.kind, isBase: d.is_base, required: d.required,
+    sort: measureOrder(d.key, d.sort), help: MEASURE_HELP[d.key] ?? null,
+  }));
+  res.json(list.sort((a, b) => a.sort - b.sort || a.name.localeCompare(b.name, 'es')));
 });
 
 measurementsRouter.post('/measure-definitions', async (req, res) => {

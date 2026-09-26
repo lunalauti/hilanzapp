@@ -5,12 +5,19 @@ import { isTrue, parseUuid, uuid } from '../lib/params';
 import { ctxOf } from '../middleware/auth';
 import * as repo from '../repositories/designs';
 import * as images from '../repositories/images';
-import { designsView } from '../services/designs';
+import { designsView, resolveGarments } from '../services/designs';
 
 const category = z.enum(['neckline', 'sleeve', 'skirt']);
 const catalogBody = z.object({ category, label: z.string().trim().min(1, 'La opción no puede estar vacía').max(60) });
 
-const garment = z.object({ moldTypeId: uuid, laborCost: z.number().finite().min(0).max(100_000_000).nullable().optional() });
+const custom = z.object({
+  name: z.string().trim().min(1, 'Poné un nombre para la prenda').max(80),
+  category: z.enum(['cuerpo', 'manga', 'pantalon', 'falda', 'vestido', 'otro']),
+  sizePriority: z.enum(['pecho', 'cadera', 'both']),
+  measureIds: z.array(uuid).max(40),
+});
+const garment = z.object({ moldTypeId: uuid.optional(), custom: custom.optional(), laborCost: z.number().finite().min(0).max(100_000_000).nullable().optional() })
+  .refine((g) => g.moldTypeId || g.custom, 'Indicá el molde o los datos de la prenda sin molde');
 const fields = {
   name: z.string().trim().min(1, 'El nombre es obligatorio').max(120),
   notes: z.string().max(4000).nullable(),
@@ -56,20 +63,21 @@ designsRouter.get('/designs/:id', async (req, res) => {
 });
 
 designsRouter.post('/designs', async (req, res) => {
-  const { db } = ctxOf(req);
+  const { db, user } = ctxOf(req);
   const body = createBody.parse(req.body);
+  const garments = body.garments?.length ? await resolveGarments(db, user.id, body.garments) : [];
   const row = await repo.insertDesign(db, toRow(body));
-  if (body.garments?.length) await repo.syncGarments(db, row.id, body.garments);
+  if (garments.length) await repo.syncGarments(db, row.id, garments);
   if (body.specialMeasureIds?.length) await repo.syncSpecials(db, row.id, body.specialMeasureIds);
   res.status(201).json((await designsView(db, row.id))[0]);
 });
 
 designsRouter.patch('/designs/:id', async (req, res) => {
-  const { db } = ctxOf(req);
+  const { db, user } = ctxOf(req);
   const id = parseUuid(req.params.id);
   const body = patchBody.parse(req.body);
   if (!(await repo.updateDesign(db, id, toRow(body as z.infer<typeof createBody>)))) throw notFound('Diseño no encontrado');
-  if (body.garments) await repo.syncGarments(db, id, body.garments);
+  if (body.garments) await repo.syncGarments(db, id, await resolveGarments(db, user.id, body.garments));
   if (body.specialMeasureIds) await repo.syncSpecials(db, id, body.specialMeasureIds);
   res.json((await designsView(db, id))[0]);
 });

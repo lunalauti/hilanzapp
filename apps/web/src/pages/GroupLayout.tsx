@@ -43,7 +43,7 @@ export function GroupLayout() {
       <PageHeader
         crumbs={[{ label: 'Grupos', to: '/' }, { label: group.name }]}
         title={group.name}
-        subtitle={`${plural(group.dancerCount, 'bailarina', 'bailarinas')} · ${plural(group.complete, 'completa', 'completas')}`}
+        subtitle={`${plural(group.dancerCount, 'bailarina', 'bailarinas')} · ${group.partial + group.none > 0 ? `${group.partial + group.none} con faltantes` : 'todas completas'}`}
         actions={
           <>
             <button type="button" className="hz-icon-btn" aria-label="Renombrar grupo" onClick={() => setRenaming(true)}><i className="bi bi-pencil" /></button>
@@ -54,6 +54,7 @@ export function GroupLayout() {
       <div className="hz-tabs" role="tablist" aria-label="Secciones del grupo">
         <NavLink end to={`/groups/${groupId}`} role="tab" className={({ isActive }) => `hz-tab d-flex align-items-center justify-content-center text-decoration-none ${isActive ? 'active' : ''}`}>Bailarinas</NavLink>
         <NavLink to={`/groups/${groupId}/production`} role="tab" className={({ isActive }) => `hz-tab d-flex align-items-center justify-content-center text-decoration-none ${isActive ? 'active' : ''}`}>Producción</NavLink>
+        <NavLink to={`/groups/${groupId}/faltantes`} role="tab" className={({ isActive }) => `hz-tab d-flex align-items-center justify-content-center text-decoration-none ${isActive ? 'active' : ''}`}>Faltantes</NavLink>
       </div>
       <Outlet context={{ group }} />
 

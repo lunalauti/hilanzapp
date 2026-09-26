@@ -1,3 +1,4 @@
+import { NoPatternBadge } from '../../components/ui/NoPatternBadge';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -65,6 +66,22 @@ export function DesignPage() {
               {facts.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
             </dl>
             {design.notes && <p className="mb-0"><span className="hz-label d-block mb-1">Observaciones</span>{design.notes}</p>}
+          </section>
+          <section className="hz-card hz-panel" aria-label="Prendas">
+            <h2 className="hz-panel-title">Prendas</h2>
+            {design.garments.length === 0 && <span className="text-secondary">Este diseño todavía no tiene prendas.</span>}
+            {design.garments.map((g) => (
+              <div key={g.id} className="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2" style={{ borderTop: '1px solid var(--hz-line)' }}>
+                <span className="d-flex flex-column">
+                  <span className="d-flex align-items-center gap-2 fw-semibold">{g.moldName}{g.hasPattern === false && <NoPatternBadge />}</span>
+                  <span className="small text-secondary">
+                    {g.hasPattern === false ? `Talle según ${g.sizePriority === 'both' ? 'pecho y cadera' : g.sizePriority} · ${g.requiredMeasures?.length ?? 0} ${(g.requiredMeasures?.length ?? 0) === 1 ? 'medida' : 'medidas'}` : `Molde: ${g.moldName}`}
+                    {g.assignedCount !== undefined && ` · ${g.assignedCount} ${g.assignedCount === 1 ? 'asignada' : 'asignadas'}`}
+                  </span>
+                </span>
+                {g.laborCost !== null && <span className="small">Mano de obra $ {g.laborCost.toLocaleString('es-AR')}</span>}
+              </div>
+            ))}
           </section>
           <section className="hz-card hz-panel" aria-label="Detalles de confección">
             <h2 className="hz-panel-title">Detalles de confección</h2>

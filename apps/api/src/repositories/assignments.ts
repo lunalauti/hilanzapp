@@ -3,11 +3,11 @@ import { unwrap } from '../lib/db';
 
 export interface AssignmentRow {
   id: string; dancer_id: string; design_id: string | null; mold_type_id: string; manual_size_label: string | null;
-  mold_types: { key: string; name: string; size_priority: 'pecho' | 'cadera' | 'both' };
+  mold_types: { key: string; name: string; size_priority: 'pecho' | 'cadera' | 'both'; has_pattern: boolean };
   designs: { name: string } | null;
 }
 
-const COLS = 'id, dancer_id, design_id, mold_type_id, manual_size_label, mold_types(key, name, size_priority), designs(name)';
+const COLS = 'id, dancer_id, design_id, mold_type_id, manual_size_label, mold_types(key, name, size_priority, has_pattern), designs(name)';
 
 export async function listForDancer(db: SupabaseClient, dancerId: string) {
   return unwrap(await db.from('assignments').select(COLS).eq('dancer_id', dancerId).order('created_at')) as unknown as AssignmentRow[];

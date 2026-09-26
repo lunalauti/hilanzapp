@@ -3,9 +3,8 @@ import { unwrap } from '../lib/db';
 
 export interface GroupRow { id: string; name: string; created_at: string }
 
-export async function listGroups(db: SupabaseClient) {
+export async function listGroups(db: SupabaseClient, status: { group_id: string; status: string }[]) {
   const groups = unwrap(await db.from('groups').select('id, name, created_at').order('name')) as GroupRow[];
-  const status = unwrap(await db.from('dancer_measure_status').select('group_id, status')) as { group_id: string; status: string }[];
   const byGroup = new Map<string, { dancerCount: number; complete: number; partial: number; none: number }>();
   for (const s of status) {
     const g = byGroup.get(s.group_id) ?? { dancerCount: 0, complete: 0, partial: 0, none: 0 };

@@ -1,3 +1,4 @@
+import { NoPatternBadge } from '../../components/ui/NoPatternBadge';
 import { useState } from 'react';
 import { SizeChip } from '../../components/ui/SizeChip';
 import { ErrorState, Loading } from '../../components/ui/States';
@@ -90,7 +91,7 @@ export function SizeTab({ dancerId }: { dancerId: string }) {
         {(assignments.data ?? []).map((a) => (
           <div key={a.id} className="d-flex flex-wrap align-items-center gap-2 justify-content-between py-2" style={{ borderTop: '1px solid var(--hz-line)' }}>
             <div className="d-flex flex-column">
-              <strong style={{ fontWeight: 500, fontSize: 16 }}>{a.moldName}</strong>
+              <strong style={{ fontWeight: 500, fontSize: 16 }} className="d-flex align-items-center gap-2">{a.moldName}{a.hasPattern === false && <NoPatternBadge />}</strong>
               <span className="small text-secondary">{a.designName ?? 'Sin diseño'}{a.needsReview && ' · pecho y cadera dan talles distintos, revisalo'}</span>
             </div>
             <div className="d-flex align-items-center gap-2">

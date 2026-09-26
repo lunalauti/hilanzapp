@@ -31,3 +31,22 @@ export function formatMoney(n: number): string {
 export function formatQty(n: number): string {
   return String(Math.round(n * 1000) / 1000).replace('.', ',');
 }
+
+const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+/** "hoy" o "12 mar" para fechas AAAA-MM-DD (o ISO). */
+export function formatShortDate(iso: string | null | undefined, now: Date = new Date()): string {
+  if (!iso) return '';
+  const [y, m, d] = iso.slice(0, 10).split('-').map(Number);
+  if (!y || !m || !d) return '';
+  if (y === now.getFullYear() && m === now.getMonth() + 1 && d === now.getDate()) return 'hoy';
+  return `${d} ${MONTHS[m - 1]}`;
+}
+
+export const todayIso = (now: Date = new Date()) => `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+/** "A", "A y B", "A, B y C". */
+export function joinEs(list: string[]): string {
+  if (list.length <= 1) return list.join('');
+  return `${list.slice(0, -1).join(', ')} y ${list[list.length - 1]}`;
+}

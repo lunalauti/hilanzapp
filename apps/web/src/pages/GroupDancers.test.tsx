@@ -27,6 +27,7 @@ describe('GroupDancers', () => {
     vi.clearAllMocks();
     api.get.mockImplementation(async (p: string) => {
       if (p === '/designs') return [{ id: 'ds1', name: 'Vestido Aurora', images: [], garments: [{ id: 'g1', moldTypeId: 'mv', moldName: 'Vestido', laborCost: null }, { id: 'g2', moldTypeId: 'mp', moldName: 'Pantalón', laborCost: null }] }, { id: 'ds2', name: 'Vacío', images: [], garments: [] }];
+      if (p === '/dancers/d9/measure-plan') return { items: [{ definitionId: 'a', key: 'pecho', name: 'Contorno de pecho', sort: 1, isBase: true, requiredBy: [{ kind: 'garment', label: 'Vestido' }], value: null, takenOn: null }, { definitionId: 'b', key: 'cintura', name: 'Contorno de cintura', sort: 2, isBase: true, requiredBy: [{ kind: 'garment', label: 'Vestido' }], value: null, takenOn: null }, { definitionId: 'c', key: 'hr', name: 'Largo hombro-rodilla', sort: 3, isBase: true, requiredBy: [{ kind: 'design', label: 'Vestido Aurora' }], value: null, takenOn: null }], total: 3, done: 0, missing: 3, status: 'none' };
       if (p.endsWith('/impact')) return { measures: 7, versions: 14, assignments: 2, sheets: 0 };
       return list;
     });
@@ -35,9 +36,12 @@ describe('GroupDancers', () => {
   it('muestra estado de medidas, talle sugerido, manual y sin talle', async () => {
     view();
     expect(await screen.findByRole('link', { name: 'Martina López' })).toHaveAttribute('href', '/dancers/d1');
-    expect(screen.getAllByText('Completa').length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Parcial · faltan 5/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Sin cargar').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Completas').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Faltan 5').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Faltan 7').length).toBeGreaterThan(0); // sin nada cargado
+    expect(screen.getAllByRole('link', { name: /Tomar medidas de Sofía Ferreyra/ }).length).toBeGreaterThan(0);
+    expect(screen.getByRole('link', { name: 'Tomar medidas del grupo' })).toHaveAttribute('href', '/groups/g1/medir');
+    expect(screen.getByRole('link', { name: /Faltantes del grupo/ })).toHaveAttribute('href', '/groups/g1/faltantes');
     expect(screen.getByTitle('Talle asignado a mano')).toHaveTextContent('T50');
     expect(screen.getAllByText('Sin talle')).toHaveLength(1);
     expect(screen.getByLabelText('Fuera de la tabla')).toBeInTheDocument();
@@ -131,7 +135,11 @@ describe('GroupDancers', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Guardar' }));
     await waitFor(() => expect(api.post).toHaveBeenCalledWith('/assignments', { dancerId: 'd9', moldTypeId: 'mv', designId: 'ds1' }));
     expect(api.post).toHaveBeenCalledWith('/assignments', { dancerId: 'd9', moldTypeId: 'mp', designId: 'ds1' });
-    expect(await screen.findByText('Camila Benítez guardada')).toBeInTheDocument();
+    expect(await screen.findByText('Para este vestuario vas a necesitar:')).toBeInTheDocument();
+    expect(await screen.findByText('Contorno de pecho, cintura, largo hombro-rodilla*')).toBeInTheDocument();
+    expect(screen.getByText('* Medida especial de Vestido Aurora.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Tomar medidas ahora/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Después' })).toBeInTheDocument();
   });
 
   it('el encabezado del alta dice a qué grupo se agrega', async () => {

@@ -110,6 +110,6 @@ inventoryRouter.post('/groups/:id/production/confirm', async (req, res) => {
 
 inventoryRouter.get('/stats', async (req, res) => {
   const { db } = ctxOf(req);
-  const list = await groups.listGroups(db);
+  const list = await groups.listGroups(db, []);
   res.json(await stats(db, list.map((g) => ({ id: g.id, name: g.name }))));
 });

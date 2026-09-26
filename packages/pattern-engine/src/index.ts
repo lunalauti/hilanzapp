@@ -8,3 +8,5 @@ export { interpolateTable, extrapolateBackward } from './interpolate';
 export type { InterpolateOptions } from './interpolate';
 export { aggregateProduction } from './production';
 export type { ProductionSummary, ProductionGarment, ProductionSize } from './production';
+export { buildMeasurePlan } from './measurePlan';
+export type { MeasurePlan, PlanDefinition, PlanInput, PlanItem, PlanSource, PlanSourceKind, PlanStatus, CurrentMeasure } from './measurePlan';

@@ -7,7 +7,7 @@ export async function groupProduction(db: SupabaseClient, groupId: string) {
   const dancers = await groupDancersView(db, groupId);
   const summary = aggregateProduction({
     dancers: dancers.map((d) => ({ id: d.id, name: d.name })),
-    assignments: dancers.flatMap((d) => d.garments.map((g) => ({ dancerId: d.id, moldKey: g.moldKey, moldName: g.moldName, sizeLabel: g.sizeLabel }))),
+    assignments: dancers.flatMap((d) => d.garments.map((g) => ({ dancerId: d.id, moldKey: g.moldKey, moldName: g.moldName, sizeLabel: g.sizeLabel, hasPattern: g.hasPattern }))),
   });
   return {
     dancerCount: dancers.length,

@@ -1,3 +1,4 @@
+import { NoPatternBadge } from '../components/ui/NoPatternBadge';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { EmptyState, ErrorState, Loading } from '../components/ui/States';
@@ -52,7 +53,7 @@ export function Production() {
         return (
           <section key={g.moldKey} className="hz-card hz-panel" aria-label={g.moldName}>
             <div className="d-flex justify-content-between align-items-baseline">
-              <h2 className="hz-panel-title">{g.moldName}</h2>
+              <h2 className="hz-panel-title d-flex align-items-center gap-2">{g.moldName}{g.hasPattern === false && <NoPatternBadge />}</h2>
               <span className="text-secondary">{plural(g.total, 'prenda', 'prendas')}</span>
             </div>
             <div className="d-flex flex-wrap gap-2">

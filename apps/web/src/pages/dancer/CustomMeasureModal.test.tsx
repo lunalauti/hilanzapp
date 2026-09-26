@@ -30,7 +30,7 @@ describe('Medida personalizada', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Agregar' }));
     await waitFor(() => expect(api.post).toHaveBeenCalledWith('/measure-definitions', { name: 'Largo falda trasera' }));
     expect(api.put).toHaveBeenCalledWith('/dancers/d1/measurements/def9', { valueCm: 68.5, note: 'Desde segunda cintura' });
-    expect(onSaved).toHaveBeenCalledWith('Largo falda trasera');
+    expect(onSaved).toHaveBeenCalledWith('Largo falda trasera', expect.objectContaining({ valueCm: expect.any(Number) }));
   });
 
   it('rechaza valores fuera de 1 a 250 cm', async () => {

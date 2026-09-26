@@ -4,8 +4,8 @@ import { notFound } from '../lib/errors';
 import { parseUuid, uuid } from '../lib/params';
 import { ctxOf } from '../middleware/auth';
 import * as groups from '../repositories/groups';
-import { batchSheets, productionPdfData, sheetPdfData, slug } from '../services/exports';
-import { renderPatternSheets, renderProduction } from '../services/pdf';
+import { batchSheets, garmentSheetPdfData, missingPdfData, productionPdfData, sheetPdfData, slug } from '../services/exports';
+import { renderMissing, renderPatternSheets, renderProduction } from '../services/pdf';
 
 const batchBody = z.object({ sheetIds: z.array(uuid).min(1, 'Elegí al menos una hoja').max(50, 'Podés exportar hasta 50 hojas por vez') });
 
@@ -35,4 +35,19 @@ exportsRouter.get('/groups/:id/production/pdf', async (req, res) => {
   if (!(await groups.groupExists(db, id))) throw notFound('Grupo no encontrado');
   const data = await productionPdfData(db, id);
   send(res, await renderProduction(data), `produccion-${slug(data.groupName)}.pdf`);
+});
+
+exportsRouter.get('/groups/:id/measure-plan/pdf', async (req, res) => {
+  const { db } = ctxOf(req);
+  const id = parseUuid(req.params.id);
+  if (!(await groups.groupExists(db, id))) throw notFound('Grupo no encontrado');
+  const data = await missingPdfData(db, id);
+  send(res, await renderMissing(data), `faltantes-${slug(data.groupName)}.pdf`);
+});
+
+exportsRouter.get('/dancers/:id/garment-sheet/pdf', async (req, res) => {
+  const { db } = ctxOf(req);
+  const designId = req.query.design_id ? parseUuid(req.query.design_id) : null;
+  const data = await garmentSheetPdfData(db, parseUuid(req.params.id), parseUuid(req.query.mold_type_id), designId);
+  send(res, await renderPatternSheets([data]), `hoja-prenda-${slug(data.dancerName)}-${slug(data.moldName)}.pdf`);
 });
