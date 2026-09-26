@@ -20,6 +20,10 @@ const list = [
   dancer({ id: 'd4', name: 'Lucía Gómez', measureStatus: 'none', requiredDone: 0, size: { label: null, origin: null, suggested: null, manual: null, outOfRange: false }, garments: [] }),
 ];
 
+const rowAction = async (dancerName: string, action: string) => {
+  await userEvent.click(screen.getByRole('button', { name: `Acciones de ${dancerName}` }));
+  await userEvent.click(await screen.findByRole('menuitem', { name: action }));
+};
 const view = () => renderApp(<GroupDancers />, { route: '/groups/g1', path: '/groups/:groupId' });
 
 describe('GroupDancers', () => {
@@ -39,11 +43,8 @@ describe('GroupDancers', () => {
     expect(screen.getAllByText('Completas').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Faltan 5').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Faltan 7').length).toBeGreaterThan(0); // sin nada cargado
-    expect(screen.getAllByRole('link', { name: /Tomar medidas de Sofía Ferreyra/ }).length).toBeGreaterThan(0);
-    expect(screen.getByRole('link', { name: 'Tomar medidas del grupo' })).toHaveAttribute('href', '/groups/g1/medir');
-    expect(screen.getByRole('link', { name: /Faltantes del grupo/ })).toHaveAttribute('href', '/groups/g1/faltantes');
     expect(screen.getByTitle('Talle asignado a mano')).toHaveTextContent('T50');
-    expect(screen.getAllByText('Sin talle')).toHaveLength(1);
+    expect(screen.queryByText('Sin talle')).not.toBeInTheDocument(); // sin talle es un guion, no un recuadro
     expect(screen.getByLabelText('Fuera de la tabla')).toBeInTheDocument();
   });
 
@@ -60,7 +61,7 @@ describe('GroupDancers', () => {
     api.delete.mockResolvedValue(undefined);
     view();
     await screen.findByText('Martina López');
-    await userEvent.click(screen.getAllByRole('button', { name: 'Eliminar Martina López' })[0]!);
+    await rowAction('Martina López', 'Eliminar');
     const dialog = await screen.findByRole('dialog');
     expect(dialog).toHaveTextContent('¿Borrar a Martina López?');
     expect(dialog).toHaveTextContent('Esto no se puede deshacer. Se pierden:');
@@ -77,7 +78,7 @@ describe('GroupDancers', () => {
   it('cancelar no elimina', async () => {
     view();
     await screen.findByText('Martina López');
-    await userEvent.click(screen.getAllByRole('button', { name: 'Eliminar Martina López' })[0]!);
+    await rowAction('Martina López', 'Eliminar');
     await userEvent.click(await screen.findByRole('button', { name: 'Cancelar' }));
     expect(api.delete).not.toHaveBeenCalled();
   });
@@ -114,7 +115,7 @@ describe('GroupDancers', () => {
     api.patch.mockResolvedValue({});
     view();
     await screen.findByText('Martina López');
-    await userEvent.click(screen.getAllByRole('button', { name: 'Editar Martina López' })[0]!);
+    await rowAction('Martina López', 'Editar');
     const name = await screen.findByLabelText('Nombre y apellido');
     expect(name).toHaveValue('Martina López');
     await userEvent.type(screen.getByLabelText(/Contacto/), '11 5555-1234');
@@ -148,5 +149,53 @@ describe('GroupDancers', () => {
     await userEvent.click(screen.getByRole('button', { name: /Agregar bailarina/ }));
     expect(await screen.findByRole('heading', { name: /Nueva bailarina/ })).toBeInTheDocument();
     expect(screen.getByText(/Las medidas se cargan después, en su ficha\./)).toBeInTheDocument();
+  });
+
+  describe('una pantalla más calma', () => {
+    it('un solo aviso de siguiente paso, con tomar medidas del grupo y ver faltantes', async () => {
+      view();
+      const aviso = await screen.findByRole('region', { name: 'Siguiente paso' });
+      expect(aviso).toHaveTextContent('2 bailarinas con medidas pendientes');
+      expect(within(aviso).getByRole('link', { name: 'Tomar medidas del grupo' })).toHaveAttribute('href', '/groups/g1/medir');
+      expect(within(aviso).getByRole('link', { name: 'Ver faltantes' })).toHaveAttribute('href', '/groups/g1/faltantes');
+      expect(screen.queryByRole('button', { name: /Hojas de molde en PDF/ })).not.toBeInTheDocument();
+      expect(screen.getAllByRole('button', { name: /Agregar bailarina/ })).toHaveLength(1);
+    });
+
+    it('sin pendientes el aviso desaparece', async () => {
+      api.get.mockImplementation(async () => [dancer(), dancer({ id: 'd5', name: 'Ana Sosa' })]);
+      view();
+      await screen.findByText('Martina López');
+      expect(screen.queryByRole('region', { name: 'Siguiente paso' })).not.toBeInTheDocument();
+    });
+
+    it('cada fila tiene un solo menú con tomar medidas, editar y eliminar', async () => {
+      view();
+      await userEvent.click(await screen.findByRole('button', { name: 'Acciones de Sofía Ferreyra' }));
+      const items = await screen.findAllByRole('menuitem');
+      expect(items.map((i) => i.textContent)).toEqual(['Tomar medidas', 'Editar', 'Eliminar']);
+      expect(screen.getByRole('menuitem', { name: 'Tomar medidas' })).toHaveAttribute('href', '/dancers/d2/medir?volver=%2Fgroups%2Fg1');
+      expect(screen.queryByRole('button', { name: 'Editar Sofía Ferreyra' })).not.toBeInTheDocument();
+    });
+
+    it('las columnas de talle y vestuario aparecen solo cuando hay algo que mostrar', async () => {
+      const bare = (id: string, name: string) => dancer({ id, name, garments: [], size: { label: null, origin: null, suggested: null, manual: null, outOfRange: false }, measureStatus: 'none', requiredDone: 0 });
+      api.get.mockImplementation(async () => [bare('x1', 'Amira'), bare('x2', 'Camila')]);
+      view();
+      await screen.findByText('Amira');
+      expect(screen.queryByText('Vestuario')).not.toBeInTheDocument();
+      expect(screen.queryByText('Talle')).not.toBeInTheDocument();
+      expect(screen.getByText('Medidas')).toBeInTheDocument();
+    });
+
+    it('permite filtrar por prenda cuando hay vestuario asignado', async () => {
+      view();
+      await screen.findByText('Martina López');
+      const chip = screen.getByRole('button', { name: /^Pantalón \d/ });
+      await userEvent.click(chip);
+      expect(chip).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.queryByText('Sofía Ferreyra')).not.toBeInTheDocument();
+      expect(screen.getByText('Martina López')).toBeInTheDocument();
+    });
   });
 });

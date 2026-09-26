@@ -169,11 +169,11 @@ body { font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; 
   .avatar { width: 38px; height: 38px; border-radius: 999px; background: #EAE3D8; display: flex; align-items: center; justify-content: center; font: 600 13px var(--hz-font-sans); color: var(--hz-ink-2); }
 }
 @include media-breakpoint-up(lg) {
-  .hz-row { grid-template-columns: 40px minmax(0, 2fr) minmax(0, 1.4fr) 140px minmax(0, 1.6fr) 96px; .vest { display: block; } }
+  .hz-row { grid-template-columns: var(--hz-cols, 40px minmax(0, 2fr) minmax(0, 1.4fr) 140px minmax(0, 1.6fr) 48px); .vest { display: block; } }
 }
 .hz-thead { display: none; }
 @include media-breakpoint-up(lg) {
-  .hz-thead { display: grid; grid-template-columns: 40px minmax(0, 2fr) minmax(0, 1.4fr) 140px minmax(0, 1.6fr) 96px; gap: 12px; padding: 12px 16px; background: var(--hz-surface-base); font: 600 12px var(--hz-font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--hz-ink-2); }
+  .hz-thead { display: grid; grid-template-columns: var(--hz-cols, 40px minmax(0, 2fr) minmax(0, 1.4fr) 140px minmax(0, 1.6fr) 48px); gap: 12px; padding: 12px 16px; background: var(--hz-surface-base); font: 600 12px var(--hz-font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--hz-ink-2); }
 }
 
 /* ---------- Estados de datos ---------- */
@@ -499,3 +499,34 @@ body { font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; 
   &:focus { outline: none; border-style: solid; border-color: var(--hz-primary); background: var(--hz-surface-float); box-shadow: var(--hz-focus-ring); }
   &.error { border: 2px solid var(--hz-danger); background: var(--hz-danger-bg); color: var(--hz-danger); }
   &.saving { opacity: .6; } }
+
+// Grupo: lista más calma
+.hz-status.quiet { color: var(--hz-ink-2); i { color: var(--hz-success); } }
+.hz-row { position: relative; cursor: pointer;
+  .who a { text-decoration: none; &::after { content: ''; position: absolute; inset: 0; } &:focus-visible { outline: none; &::after { box-shadow: inset var(--hz-focus-ring); border-radius: var(--hz-radius-md); } } }
+  .who .sub { font-size: 13px; display: flex; flex-wrap: wrap; gap: 0 4px; align-items: baseline; }
+  .hz-row-menu { position: relative; z-index: 2; justify-self: end; } }
+.hz-menu-wrap { display: inline-block; }
+.hz-menu-btn { background: transparent; }
+.hz-menu { min-width: 220px; padding: 6px; border: 1px solid var(--hz-line); border-radius: var(--hz-radius-lg); background: var(--hz-surface-float); box-shadow: var(--hz-shadow-3);
+  .dropdown-item { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: var(--hz-radius-md); font: 500 15px var(--hz-font-sans); color: var(--hz-ink); i { color: var(--hz-ink-2); }
+    &:hover, &:focus { background: var(--hz-surface-base); color: var(--hz-ink); } &.danger, &.danger i { color: var(--hz-danger); } } }
+.hz-nextstep { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 16px; margin-bottom: 16px; border-radius: var(--hz-radius-lg); background: var(--hz-warning-bg); border: 1px solid var(--hz-warning-border); color: #6B4E0A;
+  > i { font-size: 20px; color: var(--hz-warning); } .hz-btn { min-height: 44px; }
+  .hz-nextstep-link { color: var(--hz-primary); font: 500 14px var(--hz-font-sans); text-decoration: underline; text-underline-offset: 3px; padding: 10px 4px; } }
+// "Agregar bailarina": botón en escritorio, flotante en celular
+.hz-add-label { @include media-breakpoint-down(lg) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+@include media-breakpoint-down(lg) {
+  .hz-add { position: fixed; z-index: 1040; right: 16px; bottom: calc(#{$hz-bottom-nav-h} + 16px + env(safe-area-inset-bottom)); width: 56px; height: 56px; padding: 0; justify-content: center; border-radius: 999px; box-shadow: var(--hz-shadow-3); i { font-size: 22px; margin: 0; } }
+}
+@include media-breakpoint-down(lg) { .hz-list { margin-bottom: 88px; } }
+.hz-row .hz-row-menu.show { z-index: 6; }
+
+// Grupo en celular: todo cabe sin pelear por el espacio
+.hz-header-row:has(.hz-header-actions > .hz-menu-wrap:only-child) { flex-wrap: nowrap; align-items: flex-start; }
+@include media-breakpoint-down(md) {
+  .hz-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100%; margin-right: -16px; padding-right: 16px; &::-webkit-scrollbar { display: none; } .hz-pill { flex: none; } }
+  .hz-nextstep { gap: 8px 10px; padding: 12px; > i { display: none; } > .flex-grow-1 { flex-basis: 100%; font-size: 15px; }
+    .hz-btn { flex: 1; justify-content: center; } .hz-nextstep-link { padding: 10px 6px; } }
+  .hz-row .who .sub { flex-wrap: nowrap; > .hz-status { flex: none; } > .text-secondary { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } }
+}

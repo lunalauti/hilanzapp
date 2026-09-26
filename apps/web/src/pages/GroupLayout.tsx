@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom';
+import { BatchPdfModal } from '../components/BatchPdfModal';
 import { GroupFormModal } from '../components/GroupFormModal';
+import { ActionMenu } from '../components/ui/ActionMenu';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { PageHeader } from '../components/ui/PageHeader';
 import { useToast } from '../components/ui/Toast';
@@ -17,6 +19,7 @@ export function GroupLayout() {
   const [renaming, setRenaming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [pdf, setPdf] = useState(false);
   const navigate = useNavigate();
   const qc = useQueryClient();
   const toast = useToast();
@@ -43,21 +46,25 @@ export function GroupLayout() {
       <PageHeader
         crumbs={[{ label: 'Grupos', to: '/' }, { label: group.name }]}
         title={group.name}
-        subtitle={`${plural(group.dancerCount, 'bailarina', 'bailarinas')} · ${group.partial + group.none > 0 ? `${group.partial + group.none} con faltantes` : 'todas completas'}`}
+        subtitle={`${plural(group.dancerCount, 'bailarina', 'bailarinas')} · ${group.complete} ${group.complete === 1 ? 'completa' : 'completas'}`}
         actions={
-          <>
-            <button type="button" className="hz-icon-btn" aria-label="Renombrar grupo" onClick={() => setRenaming(true)}><i className="bi bi-pencil" /></button>
-            <button type="button" className="hz-icon-btn danger" aria-label="Eliminar grupo" onClick={() => setDeleting(true)}><i className="bi bi-trash3" /></button>
-          </>
+          <ActionMenu
+            label="Más acciones del grupo"
+            actions={[
+              { label: 'Hojas de molde en PDF', icon: 'bi-file-earmark-pdf', onSelect: () => setPdf(true) },
+              { label: 'Renombrar grupo', icon: 'bi-pencil', onSelect: () => setRenaming(true) },
+              { label: 'Eliminar grupo', icon: 'bi-trash3', danger: true, onSelect: () => setDeleting(true) },
+            ]}
+          />
         }
       />
       <div className="hz-tabs" role="tablist" aria-label="Secciones del grupo">
         <NavLink end to={`/groups/${groupId}`} role="tab" className={({ isActive }) => `hz-tab d-flex align-items-center justify-content-center text-decoration-none ${isActive ? 'active' : ''}`}>Bailarinas</NavLink>
         <NavLink to={`/groups/${groupId}/production`} role="tab" className={({ isActive }) => `hz-tab d-flex align-items-center justify-content-center text-decoration-none ${isActive ? 'active' : ''}`}>Producción</NavLink>
-        <NavLink to={`/groups/${groupId}/faltantes`} role="tab" className={({ isActive }) => `hz-tab d-flex align-items-center justify-content-center text-decoration-none ${isActive ? 'active' : ''}`}>Faltantes</NavLink>
       </div>
       <Outlet context={{ group }} />
 
+      <BatchPdfModal show={pdf} groupId={groupId} onClose={() => setPdf(false)} />
       <GroupFormModal show={renaming} group={group} onClose={() => setRenaming(false)} />
       <ConfirmDialog
         show={deleting}
