@@ -90,19 +90,34 @@ export async function groupCosts(db: SupabaseClient, groupId: string, designId?:
   };
 }
 
-/** Lista de materiales sin precios, para pasarle al proveedor: cuánto material lleva cada prenda. */
+interface MaterialsUnit { designId: string; moldTypeId: string; moldName: string; hasPattern: boolean; designName: string; size: string | null }
+
+/**
+ * Lista de materiales sin precios, para pasarle al proveedor: cuánto material lleva cada prenda.
+ * A diferencia de `groupCosts`, cuenta también a las bailarinas sin medidas todavía (solo nombre y edad):
+ * para esas usa la regla general de consumo o, si no hay, el promedio de las reglas por talle, así se puede
+ * comprar material antes de terminar de tomar medidas.
+ */
 export async function materialsListPdfData(db: SupabaseClient, groupId: string, designId?: string | null, garmentId?: string | null): Promise<MaterialsListPdfData> {
   const group = unwrap(await db.from('groups').select('name').eq('id', groupId).maybeSingle()) as { name: string } | null;
   if (!group) throw notFound('Grupo no encontrado');
 
-  const { units } = await groupUnits(db, groupId, designId ?? null);
+  const dancers = await groupDancersView(db, groupId);
+  const units: MaterialsUnit[] = [];
+  for (const d of dancers) {
+    for (const g of d.garments) {
+      if (!g.designId) continue;
+      if (designId && g.designId !== designId) continue;
+      units.push({ designId: g.designId, moldTypeId: g.moldTypeId, moldName: g.moldName, hasPattern: g.hasPattern, designName: g.designName ?? '', size: g.sizeLabel });
+    }
+  }
   const designIds = [...new Set(units.map((u) => u.designId))];
   const { garments, rules } = designIds.length ? await repo.rulesForDesign(db) : { garments: [], rules: [] };
   const garmentOf = new Map(garments.filter((g) => designIds.includes(g.design_id)).map((g) => [`${g.design_id}|${g.mold_type_id}`, g]));
   const materials = await repo.listMaterials(db);
   const matById = new Map(materials.map((m) => [m.id, m]));
 
-  const perGarment = new Map<string, { moldName: string; garment: repo.GarmentRef | undefined; units: Unit[] }>();
+  const perGarment = new Map<string, { moldName: string; garment: repo.GarmentRef | undefined; units: MaterialsUnit[] }>();
   for (const u of units) {
     const key = `${u.designId}|${u.moldTypeId}`;
     const garment = garmentOf.get(key);
@@ -117,18 +132,21 @@ export async function materialsListPdfData(db: SupabaseClient, groupId: string, 
     garments: [...perGarment.values()].map((pg) => {
       const mine = pg.garment ? rules.filter((r) => r.design_garment_id === pg.garment!.id) : [];
       const materialIds = [...new Set(mine.map((r) => r.material_id))];
+      const hasUnsized = pg.units.some((u) => !u.size);
       const materialsOut = materialIds.flatMap((mid) => {
         const m = matById.get(mid);
         if (!m) return [];
         const forMat = mine.filter((r) => r.material_id === mid);
         const general = forMat.find((r) => r.size_label === null);
         const bySize = forMat.filter((r) => r.size_label !== null);
-        const total = r3(pg.units.reduce((s, u) => s + Number((bySize.find((r) => r.size_label === u.size) ?? general)?.quantity ?? 0) * u.count, 0));
+        const bySizeAvg = bySize.length ? bySize.reduce((s, r) => s + Number(r.quantity), 0) / bySize.length : 0;
+        const estimated = general ? Number(general.quantity) : bySizeAvg;
+        const total = r3(pg.units.reduce((s, u) => s + (u.size ? Number((bySize.find((r) => r.size_label === u.size) ?? general)?.quantity ?? bySizeAvg) : estimated), 0));
         if (!total) return [];
-        const perUnit = r3(Number((general ?? bySize[0])?.quantity ?? 0));
-        return [{ name: m.name, description: m.description, unit: m.unit, perUnit, total, approx: bySize.length > 1 }];
+        const perUnit = r3(general ? Number(general.quantity) : (bySize[0] ? Number(bySize[0].quantity) : bySizeAvg));
+        return [{ name: m.name, description: m.description, unit: m.unit, perUnit, total, approx: bySize.length > 1 || hasUnsized }];
       });
-      return { moldName: pg.moldName, dancerCount: pg.units.reduce((s, u) => s + u.count, 0), materials: materialsOut };
+      return { moldName: pg.moldName, dancerCount: pg.units.length, materials: materialsOut, notes: { conos: '', observations: '' } };
     }),
   };
 }

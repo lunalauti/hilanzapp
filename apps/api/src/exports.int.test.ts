@@ -174,6 +174,36 @@ describe.skipIf(!up)('exportación a PDF (Supabase local)', () => {
       expect((await getPdf(b, `/groups/${groupId}/materials-list/pdf`)).status).toBe(404);
     });
 
+    it('cuenta también a las bailarinas sin medidas, usando la regla general como estimación', async () => {
+      const res = await A.get(`/groups/${groupId}/materials-list?design_id=${costsDesignId}`);
+      expect(res.status).toBe(200);
+      const garment = res.body.garments.find((g: { moldName: string }) => g.moldName === 'Pantalón');
+      // Martina (con medidas) + Sofía (sin medidas todavía): las dos entran en el conteo.
+      expect(garment.dancerCount).toBe(2);
+      const lycra = garment.materials.find((m: { name: string }) => m.name === 'Lycra negra');
+      expect(lycra).toMatchObject({ total: 2, approx: true });
+      expect(garment.notes).toEqual({ conos: '', observations: '' });
+      expect((await B.get(`/groups/${groupId}/materials-list?design_id=${costsDesignId}`)).status).toBe(404);
+    });
+
+    it('genera el PDF a partir de los datos editados en la vista previa, sin volver a calcular', async () => {
+      const edited = {
+        garments: [{
+          moldName: 'Pantalón', dancerCount: 2,
+          materials: [{ name: 'Lycra negra', description: 'Ancho 1,5 m', unit: 'm', perUnit: 1.5, total: 3, approx: false }],
+          notes: { conos: 'Negro x 3', observations: 'Entregar antes del viernes' },
+        }],
+      };
+      const res = await postPdf(a, `/groups/${groupId}/materials-list/pdf`, edited);
+      expect(res.status).toBe(200);
+      const { text } = await pdfText(res.body as Buffer);
+      expect(text).toContain('Total: 3 m');
+      expect(text).not.toContain('aprox.');
+      expect(text).toContain('Conos de hilo color: Negro x 3');
+      expect(text).toContain('Observaciones: Entregar antes del viernes');
+      expect((await postPdf(b, `/groups/${groupId}/materials-list/pdf`, edited)).status).toBe(404);
+    });
+
     it('el presupuesto de confección solo trae mano de obra, sin datos de materiales', async () => {
       const res = await getPdf(a, `/groups/${groupId}/labor-budget/pdf?design_id=${costsDesignId}`);
       expect(res.status).toBe(200);

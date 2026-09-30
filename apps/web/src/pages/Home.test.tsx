@@ -11,7 +11,7 @@ import { Home } from './Home';
 const group = (over = {}) => ({ id: 'g1', name: 'Ágata', created_at: '', dancerCount: 12, complete: 9, partial: 1, none: 2, ...over });
 
 describe('Home', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => { vi.clearAllMocks(); localStorage.clear(); });
 
   it('lista los grupos con conteos y avance', async () => {
     api.get.mockResolvedValue([group(), group({ id: 'g2', name: 'Jade', dancerCount: 14, complete: 14, partial: 0, none: 0 })]);
@@ -106,6 +106,51 @@ describe('Home', () => {
       await userEvent.click(screen.getByRole('button', { name: /Ver archivados/ }));
       expect(await screen.findByText('Jade')).toBeInTheDocument();
       expect(screen.getByText('Archivado')).toBeInTheDocument();
+    });
+
+    it('permite colapsar y volver a expandir los grupos de una categoría', async () => {
+      api.get.mockImplementation(async (p: string) => {
+        if (p === '/group-categories') return [category];
+        return [group({ category_id: 'c1' }), group({ id: 'g2', name: 'Jade', category_id: 'c1' })];
+      });
+      renderApp(<Home />);
+      const section = await screen.findByRole('region', { name: 'Temporada 2026' });
+      expect(within(section).getByText('Ágata')).toBeInTheDocument();
+      const toggle = within(section).getByRole('button', { name: /Temporada 2026/ });
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      await userEvent.click(toggle);
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(within(section).queryByText('Ágata')).not.toBeInTheDocument();
+      await userEvent.click(toggle);
+      expect(within(section).getByText('Ágata')).toBeInTheDocument();
+    });
+
+    it('archiva todos los grupos activos de una categoría desde su botón', async () => {
+      api.get.mockImplementation(async (p: string) => {
+        if (p === '/group-categories') return [category];
+        return [group({ category_id: 'c1' }), group({ id: 'g2', name: 'Jade', category_id: 'c1' })];
+      });
+      api.patch.mockResolvedValue({});
+      renderApp(<Home />);
+      const section = await screen.findByRole('region', { name: 'Temporada 2026' });
+      await userEvent.click(within(section).getByRole('button', { name: 'Archivar todos' }));
+      const dialog = await screen.findByRole('dialog');
+      expect(within(dialog).getByText('Archivar los grupos de Temporada 2026')).toBeInTheDocument();
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Archivar todos' }));
+      await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/groups/g1', { archived: true }));
+      expect(api.patch).toHaveBeenCalledWith('/groups/g2', { archived: true });
+      expect(await screen.findByText('2 grupos archivados en Temporada 2026')).toBeInTheDocument();
+    });
+
+    it('no ofrece archivar todos si ya están todos archivados', async () => {
+      api.get.mockImplementation(async (p: string) => {
+        if (p === '/group-categories') return [category];
+        return [group({ category_id: 'c1', archived_at: '2026-01-01' })];
+      });
+      renderApp(<Home />);
+      await userEvent.click(await screen.findByRole('button', { name: /Ver archivados/ }));
+      const section = await screen.findByRole('region', { name: 'Temporada 2026' });
+      expect(within(section).queryByRole('button', { name: 'Archivar todos' })).not.toBeInTheDocument();
     });
   });
 });

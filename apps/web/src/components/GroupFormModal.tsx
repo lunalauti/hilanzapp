@@ -43,7 +43,7 @@ export function GroupFormModal({ show, group, onClose, onSaved }: { show: boolea
   return (
     <Modal show={show} onHide={onClose} centered>
       <form onSubmit={submit} noValidate>
-        <Modal.Header closeButton><Modal.Title as="h2" className="h4">{group ? 'Renombrar grupo' : 'Nuevo grupo'}</Modal.Title></Modal.Header>
+        <Modal.Header closeButton><Modal.Title as="h2" className="h4">{group ? 'Editar grupo' : 'Nuevo grupo'}</Modal.Title></Modal.Header>
         <Modal.Body className="d-flex flex-column gap-3">
           <div className="d-flex flex-column gap-1">
             <label htmlFor="group-name" className="hz-label">Nombre del grupo</label>

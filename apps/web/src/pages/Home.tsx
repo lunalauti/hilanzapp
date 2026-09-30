@@ -1,15 +1,28 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { SetupBanner } from '../components/SetupBanner';
 import { GroupCategoryModal } from '../components/GroupCategoryModal';
 import { GroupFormModal } from '../components/GroupFormModal';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { EmptyState, ErrorState, Loading } from '../components/ui/States';
+import { useToast } from '../components/ui/Toast';
 import { PageHeader } from '../components/ui/PageHeader';
-import { useGroupCategories, useGroups } from '../lib/queries';
+import { api } from '../lib/apiClient';
+import { keys, useGroupCategories, useGroups } from '../lib/queries';
 import { plural } from '../lib/format';
 import type { Group } from '../lib/types';
 
 const NO_CATEGORY = '__sin_categoria__';
+const COLLAPSE_KEY = 'hz-home-collapsed-categories';
+
+function loadCollapsed(): Set<string> {
+  try { return new Set(JSON.parse(localStorage.getItem(COLLAPSE_KEY) ?? '[]') as string[]); }
+  catch { return new Set(); }
+}
+function saveCollapsed(s: Set<string>) {
+  try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...s])); } catch { /* modo privado o storage bloqueado: se ignora */ }
+}
 
 function GroupCard({ g }: { g: Group }) {
   const donePct = g.dancerCount ? Math.round((g.complete / g.dancerCount) * 100) : 0;
@@ -31,6 +44,36 @@ function GroupCard({ g }: { g: Group }) {
   );
 }
 
+function CategorySection({ id, name, items, onArchiveAll }: { id: string; name: string; items: Group[]; onArchiveAll?: (id: string, name: string, items: Group[]) => void }) {
+  const [collapsedSet, setCollapsedSet] = useState(loadCollapsed);
+  const collapsed = collapsedSet.has(id);
+  const activeCount = items.filter((g) => !g.archived_at).length;
+
+  function toggle() {
+    setCollapsedSet((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      saveCollapsed(next);
+      return next;
+    });
+  }
+
+  return (
+    <section className="hz-group-category" aria-label={name}>
+      <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <button type="button" className="hz-category-toggle" aria-expanded={!collapsed} onClick={toggle}>
+          <i className={`bi ${collapsed ? 'bi-chevron-right' : 'bi-chevron-down'}`} aria-hidden />
+          <h2 className="hz-group-category-title mb-0">{name}<span className="small text-secondary fw-normal">{plural(items.length, 'grupo', 'grupos')}</span></h2>
+        </button>
+        {onArchiveAll && activeCount > 0 && (
+          <button type="button" className="hz-btn" onClick={() => onArchiveAll(id, name, items)}><i className="bi bi-archive" />Archivar todos</button>
+        )}
+      </div>
+      {!collapsed && <div className="hz-grid">{items.map((g) => <GroupCard key={g.id} g={g} />)}</div>}
+    </section>
+  );
+}
+
 export function Home() {
   const [showArchived, setShowArchived] = useState(false);
   const { data: groups, isLoading, error, refetch } = useGroups(showArchived);
@@ -38,6 +81,10 @@ export function Home() {
   const [query, setQuery] = useState('');
   const [creating, setCreating] = useState(false);
   const [managingCategories, setManagingCategories] = useState(false);
+  const [archivingCategory, setArchivingCategory] = useState<{ id: string; name: string; items: Group[] } | null>(null);
+  const [archivingBusy, setArchivingBusy] = useState(false);
+  const qc = useQueryClient();
+  const toast = useToast();
 
   const filtered = useMemo(() => (groups ?? []).filter((g) => g.name.toLowerCase().includes(query.trim().toLowerCase())), [groups, query]);
   const dancers = (groups ?? []).reduce((n, g) => n + g.dancerCount, 0);
@@ -52,6 +99,20 @@ export function Home() {
     return map;
   }, [filtered]);
   const hasCategories = (categories.data?.length ?? 0) > 0;
+
+  async function archiveCategory() {
+    if (!archivingCategory) return;
+    const active = archivingCategory.items.filter((g) => !g.archived_at);
+    setArchivingBusy(true);
+    try {
+      await Promise.all(active.map((g) => api.patch(`/groups/${g.id}`, { archived: true })));
+      await qc.invalidateQueries({ queryKey: keys.groups });
+      toast.show(`${plural(active.length, 'grupo archivado', 'grupos archivados')} en ${archivingCategory.name}`);
+      setArchivingCategory(null);
+    } finally {
+      setArchivingBusy(false);
+    }
+  }
 
   return (
     <>
@@ -100,18 +161,10 @@ export function Home() {
               {categories.data!.map((c) => {
                 const items = byCategory.get(c.id);
                 if (!items?.length) return null;
-                return (
-                  <section key={c.id} className="hz-group-category" aria-label={c.name}>
-                    <h2 className="hz-group-category-title">{c.name}<span className="small text-secondary fw-normal">{plural(items.length, 'grupo', 'grupos')}</span></h2>
-                    <div className="hz-grid">{items.map((g) => <GroupCard key={g.id} g={g} />)}</div>
-                  </section>
-                );
+                return <CategorySection key={c.id} id={c.id} name={c.name} items={items} onArchiveAll={(id, name, catItems) => setArchivingCategory({ id, name, items: catItems })} />;
               })}
               {byCategory.get(NO_CATEGORY)?.length ? (
-                <section className="hz-group-category" aria-label="Sin categoría">
-                  <h2 className="hz-group-category-title">Sin categoría</h2>
-                  <div className="hz-grid">{byCategory.get(NO_CATEGORY)!.map((g) => <GroupCard key={g.id} g={g} />)}</div>
-                </section>
+                <CategorySection id={NO_CATEGORY} name="Sin categoría" items={byCategory.get(NO_CATEGORY)!} />
               ) : null}
             </>
           )}
@@ -120,6 +173,16 @@ export function Home() {
 
       <GroupFormModal show={creating} onClose={() => setCreating(false)} />
       <GroupCategoryModal show={managingCategories} onClose={() => setManagingCategories(false)} />
+      <ConfirmDialog
+        show={archivingCategory !== null}
+        title={`Archivar los grupos de ${archivingCategory?.name ?? ''}`}
+        confirmLabel="Archivar todos"
+        busyLabel="Archivando…"
+        busy={archivingBusy}
+        onCancel={() => setArchivingCategory(null)}
+        onConfirm={() => void archiveCategory()}
+        body={<p className="mb-0">Se van a archivar {plural(archivingCategory?.items.filter((g) => !g.archived_at).length ?? 0, 'grupo', 'grupos')} de esta categoría. Podés desarchivarlos de a uno después, desde cada grupo.</p>}
+      />
     </>
   );
 }

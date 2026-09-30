@@ -126,6 +126,9 @@ export interface Costs {
   consumption: { materialId: string; name: string; unit: string; byGarment: { designName: string; moldName: string; hasPattern?: boolean; sizes: { label: string; quantity: number }[] }[] }[];
 }
 export interface ConsumptionRule { id: string; designGarmentId: string; designId: string; designName: string; moldTypeId: string; moldName: string; materialId: string; sizeLabel: string | null; quantity: number }
+export interface MaterialsListLine { name: string; description: string | null; unit: string; perUnit: number; total: number; approx: boolean }
+export interface MaterialsListGarment { moldName: string; dancerCount: number; materials: MaterialsListLine[]; notes: { conos: string; observations: string } }
+export interface MaterialsList { groupName: string; generatedAt: string; garments: MaterialsListGarment[] }
 export interface StockMovement { id: string; delta: number; reason: 'manual' | 'production'; note: string | null; groupId: string | null; designId: string | null; createdAt: string }
 export interface Stats {
   groups: number; dancers: number; totalCost: number;

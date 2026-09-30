@@ -66,7 +66,7 @@ export function GroupLayout() {
             label="Más acciones del grupo"
             actions={[
               { label: 'Hojas de molde en PDF', icon: 'bi-file-earmark-pdf', onSelect: () => setPdf(true) },
-              { label: 'Renombrar grupo', icon: 'bi-pencil', onSelect: () => setRenaming(true) },
+              { label: 'Editar grupo', icon: 'bi-pencil', onSelect: () => setRenaming(true) },
               { label: group.archived_at ? 'Desarchivar grupo' : 'Archivar grupo', icon: group.archived_at ? 'bi-box-arrow-up' : 'bi-archive', onSelect: () => void toggleArchive() },
               { label: 'Eliminar grupo', icon: 'bi-trash3', danger: true, onSelect: () => setDeleting(true) },
             ]}

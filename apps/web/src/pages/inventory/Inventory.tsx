@@ -13,6 +13,7 @@ import { useCosts, useDesigns, useGroups, useInvalidateInventory, useMaterials, 
 import type { Material, MaterialCostRow } from '../../lib/types';
 import { ConsumptionModal } from './ConsumptionModal';
 import { MaterialModal } from './MaterialModal';
+import { MaterialsListModal } from './MaterialsListModal';
 import { StockModal } from './StockModal';
 
 export function Inventory() {
@@ -36,7 +37,7 @@ export function Inventory() {
   const [deduct, setDeduct] = useState(true);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
-  const [exportingMaterials, setExportingMaterials] = useState(false);
+  const [materialsList, setMaterialsList] = useState(false);
   const [exportingLabor, setExportingLabor] = useState(false);
 
   if (materials.isLoading || groups.isLoading) return <Loading rows={4} />;
@@ -48,13 +49,6 @@ export function Inventory() {
   const top = [...rows].filter((r) => r.cost > 0).sort((a, b) => b.cost - a.cost);
   const bars = [...top.slice(0, 3), ...(top.length > 3 ? [{ name: 'Otros', cost: top.slice(3).reduce((s, r) => s + r.cost, 0) }] : [])];
   const maxNeed = [...(c?.consumption ?? [])].sort((a, b) => (rows.find((r) => r.materialId === b.materialId)?.need ?? 0) - (rows.find((r) => r.materialId === a.materialId)?.need ?? 0))[0];
-
-  async function exportMaterialsList() {
-    setExportingMaterials(true);
-    try { openPdf(await api.getBlob(`/groups/${groupId}/materials-list/pdf${designId ? `?design_id=${designId}` : ''}`), 'lista-materiales.pdf'); }
-    catch { toast.show('No pudimos generar el PDF'); }
-    finally { setExportingMaterials(false); }
-  }
 
   async function exportLaborBudget() {
     setExportingLabor(true);
@@ -122,8 +116,8 @@ export function Inventory() {
         {c && c.unassignedUnits > 0 && <div className="hz-notice warning"><i className="bi bi-info-circle" />{plural(c.unassignedUnits, 'prenda no tiene', 'prendas no tienen')} un diseño asignado y no {c.unassignedUnits === 1 ? 'entra' : 'entran'} en el cálculo.</div>}
         {costs.error && <ErrorState error={costs.error} onRetry={() => void costs.refetch()} />}
         <div className="d-flex flex-wrap gap-2 mt-3">
-          <button type="button" className="hz-btn" disabled={!c || c.totalUnits === 0 || exportingMaterials} onClick={() => void exportMaterialsList()}>
-            <i className="bi bi-file-earmark-pdf" />{exportingMaterials ? 'Generando…' : 'Lista de materiales'}
+          <button type="button" className="hz-btn" disabled={!groupId} onClick={() => setMaterialsList(true)}>
+            <i className="bi bi-file-earmark-pdf" />Lista de materiales
           </button>
           <button type="button" className="hz-btn" disabled={!c || c.totalUnits === 0 || exportingLabor} onClick={() => void exportLaborBudget()}>
             <i className="bi bi-file-earmark-pdf" />{exportingLabor ? 'Generando…' : 'Presupuesto de confección'}
@@ -226,6 +220,7 @@ export function Inventory() {
       <MaterialModal show={editing !== null} material={editing === 'new' ? undefined : (editing ?? undefined)} onClose={() => setEditing(null)} />
       <StockModal material={stockOf} onClose={() => setStockOf(null)} />
       <ConsumptionModal show={consumption} initialDesignId={designId} onClose={() => setConsumption(false)} />
+      <MaterialsListModal show={materialsList} groupId={groupId} designId={designId} onClose={() => setMaterialsList(false)} />
       <ConfirmDialog show={deleting !== null} title={`Eliminar ${deleting?.name ?? ''}`} confirmLabel="Eliminar material" busy={busy} onCancel={() => setDeleting(null)} onConfirm={() => deleting && void removeMaterial(deleting)}
         body={<p className="mb-0">Se elimina el material con su historial de movimientos y sus reglas de consumo. No se puede deshacer.</p>} />
 

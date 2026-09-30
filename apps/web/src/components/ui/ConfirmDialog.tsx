@@ -1,7 +1,7 @@
 import { Modal } from 'react-bootstrap';
 
-export function ConfirmDialog({ show, title, body, confirmLabel, busy, onConfirm, onCancel }: {
-  show: boolean; title: string; body: React.ReactNode; confirmLabel: string; busy?: boolean; onConfirm: () => void; onCancel: () => void;
+export function ConfirmDialog({ show, title, body, confirmLabel, busyLabel, busy, onConfirm, onCancel }: {
+  show: boolean; title: string; body: React.ReactNode; confirmLabel: string; busyLabel?: string; busy?: boolean; onConfirm: () => void; onCancel: () => void;
 }) {
   return (
     <Modal show={show} onHide={onCancel} centered>
@@ -9,7 +9,7 @@ export function ConfirmDialog({ show, title, body, confirmLabel, busy, onConfirm
       <Modal.Body>{body}</Modal.Body>
       <Modal.Footer>
         <button type="button" className="btn btn-outline-secondary" onClick={onCancel}>Cancelar</button>
-        <button type="button" className="btn btn-danger" onClick={onConfirm} disabled={busy}>{busy ? 'Eliminando…' : confirmLabel}</button>
+        <button type="button" className="btn btn-danger" onClick={onConfirm} disabled={busy}>{busy ? (busyLabel ?? 'Eliminando…') : confirmLabel}</button>
       </Modal.Footer>
     </Modal>
   );

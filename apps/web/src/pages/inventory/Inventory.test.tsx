@@ -5,7 +5,7 @@ import { ApiError } from '../../lib/api';
 import { formatMoney, formatQty } from '../../lib/format';
 import { renderApp } from '../../test/utils';
 
-const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), patch: vi.fn(), put: vi.fn(), delete: vi.fn(), getBlob: vi.fn() }));
+const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), patch: vi.fn(), put: vi.fn(), delete: vi.fn(), getBlob: vi.fn(), postBlob: vi.fn() }));
 vi.mock('../../lib/apiClient', () => ({ api }));
 const files = vi.hoisted(() => ({ openPdf: vi.fn() }));
 vi.mock('../../lib/files', async (orig) => ({ ...(await orig<typeof import('../../lib/files')>()), openPdf: files.openPdf }));
@@ -31,12 +31,14 @@ const costs = (over = {}) => ({
   ...over,
 });
 const stats = { groups: 2, dancers: 6, totalCost: 9100, dancersBySize: [{ label: '42', count: 6 }], garmentsBySize: [{ moldName: 'Pantalón', total: 4, sizes: [{ label: '40', count: 1 }, { label: '44', count: 3 }] }], costByGroup: [{ groupId: 'g1', name: 'Ágata', dancers: 4, units: 4, materialsCost: 5100, laborCost: 4000, totalCost: 9100 }, { groupId: 'g2', name: 'Jade', dancers: 2, units: 0, materialsCost: 0, laborCost: 0, totalCost: 0 }] };
+const materialsList = { groupName: 'Ágata', generatedAt: '2026-09-30T10:00:00Z', garments: [{ moldName: 'Pantalón', dancerCount: 5, materials: [{ name: 'Lycra negra', description: 'Ancho 1,5 m', unit: 'm', perUnit: 1, total: 5, approx: true }], notes: { conos: '', observations: '' } }] };
 
-function setup(over: { materials?: unknown[]; costs?: unknown } = {}) {
+function setup(over: { materials?: unknown[]; costs?: unknown; materialsList?: unknown } = {}) {
   api.get.mockImplementation(async (p: string) => {
     if (p === '/groups') return groups;
     if (p === '/materials') return over.materials ?? materials;
     if (p === '/designs') return designs;
+    if (p.startsWith('/groups/') && p.includes('/materials-list')) return over.materialsList ?? materialsList;
     if (p.startsWith('/groups/') && p.includes('/costs')) return over.costs ?? costs();
     if (p === '/stats') return stats;
     if (p.startsWith('/materials/') && p.endsWith('/movements')) return [{ id: 'mv1', delta: 10, reason: 'manual', note: 'Stock inicial', groupId: null, designId: null, createdAt: '2026-09-01T10:00:00Z' }, { id: 'mv2', delta: -4.1, reason: 'production', note: null, groupId: 'g1', designId: null, createdAt: '2026-09-10T10:00:00Z' }];
@@ -107,12 +109,30 @@ describe('Inventario y costos', () => {
     expect(labor).toHaveTextContent('Cuerpo base · Aurora · 4 prendas');
   });
 
-  it('exporta la lista de materiales a PDF', async () => {
-    const blob = new Blob(['%PDF-']);
-    api.getBlob.mockResolvedValue(blob);
+  it('abre la vista previa de la lista de materiales para revisarla antes de bajarla', async () => {
     setup();
     await userEvent.click(await screen.findByRole('button', { name: /Lista de materiales/ }));
-    await waitFor(() => expect(api.getBlob).toHaveBeenCalledWith('/groups/g1/materials-list/pdf'));
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).getByText('Lista de materiales')).toBeInTheDocument();
+    expect(await within(dialog).findByText('5 bailarinas')).toBeInTheDocument();
+    expect(within(dialog).getByText(/Lycra negra/)).toBeInTheDocument();
+    expect(within(dialog).getByText('estimado', { exact: false })).toBeInTheDocument();
+    expect(api.getBlob).not.toHaveBeenCalled();
+  });
+
+  it('descarga el PDF con los valores editados en la vista previa', async () => {
+    const blob = new Blob(['%PDF-']);
+    api.postBlob.mockResolvedValue(blob);
+    setup();
+    await userEvent.click(await screen.findByRole('button', { name: /Lista de materiales/ }));
+    const totalInput = await screen.findByLabelText('Lycra negra de Pantalón, total');
+    await userEvent.clear(totalInput);
+    await userEvent.type(totalInput, '6');
+    await userEvent.type(screen.getByLabelText('Observaciones'), 'Entregar antes del viernes');
+    await userEvent.click(screen.getByRole('button', { name: 'Descargar PDF' }));
+    await waitFor(() => expect(api.postBlob).toHaveBeenCalledWith('/groups/g1/materials-list/pdf', {
+      garments: [{ moldName: 'Pantalón', dancerCount: 5, materials: [{ name: 'Lycra negra', description: 'Ancho 1,5 m', unit: 'm', perUnit: 1, total: 6, approx: true }], notes: { conos: '', observations: 'Entregar antes del viernes' } }],
+    }));
     expect(files.openPdf).toHaveBeenCalledWith(blob, 'lista-materiales.pdf');
   });
 

@@ -334,7 +334,11 @@ export function renderMissing(d: MissingPdfData): Promise<Buffer> {
 
 export interface MaterialsListPdfData {
   groupName: string; generatedAt: string;
-  garments: { moldName: string; dancerCount: number; materials: { name: string; description: string | null; unit: string; perUnit: number; total: number; approx: boolean }[] }[];
+  garments: {
+    moldName: string; dancerCount: number;
+    materials: { name: string; description: string | null; unit: string; perUnit: number; total: number; approx: boolean }[];
+    notes: { conos: string; observations: string };
+  }[];
 }
 
 /** Lista de materiales sin precios, para pasarle al proveedor (inspirada en la hoja "SYNAP 2025"). */
@@ -369,9 +373,9 @@ export function renderMaterialsList(d: MaterialsListPdfData): Promise<Buffer> {
         y += 18;
       }
     }
-    doc.font('sans').fontSize(9).fillColor(INK).text('Conos de hilo color: ____________', MARGIN, y);
+    doc.font('sans').fontSize(9).fillColor(INK).text(`Conos de hilo color: ${g.notes.conos || '____________'}`, MARGIN, y);
     y += 16;
-    doc.font('sans').fontSize(9).fillColor(INK).text('Observaciones: ____________________________________', MARGIN, y);
+    doc.font('sans').fontSize(9).fillColor(INK).text(`Observaciones: ${g.notes.observations || '____________________________________'}`, MARGIN, y);
     y += 20;
     doc.lineWidth(0.5).strokeColor(LINE).moveTo(MARGIN, y - 4).lineTo(right, y - 4).stroke();
     y += 10;
