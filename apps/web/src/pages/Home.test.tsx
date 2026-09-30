@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderApp } from '../test/utils';
@@ -32,7 +32,13 @@ describe('Home', () => {
   });
 
   it('muestra el error y permite reintentar', async () => {
-    api.get.mockRejectedValueOnce(new Error('caída')).mockResolvedValueOnce([group()]);
+    let groupCalls = 0;
+    api.get.mockImplementation(async (p: string) => {
+      if (p === '/group-categories') return [];
+      groupCalls++;
+      if (groupCalls === 1) throw new Error('caída');
+      return [group()];
+    });
     renderApp(<Home />);
     expect(await screen.findByRole('alert')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Reintentar' }));
@@ -61,7 +67,45 @@ describe('Home', () => {
 
     await userEvent.type(screen.getByLabelText('Nombre del grupo'), 'Turmalina');
     await userEvent.click(screen.getByRole('button', { name: 'Guardar' }));
-    await waitFor(() => expect(api.post).toHaveBeenCalledWith('/groups', { name: 'Turmalina' }));
+    await waitFor(() => expect(api.post).toHaveBeenCalledWith('/groups', { name: 'Turmalina', categoryId: null }));
     expect(await screen.findByText('Grupo Turmalina creado')).toBeInTheDocument();
+  });
+
+  describe('categorías y archivado', () => {
+    const category = { id: 'c1', name: 'Temporada 2026', sort: 0 };
+
+    it('agrupa los grupos por categoría y deja los sin categoría aparte', async () => {
+      api.get.mockImplementation(async (p: string) => {
+        if (p === '/group-categories') return [category];
+        return [group({ category_id: 'c1' }), group({ id: 'g2', name: 'Jade' })];
+      });
+      renderApp(<Home />);
+      const section = await screen.findByRole('region', { name: 'Temporada 2026' });
+      expect(within(section).getByText('Ágata')).toBeInTheDocument();
+      expect(within(section).queryByText('Jade')).not.toBeInTheDocument();
+      const noCategory = screen.getByRole('region', { name: 'Sin categoría' });
+      expect(within(noCategory).getByText('Jade')).toBeInTheDocument();
+    });
+
+    it('sin ninguna categoría creada no se agrupa (una sola grilla)', async () => {
+      api.get.mockImplementation(async (p: string) => (p === '/group-categories' ? [] : [group(), group({ id: 'g2', name: 'Jade' })]));
+      renderApp(<Home />);
+      await screen.findByText('Ágata');
+      expect(screen.queryByRole('region', { name: 'Sin categoría' })).not.toBeInTheDocument();
+    });
+
+    it('"Ver archivados" pide la lista con archivados y los marca', async () => {
+      api.get.mockImplementation(async (p: string) => {
+        if (p === '/group-categories') return [];
+        if (p === '/groups?incluir_archivados=1') return [group(), group({ id: 'g2', name: 'Jade', archived_at: '2026-01-01' })];
+        return [group()];
+      });
+      renderApp(<Home />);
+      await screen.findByText('Ágata');
+      expect(screen.queryByText('Jade')).not.toBeInTheDocument();
+      await userEvent.click(screen.getByRole('button', { name: /Ver archivados/ }));
+      expect(await screen.findByText('Jade')).toBeInTheDocument();
+      expect(screen.getByText('Archivado')).toBeInTheDocument();
+    });
   });
 });

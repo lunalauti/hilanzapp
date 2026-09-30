@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Modal } from 'react-bootstrap';
+import {
+  DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent,
+} from '@dnd-kit/core';
+import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
+import {
+  SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { reorderById } from '../../lib/reorder';
 import type { MeasureDef, Priority } from '../../lib/types';
 
 export type GarmentCategory = 'vestido' | 'falda' | 'pantalon' | 'cuerpo' | 'manga' | 'otro';
@@ -24,6 +33,23 @@ const PRIORITIES: { id: Priority; label: string }[] = [{ id: 'pecho', label: 'Pe
 export const defaultPriority = (c: GarmentCategory): Priority => (c === 'falda' || c === 'pantalon' ? 'cadera' : 'pecho');
 const fold = (t: string) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
+/** Una medida elegida: arrastrable (mouse/táctil/teclado) y con los botones Subir/Bajar como alternativa. */
+function ChosenRow({ id, index, total, name, onMove, onRemove }: {
+  id: string; index: number; total: number; name: string; onMove: (delta: number) => void; onRemove: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.6 : 1 };
+  return (
+    <li ref={setNodeRef} style={style} className={isDragging ? 'dragging' : ''}>
+      <span className="drag" aria-label={`Reordenar ${name}`} {...attributes} {...listeners}><i className="bi bi-grip-vertical" aria-hidden="true" /></span>
+      <span className="num">{index + 1}</span><span className="flex-grow-1">{name}</span>
+      <button type="button" className="hz-icon-btn" aria-label={`Subir ${name}`} disabled={index === 0} onClick={() => onMove(-1)}><i className="bi bi-arrow-up" /></button>
+      <button type="button" className="hz-icon-btn" aria-label={`Bajar ${name}`} disabled={index === total - 1} onClick={() => onMove(1)}><i className="bi bi-arrow-down" /></button>
+      <button type="button" className="hz-icon-btn danger" aria-label={`Quitar ${name}`} onClick={onRemove}><i className="bi bi-x-lg" /></button>
+    </li>
+  );
+}
+
 /** "+ Prenda sin molde": nombre, categoría, talle según y las medidas que necesita (con orden). */
 export function PlaceholderGarmentModal({ show, initial, defs, takenNames, onClose, onSave }: {
   show: boolean; initial: CustomGarment | null; defs: MeasureDef[]; takenNames: string[]; onClose: () => void; onSave: (g: CustomGarment) => void;
@@ -36,6 +62,11 @@ export function PlaceholderGarmentModal({ show, initial, defs, takenNames, onClo
   const [manualOrder, setManualOrder] = useState(false);
   const [query, setQuery] = useState('');
   const [tried, setTried] = useState(false);
+  const [announcement, setAnnouncement] = useState('');
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   useEffect(() => {
     if (!show) return;
@@ -68,8 +99,27 @@ export function PlaceholderGarmentModal({ show, initial, defs, takenNames, onClo
     });
   }
   const remove = (id: string) => setChosen((c) => c.filter((x) => x !== id));
+  const announceMove = (id: string, position: number, total: number) =>
+    setAnnouncement(`${byId.get(id)?.name ?? id}: posición ${position} de ${total}.`);
   function move(i: number, delta: number) {
-    setChosen((c) => { const next = [...c]; const j = i + delta; if (j < 0 || j >= next.length) return c; [next[i], next[j]] = [next[j]!, next[i]!]; return next; });
+    setChosen((c) => {
+      const j = i + delta;
+      if (j < 0 || j >= c.length) return c;
+      const next = [...c];
+      [next[i], next[j]] = [next[j]!, next[i]!];
+      announceMove(next[j]!, j + 1, next.length);
+      return next;
+    });
+    setManualOrder(true);
+  }
+  function onDragEnd(e: DragEndEvent) {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    setChosen((c) => {
+      const next = reorderById(c, String(active.id), String(over.id));
+      if (next !== c) announceMove(String(active.id), next.indexOf(String(active.id)) + 1, next.length);
+      return next;
+    });
     setManualOrder(true);
   }
 
@@ -110,17 +160,17 @@ export function PlaceholderGarmentModal({ show, initial, defs, takenNames, onClo
           <fieldset className="d-flex flex-column gap-2">
             <legend className="hz-label mb-1">Medidas que necesita<span className="text-secondary fw-normal" aria-live="polite"> · {chosen.length} {chosen.length === 1 ? 'elegida' : 'elegidas'}</span></legend>
             {chosen.length > 0 && (
-              <ol className="hz-chosen" aria-label="Medidas elegidas, en orden">
-                {chosen.map((id, i) => (
-                  <li key={id}>
-                    <span className="num">{i + 1}</span><span className="flex-grow-1">{byId.get(id)?.name ?? id}</span>
-                    <button type="button" className="hz-icon-btn" aria-label={`Subir ${byId.get(id)?.name}`} disabled={i === 0} onClick={() => move(i, -1)}><i className="bi bi-arrow-up" /></button>
-                    <button type="button" className="hz-icon-btn" aria-label={`Bajar ${byId.get(id)?.name}`} disabled={i === chosen.length - 1} onClick={() => move(i, 1)}><i className="bi bi-arrow-down" /></button>
-                    <button type="button" className="hz-icon-btn danger" aria-label={`Quitar ${byId.get(id)?.name}`} onClick={() => remove(id)}><i className="bi bi-x-lg" /></button>
-                  </li>
-                ))}
-              </ol>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} modifiers={[restrictToVerticalAxis, restrictToParentElement]} onDragEnd={onDragEnd}>
+                <SortableContext items={chosen} strategy={verticalListSortingStrategy}>
+                  <ol className="hz-chosen" aria-label="Medidas elegidas, en orden">
+                    {chosen.map((id, i) => (
+                      <ChosenRow key={id} id={id} index={i} total={chosen.length} name={byId.get(id)?.name ?? id} onMove={(delta) => move(i, delta)} onRemove={() => remove(id)} />
+                    ))}
+                  </ol>
+                </SortableContext>
+              </DndContext>
             )}
+            <span className="visually-hidden" role="status" aria-live="polite">{announcement}</span>
             {chosen.length === 0 && <div className="hz-notice warning"><i className="bi bi-info-circle" />Todavía no elegiste medidas. Podés guardar igual, pero “Tomar medidas” no va a pedir nada para esta prenda.</div>}
             <label className="hz-search">
               <i className="bi bi-search" />

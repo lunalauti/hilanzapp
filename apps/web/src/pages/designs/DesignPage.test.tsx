@@ -106,4 +106,33 @@ describe('Lista de diseños', () => {
     renderApp(<DesignsList />, { route: '/disenos', path: '/disenos' });
     expect(await screen.findByText('Todavía no hay diseños')).toBeInTheDocument();
   });
+
+  it('el buscador filtra por nombre sin distinguir tildes ni mayúsculas', async () => {
+    api.get.mockImplementation(async (p: string) => (p === '/designs' ? [design, { ...design, id: 'ds2', name: 'Pantalón Oxford' }] : []));
+    renderApp(<DesignsList />, { route: '/disenos', path: '/disenos' });
+    await screen.findByRole('link', { name: /Vestido Aurora/ });
+    await userEvent.type(screen.getByLabelText('Buscar diseño'), 'AURORA');
+    expect(screen.getByRole('link', { name: /Vestido Aurora/ })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Pantalón Oxford/ })).not.toBeInTheDocument();
+  });
+
+  it('sin resultados de búsqueda muestra el texto buscado', async () => {
+    renderApp(<DesignsList />, { route: '/disenos', path: '/disenos' });
+    await screen.findByRole('link', { name: /Vestido Aurora/ });
+    await userEvent.type(screen.getByLabelText('Buscar diseño'), 'zzz');
+    expect(screen.getByText('Ningún diseño coincide')).toBeInTheDocument();
+    expect(screen.getByText('No hay diseños con “zzz”.')).toBeInTheDocument();
+  });
+
+  it('se puede cambiar a la vista en lista y se recuerda entre visitas', async () => {
+    const { unmount } = renderApp(<DesignsList />, { route: '/disenos', path: '/disenos' });
+    await screen.findByRole('link', { name: /Vestido Aurora/ });
+    await userEvent.click(screen.getByRole('button', { name: 'Vista en lista' }));
+    expect(screen.getByRole('button', { name: 'Vista en lista' })).toHaveAttribute('aria-pressed', 'true');
+    unmount();
+
+    renderApp(<DesignsList />, { route: '/disenos', path: '/disenos' });
+    await screen.findByRole('link', { name: /Vestido Aurora/ });
+    expect(screen.getByRole('button', { name: 'Vista en lista' })).toHaveAttribute('aria-pressed', 'true');
+  });
 });

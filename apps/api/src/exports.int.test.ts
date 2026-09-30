@@ -146,4 +146,44 @@ describe.skipIf(!up)('exportación a PDF (Supabase local)', () => {
     expect(text).toContain('Sofía Ferreyra');
     expect((await getPdf(b, `/groups/${groupId}/production/pdf`)).status).toBe(404);
   });
+
+  describe('lista de materiales y presupuesto de confección', () => {
+    let costsDesignId: string;
+
+    beforeAll(async () => {
+      const design = (await A.post('/designs', { name: 'Aurora Pantalón', garments: [{ moldTypeId: mold.pantalon, laborCost: 1000 }] })).body;
+      costsDesignId = design.id;
+      const materialId = (await A.post('/materials', { name: 'Lycra negra', description: 'Ancho 1,5 m', unit: 'm', unitCost: 1000, stockQty: 10 })).body.id;
+      await A.put('/consumption-rules', { designGarmentId: design.garments[0].id, materialId, rules: [{ sizeLabel: null, quantity: 1 }] });
+      await A.post(`/groups/${groupId}/design-assignment`, { designId: costsDesignId });
+    });
+
+    it('la lista de materiales sale sin precios, con cantidades y renglones en blanco', async () => {
+      const res = await getPdf(a, `/groups/${groupId}/materials-list/pdf?design_id=${costsDesignId}`);
+      expect(res.status).toBe(200);
+      expect(res.headers['content-disposition']).toContain('materiales-agata.pdf');
+      const { text } = await pdfText(res.body as Buffer);
+      expect(text).toContain('LISTA DE MATERIALES');
+      expect(text).toContain('Pantalón');
+      expect(text).toContain('Lycra negra (Ancho 1,5 m)');
+      expect(text).toContain('c/u');
+      expect(text).toContain('Total:');
+      expect(text).toContain('Conos de hilo color');
+      expect(text).toContain('Observaciones');
+      expect(text).not.toMatch(/\$/);
+      expect((await getPdf(b, `/groups/${groupId}/materials-list/pdf`)).status).toBe(404);
+    });
+
+    it('el presupuesto de confección solo trae mano de obra, sin datos de materiales', async () => {
+      const res = await getPdf(a, `/groups/${groupId}/labor-budget/pdf?design_id=${costsDesignId}`);
+      expect(res.status).toBe(200);
+      expect(res.headers['content-disposition']).toContain('presupuesto-confeccion-agata.pdf');
+      const { text } = await pdfText(res.body as Buffer);
+      expect(text).toContain('PRESUPUESTO DE CONFECCIÓN');
+      expect(text).toContain('Pantalón');
+      expect(text).toContain('TOTAL');
+      expect(text).not.toContain('Lycra');
+      expect((await getPdf(b, `/groups/${groupId}/labor-budget/pdf`)).status).toBe(404);
+    });
+  });
 });

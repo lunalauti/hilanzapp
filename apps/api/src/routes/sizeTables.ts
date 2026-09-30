@@ -14,7 +14,14 @@ const label = z.string().trim().min(1, 'El talle necesita un nombre').max(20);
 const sizeInput = z.object({ label, descriptor: z.string().trim().max(40).nullable().optional(), values: z.record(key, value).default({}) });
 const createBody = z.object({ name: z.string().trim().min(1, 'El nombre es obligatorio').max(80), ageRange, source: z.string().trim().max(80).nullable().optional(), sizes: z.array(sizeInput).max(60).default([]) });
 const patchBody = z.object({ name: z.string().trim().min(1).max(80).optional(), ageRange: ageRange.optional(), source: z.string().trim().max(80).nullable().optional() }).strict();
-const valuesBody = z.object({ changes: z.array(z.object({ sizeLabel: label, measureKey: key, value: value.nullable() })).min(1).max(1000) });
+const cellChange = z.object({
+  sizeLabel: label,
+  measureKey: key,
+  value: value.nullable().optional(),
+  minCm: value.nullable().optional(),
+  maxCm: value.nullable().optional(),
+}).refine((c) => c.minCm == null || c.maxCm == null || c.minCm <= c.maxCm, { message: 'El mínimo no puede ser mayor al máximo', path: ['minCm'] });
+const valuesBody = z.object({ changes: z.array(cellChange).min(1).max(1000) });
 const duplicateBody = z.object({ name: z.string().trim().min(1).max(80).optional() });
 
 export const sizeTablesRouter = Router();

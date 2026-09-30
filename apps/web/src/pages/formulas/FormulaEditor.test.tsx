@@ -169,4 +169,16 @@ describe('Editor de fórmulas', () => {
     expect(within(panel).queryByText('Sisa dibujada')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Guardar cambios' })).toBeEnabled();
   });
+
+  it('escribir un decimal en el operando no cambia el modo a "Otra medida"', async () => {
+    setup();
+    await screen.findByLabelText('Editor de la fórmula');
+    await userEvent.click(screen.getByRole('button', { name: 'Multiplicar' }));
+    const operando = screen.getByLabelText('Operando');
+    await userEvent.clear(operando);
+    await userEvent.type(operando, '3,14');
+    expect(screen.getByRole('button', { name: 'Número' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Otra medida' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByLabelText('Operando')).toHaveValue('3,14');
+  });
 });

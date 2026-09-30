@@ -29,6 +29,15 @@ export function sizeForMeasure(table: SizeTable, measureKey: string, value: numb
     .filter((c): c is { s: SizeRow; index: number; ref: number } => c.ref !== undefined);
   if (!candidates.length) return null;
 
+  const inRange = candidates.filter((c) => {
+    const r = c.s.ranges?.[measureKey];
+    return r !== undefined && value >= r.min && value <= r.max;
+  });
+  if (inRange.length === 1) {
+    const c = inRange[0]!;
+    return { measureKey, value, sizeLabel: c.s.label, reference: c.ref, outOfRange: null };
+  }
+
   let best = candidates[0]!;
   for (const c of candidates) {
     const d = Math.abs(c.ref - value);

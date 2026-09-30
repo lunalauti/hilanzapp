@@ -17,7 +17,7 @@ describe.skipIf(!up)('tablas de talles editables (Supabase local)', () => {
   let copyId: string;
 
   const sizing = async () => (await A.get(`/dancers/${dancerId}/sizing`)).body;
-  const cell = (grid: { sizes: { label: string; values: Record<string, { value: number; origin: string }> }[] }, label: string, key: string) =>
+  const cell = (grid: { sizes: { label: string; values: Record<string, { value: number; origin: string; min: number | null; max: number | null }> }[] }, label: string, key: string) =>
     grid.sizes.find((s) => s.label === label)?.values[key];
 
   beforeAll(async () => {
@@ -47,10 +47,10 @@ describe.skipIf(!up)('tablas de talles editables (Supabase local)', () => {
     const grid = (await A.get(`/size-tables/${table.mujeres}`)).body;
     expect(grid.sizes.map((s: { label: string }) => s.label)).toEqual(['40', '42', '44', '46', '48', '50', '52', '54', '56', '58']);
     expect(grid.measures.map((m: { key: string }) => m.key)).toEqual(expect.arrayContaining(['pecho', 'cintura', 'cadera', 'altura_tiro']));
-    expect(cell(grid, '42', 'pecho')).toEqual({ value: 90, origin: 'source' });
-    expect(cell(grid, '42', 'altura_tiro')).toEqual({ value: 26.2, origin: 'extrapolated' });
+    expect(cell(grid, '42', 'pecho')).toEqual({ value: 90, origin: 'source', min: null, max: null });
+    expect(cell(grid, '42', 'altura_tiro')).toEqual({ value: 26.2, origin: 'extrapolated', min: null, max: null });
     const teens = (await A.get(`/size-tables/${table.adolescentes}`)).body;
-    expect(cell(teens, '16', 'pecho')).toEqual({ value: 83, origin: 'interpolated' });
+    expect(cell(teens, '16', 'pecho')).toEqual({ value: 83, origin: 'interpolated', min: null, max: null });
     expect((await A.get('/size-tables/5f0c9e3e-0000-4000-8000-000000000000')).status).toBe(404);
   });
 
@@ -60,7 +60,7 @@ describe.skipIf(!up)('tablas de talles editables (Supabase local)', () => {
     copyId = res.body.id;
     expect(res.body).toMatchObject({ name: 'Mujeres — mi ajuste', ageRange: 'mujer', isActive: false, baseTableId: table.mujeres, templateKey: null });
     expect(res.body.sizes).toHaveLength(10);
-    expect(cell(res.body, '42', 'altura_tiro')).toEqual({ value: 26.2, origin: 'extrapolated' });
+    expect(cell(res.body, '42', 'altura_tiro')).toEqual({ value: 26.2, origin: 'extrapolated', min: null, max: null });
     expect((await A.post(`/size-tables/${table.mujeres}/duplicate`, {})).body.name).toBe('Mujeres — Baúl de Moda (copia)');
     expect(cell((await A.get(`/size-tables/${table.mujeres}`)).body, '42', 'pecho')?.origin).toBe('source');
   });
@@ -68,10 +68,10 @@ describe.skipIf(!up)('tablas de talles editables (Supabase local)', () => {
   it('editar celdas las marca como editadas por la usuaria y permite borrar valores', async () => {
     const res = await A.patch(`/size-tables/${copyId}/values`, { changes: [{ sizeLabel: '42', measureKey: 'pecho', value: 88 }, { sizeLabel: '42', measureKey: 'altura_tiro', value: 26.5 }, { sizeLabel: '40', measureKey: 'botamanga', value: null }] });
     expect(res.status).toBe(200);
-    expect(cell(res.body, '42', 'pecho')).toEqual({ value: 88, origin: 'user' });
-    expect(cell(res.body, '42', 'altura_tiro')).toEqual({ value: 26.5, origin: 'user' });
+    expect(cell(res.body, '42', 'pecho')).toEqual({ value: 88, origin: 'user', min: null, max: null });
+    expect(cell(res.body, '42', 'altura_tiro')).toEqual({ value: 26.5, origin: 'user', min: null, max: null });
     expect(cell(res.body, '40', 'botamanga')).toBeUndefined();
-    expect(cell((await A.get(`/size-tables/${table.mujeres}`)).body, '42', 'pecho')).toEqual({ value: 90, origin: 'source' });
+    expect(cell((await A.get(`/size-tables/${table.mujeres}`)).body, '42', 'pecho')).toEqual({ value: 90, origin: 'source', min: null, max: null });
   });
 
   it('valida las ediciones', async () => {
@@ -81,6 +81,19 @@ describe.skipIf(!up)('tablas de talles editables (Supabase local)', () => {
     expect((await edit({ sizeLabel: '99', measureKey: 'pecho', value: 5 })).body.error.code).toBe('UNKNOWN_SIZE');
     expect((await edit({ sizeLabel: '42', measureKey: 'inexistente', value: 5 })).body.error.code).toBe('UNKNOWN_MEASURE');
     expect((await A.patch(`/size-tables/${copyId}/values`, { changes: [] })).status).toBe(422);
+  });
+
+  it('carga un intervalo por celda: guarda min/max y recalcula el punto medio', async () => {
+    const res = await A.patch(`/size-tables/${copyId}/values`, { changes: [{ sizeLabel: '44', measureKey: 'pecho', minCm: 91, maxCm: 95 }] });
+    expect(res.status).toBe(200);
+    expect(cell(res.body, '44', 'pecho')).toEqual({ value: 93, origin: 'user', min: 91, max: 95 });
+    const cleared = await A.patch(`/size-tables/${copyId}/values`, { changes: [{ sizeLabel: '44', measureKey: 'pecho', value: 92, minCm: null, maxCm: null }] });
+    expect(cell(cleared.body, '44', 'pecho')).toEqual({ value: 92, origin: 'user', min: null, max: null });
+  });
+
+  it('rechaza un intervalo con mínimo mayor al máximo', async () => {
+    const res = await A.patch(`/size-tables/${copyId}/values`, { changes: [{ sizeLabel: '44', measureKey: 'pecho', minCm: 95, maxCm: 91 }] });
+    expect(res.status).toBe(422);
   });
 
   it('activar la copia cambia la sugerencia de talle sin tocar los talles manuales', async () => {
@@ -108,7 +121,7 @@ describe.skipIf(!up)('tablas de talles editables (Supabase local)', () => {
   it('agrega y quita talles de una tabla propia', async () => {
     const added = await A.post(`/size-tables/${copyId}/sizes`, { label: '60', descriptor: 'XL', values: { pecho: 130, cintura: 118, cadera: 138 } });
     expect(added.status).toBe(201);
-    expect(cell(added.body, '60', 'pecho')).toEqual({ value: 130, origin: 'user' });
+    expect(cell(added.body, '60', 'pecho')).toEqual({ value: 130, origin: 'user', min: null, max: null });
     expect(added.body.sizes.at(-1)).toMatchObject({ label: '60', descriptor: 'XL' });
     expect((await A.post(`/size-tables/${copyId}/sizes`, { label: '60' })).status).toBe(409);
     const sizeId = added.body.sizes.at(-1).id;
@@ -130,10 +143,10 @@ describe.skipIf(!up)('tablas de talles editables (Supabase local)', () => {
 
   it('restaura una tabla precargada a los valores originales', async () => {
     await A.patch(`/size-tables/${table.ninos}/values`, { changes: [{ sizeLabel: '12', measureKey: 'pecho', value: 999 }] });
-    expect(cell((await A.get(`/size-tables/${table.ninos}`)).body, '12', 'pecho')).toEqual({ value: 999, origin: 'user' });
+    expect(cell((await A.get(`/size-tables/${table.ninos}`)).body, '12', 'pecho')).toEqual({ value: 999, origin: 'user', min: null, max: null });
     const res = await A.post(`/size-tables/${table.ninos}/restore`);
     expect(res.status).toBe(200);
-    expect(cell(res.body, '12', 'pecho')).toEqual({ value: 80, origin: 'source' });
+    expect(cell(res.body, '12', 'pecho')).toEqual({ value: 80, origin: 'source', min: null, max: null });
     const own = await A.post(`/size-tables/${copyId}/restore`);
     expect(own.status).toBe(422);
     expect(own.body.error.code).toBe('NO_TEMPLATE');

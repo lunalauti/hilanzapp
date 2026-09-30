@@ -66,8 +66,8 @@ function Editor({ tableId, onPick }: { tableId: string; onPick: (id: string) => 
     finally { setBusy(false); setConfirm(null); }
   }
 
-  const save = async (sizeLabel: string, measureKey: string, value: number | null) => {
-    await api.patch(`/size-tables/${t.id}/values`, { changes: [{ sizeLabel, measureKey, value }] });
+  const save = async (sizeLabel: string, measureKey: string, patch: { value?: number | null; minCm?: number | null; maxCm?: number | null }) => {
+    await api.patch(`/size-tables/${t.id}/values`, { changes: [{ sizeLabel, measureKey, ...patch }] });
     refresh();
   };
 
@@ -111,7 +111,7 @@ function Editor({ tableId, onPick }: { tableId: string; onPick: (id: string) => 
             {t.sizes.map((s) => (
               <tr key={s.id}>
                 <th scope="row"><span className="label">{s.label}</span>{s.descriptor && <span className="small text-secondary">{s.descriptor}</span>}</th>
-                {columns.map((c) => <td key={c.key}><Cell label={s.label} measure={c.name} value={s.values[c.key]?.value} origin={s.values[c.key]?.origin} onSave={(v) => save(s.label, c.key, v)} /></td>)}
+                {columns.map((c) => <td key={c.key}><Cell label={s.label} measure={c.name} value={s.values[c.key]?.value} origin={s.values[c.key]?.origin} min={s.values[c.key]?.min ?? null} max={s.values[c.key]?.max ?? null} onSave={(patch) => save(s.label, c.key, patch)} /></td>)}
                 <td>{!isTemplate && <button type="button" className="hz-icon-btn danger" aria-label={`Quitar el talle ${s.label}`} onClick={() => setConfirm({ size: s.label, id: s.id })}><i className="bi bi-trash3" /></button>}</td>
               </tr>
             ))}

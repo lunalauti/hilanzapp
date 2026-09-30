@@ -176,6 +176,27 @@ describe('Formulario de diseño', () => {
       expect(screen.getByText(/· 1 elegida/)).toBeInTheDocument();
     });
 
+    it('cada medida elegida tiene un asa de arrastre accesible por teclado', async () => {
+      setup();
+      await openModal();
+      await userEvent.click(modal().getByRole('button', { name: /Contorno de brazo/ }));
+      const list = screen.getByRole('list', { name: 'Medidas elegidas, en orden' });
+      const handle = within(list).getByRole('button', { name: /Reordenar.*brazo/ });
+      expect(handle).toHaveAttribute('tabIndex', '0');
+      handle.focus();
+      expect(handle).toHaveFocus();
+    });
+
+    it('subir/bajar con los botones anuncia la nueva posición para lectores de pantalla', async () => {
+      setup();
+      await openModal();
+      await userEvent.click(modal().getByRole('button', { name: /Contorno de brazo/ }));
+      await userEvent.click(modal().getByRole('button', { name: /Contorno de muñeca/ }));
+      const list = screen.getByRole('list', { name: 'Medidas elegidas, en orden' });
+      await userEvent.click(within(list).getAllByRole('button', { name: /Bajar/ })[0]!);
+      expect(screen.getByText(/Contorno de brazo: posición 2 de 2\./)).toBeInTheDocument();
+    });
+
     it('rechaza un nombre vacío o repetido en el diseño', async () => {
       setup();
       await userEvent.click(await screen.findByRole('checkbox', { name: 'Pantalón' }));
@@ -206,6 +227,42 @@ describe('Formulario de diseño', () => {
       expect(screen.queryByTestId('custom-garment')).not.toBeInTheDocument();
       await userEvent.click(screen.getByRole('button', { name: 'Guardar diseño' }));
       await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/designs/ds1', expect.objectContaining({ garments: [{ moldTypeId: 'm2', laborCost: 15000 }] })));
+    });
+
+    it('vincular una prenda sin molde no cierra el formulario, y la pasa a la lista de prendas con molde', async () => {
+      const withPlaceholder = {
+        ...design,
+        garments: [...design.garments, { id: 'g9', moldTypeId: 'p1', moldKey: 'propia_evase', moldName: 'Vestido evasé', laborCost: 14000, hasPattern: false, category: 'vestido', sizePriority: 'cadera', assignedCount: 12, requiredMeasures: [{ definitionId: 'd1', key: 'brazo', name: 'Contorno de brazo' }] }],
+      };
+      const withLink = [
+        { id: 'm2', key: 'vestido', name: 'Vestido', inputs: [] },
+        { id: 'p1', key: 'propia_evase', name: 'Vestido evasé', hasPattern: false, inputs: [] },
+        { id: 'm3', key: 'vestido_a', name: 'Vestido línea A', hasPattern: true, inputs: [], formulas: [{ key: 'f1', label: 'f1' }] },
+      ];
+      api.get.mockImplementation(async (p: string) => {
+        if (p === '/catalog-options') return catalog;
+        if (p === '/mold-types') return withLink;
+        if (p === '/measure-definitions') return defs;
+        if (p.startsWith('/mold-types/p1/link-preview')) return { newMeasures: [], assignments: 12, garments: 1, dancersMissing: 0, dancerNames: [] };
+        return [];
+      });
+      api.post.mockImplementation(async (p: string) => (p === '/mold-types/p1/link' ? {} : {}));
+      const { onClose } = setup({ design: withPlaceholder as never });
+
+      const row = await screen.findByTestId('custom-garment');
+      await userEvent.click(within(row).getByRole('button', { name: 'Vincular a molde' }));
+      const linkModal = await screen.findByRole('heading', { name: /Vincular “Vestido evasé”/ });
+      await userEvent.click(screen.getByRole('radio', { name: /Vestido línea A/ }));
+      await screen.findByText(/Se conservan 12 asignaciones/);
+      await userEvent.click(screen.getByLabelText('Entiendo que no se puede deshacer'));
+      await userEvent.click(screen.getByRole('button', { name: 'Vincular' }));
+
+      await waitFor(() => expect(api.post).toHaveBeenCalledWith('/mold-types/p1/link', { targetMoldTypeId: 'm3' }));
+      expect(onClose).not.toHaveBeenCalled();
+      expect(screen.queryByRole('heading', { name: /Vincular/ })).not.toBeInTheDocument();
+      expect(screen.queryByTestId('custom-garment')).not.toBeInTheDocument();
+      expect(await screen.findByLabelText('Mano de obra de Vestido línea A')).toHaveValue('14000');
+      void linkModal;
     });
   });
 });

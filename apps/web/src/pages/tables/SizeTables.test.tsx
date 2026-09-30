@@ -16,12 +16,12 @@ const measures = [{ definitionId: 'a', key: 'pecho', name: 'Pecho' }, { definiti
 const grid = (over = {}) => ({
   ...summary[0], measures,
   sizes: [
-    { id: 's40', label: '40', descriptor: null, sort: 0, values: { pecho: { value: 86, origin: 'source' }, cintura: { value: 64, origin: 'source' }, cadera: { value: 90, origin: 'source' }, altura_tiro: { value: 25.6, origin: 'extrapolated' } } },
-    { id: 's42', label: '42', descriptor: 'M', sort: 1, values: { pecho: { value: 88.5, origin: 'user' }, cintura: { value: 68, origin: 'interpolated' }, cadera: { value: 94, origin: 'source' } } },
+    { id: 's40', label: '40', descriptor: null, sort: 0, values: { pecho: { value: 86, origin: 'source', min: null, max: null }, cintura: { value: 64, origin: 'source', min: null, max: null }, cadera: { value: 90, origin: 'source', min: null, max: null }, altura_tiro: { value: 25.6, origin: 'extrapolated', min: null, max: null } } },
+    { id: 's42', label: '42', descriptor: 'M', sort: 1, values: { pecho: { value: 88.5, origin: 'user', min: null, max: null }, cintura: { value: 68, origin: 'interpolated', min: null, max: null }, cadera: { value: 94, origin: 'source', min: null, max: null } } },
   ],
   ...over,
 });
-const own = () => ({ ...summary[1], measures: measures.slice(0, 3), sizes: [{ id: 'o1', label: 'S', descriptor: null, sort: 0, values: { pecho: { value: 84, origin: 'user' } } }] });
+const own = () => ({ ...summary[1], measures: measures.slice(0, 3), sizes: [{ id: 'o1', label: 'S', descriptor: null, sort: 0, values: { pecho: { value: 84, origin: 'user', min: null, max: null } } }] });
 
 function setup(route = '/tablas', tables: Record<string, unknown> = { t1: grid(), t2: own() }) {
   api.get.mockImplementation(async (p: string) => {
@@ -68,7 +68,7 @@ describe('Editor de tablas de talles', () => {
     expect(input).toHaveValue('86');
     await userEvent.clear(input);
     await userEvent.type(input, '87,5{Enter}');
-    await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/size-tables/t1/values', { changes: [{ sizeLabel: '40', measureKey: 'pecho', value: 87.5 }] }));
+    await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/size-tables/t1/values', { changes: [{ sizeLabel: '40', measureKey: 'pecho', value: 87.5, minCm: null, maxCm: null }] }));
   });
 
   it('rechaza valores inválidos sin llamar a la API y Escape cancela', async () => {
@@ -92,7 +92,38 @@ describe('Editor de tablas de talles', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cintura del talle 40: 64' }));
     await userEvent.clear(screen.getByLabelText('Cintura del talle 40'));
     await userEvent.keyboard('{Enter}');
-    await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/size-tables/t1/values', { changes: [{ sizeLabel: '40', measureKey: 'cintura', value: null }] }));
+    await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/size-tables/t1/values', { changes: [{ sizeLabel: '40', measureKey: 'cintura', value: null, minCm: null, maxCm: null }] }));
+  });
+
+  it('carga un intervalo para una celda y lo muestra en el grid', async () => {
+    setup();
+    await userEvent.click(await screen.findByRole('button', { name: 'Pecho del talle 40: 86' }));
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Intervalo' }));
+    await userEvent.type(screen.getByLabelText('Pecho del talle 40, mínimo'), '84');
+    await userEvent.type(screen.getByLabelText('Pecho del talle 40, máximo'), '88{Enter}');
+    await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/size-tables/t1/values', { changes: [{ sizeLabel: '40', measureKey: 'pecho', minCm: 84, maxCm: 88 }] }));
+  });
+
+  it('un intervalo con mínimo mayor al máximo se rechaza sin llamar a la API', async () => {
+    setup();
+    await userEvent.click(await screen.findByRole('button', { name: 'Pecho del talle 40: 86' }));
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Intervalo' }));
+    await userEvent.type(screen.getByLabelText('Pecho del talle 40, mínimo'), '90');
+    await userEvent.type(screen.getByLabelText('Pecho del talle 40, máximo'), '80{Enter}');
+    expect(await screen.findByRole('alert')).toHaveTextContent('El mínimo no puede ser mayor al máximo');
+    expect(api.patch).not.toHaveBeenCalled();
+  });
+
+  it('una celda con intervalo muestra el rango y permite volver a un valor único', async () => {
+    setup('/tablas', { t1: grid({ sizes: [{ id: 's40', label: '40', descriptor: null, sort: 0, values: { pecho: { value: 86, origin: 'user', min: 84, max: 88 } } }] }), t2: own() });
+    expect(await screen.findByRole('button', { name: 'Pecho del talle 40: 84–88' })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Pecho del talle 40: 84–88' }));
+    expect(screen.getByRole('checkbox', { name: 'Intervalo' })).toBeChecked();
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Intervalo' }));
+    const input = screen.getByLabelText('Pecho del talle 40');
+    await userEvent.clear(input);
+    await userEvent.type(input, '87{Enter}');
+    await waitFor(() => expect(api.patch).toHaveBeenCalledWith('/size-tables/t1/values', { changes: [{ sizeLabel: '40', measureKey: 'pecho', value: 87, minCm: null, maxCm: null }] }));
   });
 
   it('una tabla precargada se puede duplicar y restaurar, pero no eliminar ni quitarle talles', async () => {

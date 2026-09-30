@@ -92,6 +92,8 @@ export interface SizeRow {
   descriptor?: string;
   values: Record<string, number>;
   origins?: Record<string, ValueOrigin>;
+  /** Intervalo opcional por medida (cm); si está presente, `sizeForMeasure` lo prioriza sobre el punto medio. */
+  ranges?: Record<string, { min: number; max: number }>;
 }
 
 export interface SizeTable {

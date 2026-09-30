@@ -90,7 +90,45 @@ describe.skipIf(!up)('resumen de producción (Supabase local)', () => {
     expect((await A.get(`/groups/${empty}/production`)).body).toEqual({ dancerCount: 0, byGarment: [], pending: [], totalUnits: 0 });
   });
 
-  it('B no ve la producción de A', async () => {
+  it('marca un talle como patrón listo y lo puede desmarcar', async () => {
+    let p = await production();
+    const garment = p.byGarment[0];
+    const size = garment.sizes[0];
+    expect(size).toMatchObject({ patternDone: false, sewnCount: 0 });
+    expect(size.sewnTotal).toBe(size.count);
+
+    const res = await A.put(`/groups/${groupId}/production/pattern`, { moldTypeId: size.moldTypeId, sizeLabel: size.label, done: true });
+    expect(res.status).toBe(200);
+    p = res.body;
+    expect(p.byGarment.find((g: { moldKey: string }) => g.moldKey === garment.moldKey).sizes.find((s: { label: string }) => s.label === size.label)).toMatchObject({ patternDone: true });
+
+    await A.put(`/groups/${groupId}/production/pattern`, { moldTypeId: size.moldTypeId, sizeLabel: size.label, done: false });
+    p = await production();
+    expect(p.byGarment.find((g: { moldKey: string }) => g.moldKey === garment.moldKey).sizes.find((s: { label: string }) => s.label === size.label)).toMatchObject({ patternDone: false });
+  });
+
+  it('marca una prenda individual como cosida y actualiza el conteo del talle', async () => {
+    let p = await production();
+    const garment = p.byGarment[0];
+    const size = garment.sizes[0];
+    const unit = size.units[0];
+    expect(unit.sewn).toBe(false);
+
+    const res = await A.put(`/assignments/${unit.assignmentId}/sewn`, { done: true });
+    expect(res.status).toBe(200);
+    p = res.body;
+    const updated = p.byGarment.find((g: { moldKey: string }) => g.moldKey === garment.moldKey).sizes.find((s: { label: string }) => s.label === size.label);
+    expect(updated.sewnCount).toBe(1);
+    expect(updated.units.find((u: { assignmentId: string }) => u.assignmentId === unit.assignmentId).sewn).toBe(true);
+
+    await A.put(`/assignments/${unit.assignmentId}/sewn`, { done: false });
+    p = await production();
+    expect(p.byGarment.find((g: { moldKey: string }) => g.moldKey === garment.moldKey).sizes.find((s: { label: string }) => s.label === size.label).sewnCount).toBe(0);
+  });
+
+  it('B no ve ni modifica el progreso de producción de A', async () => {
     expect((await B.get(`/groups/${groupId}/production`)).status).toBe(404);
+    expect((await B.put(`/groups/${groupId}/production/pattern`, { moldTypeId: mold.pantalon, sizeLabel: '40', done: true })).status).toBe(404);
+    expect((await B.put(`/assignments/${assignment.Bea}/sewn`, { done: true })).status).toBe(404);
   });
 });

@@ -3,7 +3,7 @@ import { unwrap } from '../lib/db';
 
 export interface TableRow { id: string; name: string; age_range: string; source: string | null; is_active: boolean; base_table_id: string | null; template_key: string | null }
 export interface FullTable extends TableRow {
-  size_table_sizes: { id: string; label: string; descriptor: string | null; sort: number; size_table_values: { value_cm: number | string; origin: string; definition_id: string; measure_definitions: { key: string; name: string } | null }[] }[];
+  size_table_sizes: { id: string; label: string; descriptor: string | null; sort: number; size_table_values: { value_cm: number | string; min_cm: number | string | null; max_cm: number | string | null; origin: string; definition_id: string; measure_definitions: { key: string; name: string } | null }[] }[];
 }
 const COLS = 'id, name, age_range, source, is_active, base_table_id, template_key';
 
@@ -12,7 +12,7 @@ export async function listTables(db: SupabaseClient) {
 }
 
 export async function getFullTable(db: SupabaseClient, id: string) {
-  return unwrap(await db.from('size_tables').select(`${COLS}, size_table_sizes(id, label, descriptor, sort, size_table_values(value_cm, origin, definition_id, measure_definitions(key, name)))`).eq('id', id).maybeSingle()) as unknown as FullTable | null;
+  return unwrap(await db.from('size_tables').select(`${COLS}, size_table_sizes(id, label, descriptor, sort, size_table_values(value_cm, min_cm, max_cm, origin, definition_id, measure_definitions(key, name)))`).eq('id', id).maybeSingle()) as unknown as FullTable | null;
 }
 
 export async function getRow(db: SupabaseClient, id: string) {
@@ -45,7 +45,7 @@ export async function deleteSize(db: SupabaseClient, tableId: string, sizeId: st
   return (unwrap(await db.from('size_table_sizes').delete().eq('table_id', tableId).eq('id', sizeId).select('id')) as unknown[]).length > 0;
 }
 
-export async function upsertValues(db: SupabaseClient, rows: { owner_id: string; size_id: string; definition_id: string; value_cm: number; origin: string }[]) {
+export async function upsertValues(db: SupabaseClient, rows: { owner_id: string; size_id: string; definition_id: string; value_cm: number; min_cm?: number | null; max_cm?: number | null; origin: string }[]) {
   if (rows.length) unwrap(await db.from('size_table_values').upsert(rows, { onConflict: 'size_id,definition_id' }));
 }
 

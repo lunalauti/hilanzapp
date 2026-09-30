@@ -134,7 +134,11 @@ function Editor({ mold, onCreated }: { mold: Mold; onCreated: (id: string) => vo
 
   const removeFormula = () => { if (current) { setDraft((d) => d.filter((f) => f.key !== current.key)); setSelected(''); } };
   const original = current ? savedByKey.get(current.key)?.original : null;
-  const operandIsRef = current?.operandB !== undefined && current.operandB !== '' && !/^\d+([.,]\d+)?$/.test(current.operandB) && !/^\d+\/\d+$/.test(current.operandB);
+  // Acepta un número "en construcción" (ej. "3," antes de completar "3,14") para no saltar al modo
+  // "Otra medida" mientras se está tipeando un decimal.
+  const NUMERIC_WIP = /^\d+([.,]\d*)?$/;
+  const FRACTION = /^\d+\/\d+$/;
+  const operandIsRef = current?.operandB !== undefined && current.operandB !== '' && !NUMERIC_WIP.test(current.operandB) && !FRACTION.test(current.operandB);
   const step = (field: 'operandB' | 'adjustmentCm', delta: number) => {
     if (!current) return;
     if (field === 'adjustmentCm') update({ adjustmentCm: Math.round(((current.adjustmentCm ?? 0) + delta) * 100) / 100 });

@@ -5,8 +5,10 @@ import { ApiError } from '../../lib/api';
 import { formatMoney, formatQty } from '../../lib/format';
 import { renderApp } from '../../test/utils';
 
-const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), patch: vi.fn(), put: vi.fn(), delete: vi.fn() }));
+const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), patch: vi.fn(), put: vi.fn(), delete: vi.fn(), getBlob: vi.fn() }));
 vi.mock('../../lib/apiClient', () => ({ api }));
+const files = vi.hoisted(() => ({ openPdf: vi.fn() }));
+vi.mock('../../lib/files', async (orig) => ({ ...(await orig<typeof import('../../lib/files')>()), openPdf: files.openPdf }));
 
 import { Inventory } from './Inventory';
 
@@ -22,7 +24,10 @@ const costs = (over = {}) => ({
     { materialId: 'm1', name: 'Lycra negra', description: 'Ancho 1,5 m', unit: 'm', unitCost: 1000, stock: 10, need: 4.1, remaining: 5.9, shortfall: 0, cost: 4100 },
     { materialId: 'm2', name: 'Tul ilusión', description: null, unit: 'm', unitCost: 500, stock: 1.5, need: 2, remaining: -0.5, shortfall: 0.5, cost: 1000 },
   ],
-  perGarment: [], consumption: [{ materialId: 'm1', name: 'Lycra negra', unit: 'm', byGarment: [{ designName: 'Aurora', moldName: 'Pantalón', sizes: [{ label: '40', quantity: 0.8 }, { label: '44', quantity: 1 }, { label: '48', quantity: 1.3 }] }] }],
+  perGarment: [
+    { designId: 'ds1', designName: 'Aurora', moldTypeId: 'p', moldName: 'Pantalón', units: 4, materialsCost: 5100, laborCost: 3000 },
+    { designId: 'ds1', designName: 'Aurora', moldTypeId: 'c', moldName: 'Cuerpo base', units: 4, materialsCost: 0, laborCost: 1000 },
+  ], consumption: [{ materialId: 'm1', name: 'Lycra negra', unit: 'm', byGarment: [{ designName: 'Aurora', moldName: 'Pantalón', sizes: [{ label: '40', quantity: 0.8 }, { label: '44', quantity: 1 }, { label: '48', quantity: 1.3 }] }] }],
   ...over,
 });
 const stats = { groups: 2, dancers: 6, totalCost: 9100, dancersBySize: [{ label: '42', count: 6 }], garmentsBySize: [{ moldName: 'Pantalón', total: 4, sizes: [{ label: '40', count: 1 }, { label: '44', count: 3 }] }], costByGroup: [{ groupId: 'g1', name: 'Ágata', dancers: 4, units: 4, materialsCost: 5100, laborCost: 4000, totalCost: 9100 }, { groupId: 'g2', name: 'Jade', dancers: 2, units: 0, materialsCost: 0, laborCost: 0, totalCost: 0 }] };
@@ -91,6 +96,34 @@ describe('Inventario y costos', () => {
     const bars = screen.getByLabelText('Costo por material');
     expect(bars).toHaveTextContent('Lycra negra$ 4.100');
     expect(bars).toHaveTextContent('Tul ilusión$ 1.000');
+  });
+
+  it('desglosa la mano de obra por prenda, de mayor a menor', async () => {
+    setup();
+    const labor = await screen.findByLabelText('Mano de obra por prenda');
+    const rows = within(labor).getAllByText(/^\$/).map((n) => n.textContent);
+    expect(rows).toEqual([formatMoney(3000), formatMoney(1000)]);
+    expect(labor).toHaveTextContent('Pantalón · Aurora · 4 prendas');
+    expect(labor).toHaveTextContent('Cuerpo base · Aurora · 4 prendas');
+  });
+
+  it('exporta la lista de materiales a PDF', async () => {
+    const blob = new Blob(['%PDF-']);
+    api.getBlob.mockResolvedValue(blob);
+    setup();
+    await userEvent.click(await screen.findByRole('button', { name: /Lista de materiales/ }));
+    await waitFor(() => expect(api.getBlob).toHaveBeenCalledWith('/groups/g1/materials-list/pdf'));
+    expect(files.openPdf).toHaveBeenCalledWith(blob, 'lista-materiales.pdf');
+  });
+
+  it('exporta el presupuesto de confección a PDF, filtrado por diseño si hay uno elegido', async () => {
+    const blob = new Blob(['%PDF-']);
+    api.getBlob.mockResolvedValue(blob);
+    setup();
+    await userEvent.selectOptions(await screen.findByLabelText('Diseño'), 'ds1');
+    await userEvent.click(await screen.findByRole('button', { name: /Presupuesto de confección/ }));
+    await waitFor(() => expect(api.getBlob).toHaveBeenCalledWith('/groups/g1/labor-budget/pdf?design_id=ds1'));
+    expect(files.openPdf).toHaveBeenCalledWith(blob, 'presupuesto-confeccion.pdf');
   });
 
   it('muestra el consumo por talle del material que más se necesita', async () => {

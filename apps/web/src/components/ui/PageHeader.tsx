@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export interface Crumb { label: string; to?: string }
 
 export function PageHeader({ eyebrow, title, subtitle, crumbs, actions }: {
-  eyebrow?: string; title: string; subtitle?: ReactNode; crumbs?: Crumb[]; actions?: ReactNode;
+  eyebrow?: string; title: ReactNode; subtitle?: ReactNode; crumbs?: Crumb[]; actions?: ReactNode;
 }) {
   return (
     <header className="hz-header">

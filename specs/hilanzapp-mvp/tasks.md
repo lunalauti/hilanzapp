@@ -222,3 +222,5 @@ Convenciones: TypeScript estricto, Vitest en todos los paquetes, un test primero
 ## Extensión posterior
 
 Toma de medidas guiada y prendas sin molde: ver `specs/toma-de-medidas-y-moldes-propios/` (requirements, design, tasks).
+
+Mejoras de taller 2026 (categorías de grupo y archivado, arrastrar medidas, crear/vincular molde desde el diseño, búsqueda y vista de lista en Diseños, fix de coma/punto decimal, mano de obra visible y PDFs de materiales/presupuesto, producción en dos etapas, talles con intervalo y promedio real por talle): ver `specs/mejoras-taller-2026/` (requirements, design, tasks).

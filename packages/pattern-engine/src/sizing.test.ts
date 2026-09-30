@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultAgeRange, effectiveSize, suggestSize } from './sizing';
+import { defaultAgeRange, effectiveSize, sizeForMeasure, suggestSize } from './sizing';
 import type { SizeTable } from './types';
 
 const table: SizeTable = {
@@ -35,6 +35,40 @@ describe('suggestSize', () => {
   });
   it('informa las medidas que faltan para la prioridad', () => {
     expect(suggestSize(table, { pecho: 80 }, 'cadera')).toMatchObject({ suggested: null, missing: ['cadera'] });
+  });
+});
+
+describe('sizeForMeasure con intervalos', () => {
+  const ranged: SizeTable = {
+    name: 'T', ageRange: 'nino', source: 'test',
+    sizes: [
+      { label: '8', values: { pecho: 74 }, ranges: { pecho: { min: 70, max: 75 } } },
+      { label: '10', values: { pecho: 78 }, ranges: { pecho: { min: 76, max: 80 } } },
+    ],
+  };
+
+  it('elige el talle cuyo rango contiene el valor', () => {
+    expect(sizeForMeasure(ranged, 'pecho', 72)).toMatchObject({ sizeLabel: '8', outOfRange: null });
+    expect(sizeForMeasure(ranged, 'pecho', 78)).toMatchObject({ sizeLabel: '10', outOfRange: null });
+  });
+
+  it('con superposición de rangos, cae al criterio de punto medio más cercano', () => {
+    const overlap: SizeTable = {
+      name: 'T', ageRange: 'nino', source: 'test',
+      sizes: [
+        { label: '8', values: { pecho: 74 }, ranges: { pecho: { min: 70, max: 77 } } },
+        { label: '10', values: { pecho: 78 }, ranges: { pecho: { min: 75, max: 80 } } },
+      ],
+    };
+    expect(sizeForMeasure(overlap, 'pecho', 75.5)?.sizeLabel).toBe('8');
+  });
+
+  it('fuera de todos los rangos, cae al criterio de punto medio más cercano', () => {
+    expect(sizeForMeasure(ranged, 'pecho', 95)).toMatchObject({ sizeLabel: '10', outOfRange: 'above' });
+  });
+
+  it('tabla sin rangos usa el criterio actual (regresión)', () => {
+    expect(sizeForMeasure(table, 'pecho', 73)).toMatchObject({ sizeLabel: '8', outOfRange: null });
   });
 });
 

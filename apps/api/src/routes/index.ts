@@ -6,6 +6,7 @@ import { bootstrapUser } from '../services/bootstrap';
 import { dancersRouter } from './dancers';
 import { designsRouter } from './designs';
 import { exportsRouter } from './exports';
+import { groupCategoriesRouter } from './groupCategories';
 import { groupsRouter } from './groups';
 import { inventoryRouter } from './inventory';
 import { measurementsRouter } from './measurements';
@@ -30,6 +31,7 @@ export function apiRouter(config: Config, verify: TokenVerifier): Router {
     res.json(await bootstrapUser(db, user.id));
   });
 
+  router.use(groupCategoriesRouter);
   router.use(groupsRouter);
   router.use(dancersRouter);
   router.use(measurementsRouter);

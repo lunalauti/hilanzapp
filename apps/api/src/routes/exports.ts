@@ -5,7 +5,8 @@ import { parseUuid, uuid } from '../lib/params';
 import { ctxOf } from '../middleware/auth';
 import * as groups from '../repositories/groups';
 import { batchSheets, garmentSheetPdfData, missingPdfData, productionPdfData, sheetPdfData, slug } from '../services/exports';
-import { renderMissing, renderPatternSheets, renderProduction } from '../services/pdf';
+import { laborBudgetPdfData, materialsListPdfData } from '../services/inventory';
+import { renderLaborBudget, renderMaterialsList, renderMissing, renderPatternSheets, renderProduction } from '../services/pdf';
 
 const batchBody = z.object({ sheetIds: z.array(uuid).min(1, 'Elegí al menos una hoja').max(50, 'Podés exportar hasta 50 hojas por vez') });
 
@@ -43,6 +44,25 @@ exportsRouter.get('/groups/:id/measure-plan/pdf', async (req, res) => {
   if (!(await groups.groupExists(db, id))) throw notFound('Grupo no encontrado');
   const data = await missingPdfData(db, id);
   send(res, await renderMissing(data), `faltantes-${slug(data.groupName)}.pdf`);
+});
+
+exportsRouter.get('/groups/:id/materials-list/pdf', async (req, res) => {
+  const { db } = ctxOf(req);
+  const id = parseUuid(req.params.id);
+  if (!(await groups.groupExists(db, id))) throw notFound('Grupo no encontrado');
+  const designId = req.query.design_id ? parseUuid(req.query.design_id) : null;
+  const garmentId = req.query.garment_id ? parseUuid(req.query.garment_id) : null;
+  const data = await materialsListPdfData(db, id, designId, garmentId);
+  send(res, await renderMaterialsList(data), `materiales-${slug(data.groupName)}.pdf`);
+});
+
+exportsRouter.get('/groups/:id/labor-budget/pdf', async (req, res) => {
+  const { db } = ctxOf(req);
+  const id = parseUuid(req.params.id);
+  if (!(await groups.groupExists(db, id))) throw notFound('Grupo no encontrado');
+  const designId = req.query.design_id ? parseUuid(req.query.design_id) : null;
+  const data = await laborBudgetPdfData(db, id, designId);
+  send(res, await renderLaborBudget(data), `presupuesto-confeccion-${slug(data.groupName)}.pdf`);
 });
 
 exportsRouter.get('/dancers/:id/garment-sheet/pdf', async (req, res) => {

@@ -247,7 +247,19 @@ export function DesignFormModal({ show, design, onClose, onSaved }: { show: bool
         onSave={(g) => setCustoms((c) => (editingCustom?.index === null || editingCustom === null ? [...c, g] : c.map((x, i) => (i === editingCustom.index ? { ...g, labor: x.labor } : x))))}
       />
       {linking?.moldTypeId && (molds.data ?? []).find((m) => m.id === linking.moldTypeId) && (
-        <LinkMoldModal show mold={(molds.data ?? []).find((m) => m.id === linking.moldTypeId)!} onClose={() => setLinking(null)} onLinked={() => { setLinking(null); invalidate(design?.id); onClose(); }} />
+        <LinkMoldModal
+          show mold={(molds.data ?? []).find((m) => m.id === linking.moldTypeId)!}
+          onClose={() => setLinking(null)}
+          onLinked={(target) => {
+            const wasLinking = linking;
+            setLinking(null);
+            // La prenda pasa a tener molde: se saca de "sin molde" y se agrega a la lista de prendas con molde,
+            // sin cerrar el formulario ni perder el resto de lo que se estaba editando.
+            setCustoms((c) => c.filter((x) => x.moldTypeId !== wasLinking?.moldTypeId));
+            setGarments((g) => ({ ...g, [target.id]: wasLinking?.labor ?? '' }));
+            invalidate(design?.id);
+          }}
+        />
       )}
     </Modal>
   );

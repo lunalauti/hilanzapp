@@ -4,8 +4,11 @@ export type Priority = 'pecho' | 'cadera' | 'both';
 
 export interface Group {
   id: string; name: string; created_at: string;
+  category_id: string | null; archived_at: string | null;
   dancerCount: number; complete: number; partial: number; none: number;
 }
+
+export interface GroupCategory { id: string; name: string; sort: number }
 
 export interface SizeInfo { label: string | null; origin: SizeOrigin; suggested: string | null; manual: string | null; outOfRange: boolean }
 export interface Garment { assignmentId: string; moldKey: string; moldName: string; hasPattern?: boolean; designName: string | null; sizeLabel: string | null }
@@ -72,12 +75,20 @@ export interface Calculation {
 
 export interface MissingItem { key: string; label: string; source: string }
 
-export interface ProductionSize { label: string; count: number; dancers: string[] }
+export interface ProductionUnit { assignmentId: string; dancerId: string; dancerName: string; sewn: boolean }
+export interface ProductionSize {
+  label: string; count: number; dancers: string[];
+  moldTypeId: string | null; patternDone: boolean; sewnCount: number; sewnTotal: number; units: ProductionUnit[];
+}
 export interface Production {
   dancerCount: number; totalUnits: number;
   byGarment: { moldKey: string; moldName: string; hasPattern?: boolean; total: number; sizes: ProductionSize[] }[];
   pending: { dancerId: string; name: string; reason: 'no_assignment' | 'no_size'; moldNames: string[] }[];
 }
+
+export interface SizeAverageMeasure { key: string; name: string; value: number | null; source: 'real' | 'table'; dancerCount: number }
+export interface SizeAverage { label: string; tableName: string | null; ageRange: AgeRange | null; measures: SizeAverageMeasure[] }
+export interface SizeAverages { sizes: SizeAverage[] }
 
 export interface CatalogOption { id: string; category: 'neckline' | 'sleeve' | 'skirt'; label: string; isCustom: boolean }
 export interface MeasureDef { id: string; key: string; name: string; kind: 'body' | 'standard'; isBase: boolean; required: boolean; sort?: number; help?: string | null }
@@ -102,7 +113,7 @@ export interface SizeTableSummary { id: string; name: string; ageRange: AgeRange
 export interface SizeTableGrid {
   id: string; name: string; ageRange: AgeRange; source: string | null; isActive: boolean; baseTableId: string | null; templateKey: string | null;
   measures: { definitionId: string; key: string; name: string }[];
-  sizes: { id: string; label: string; descriptor: string | null; sort: number; values: Record<string, { value: number; origin: ValueOrigin }> }[];
+  sizes: { id: string; label: string; descriptor: string | null; sort: number; values: Record<string, { value: number; origin: ValueOrigin; min: number | null; max: number | null }> }[];
 }
 
 export interface Material { id: string; name: string; description: string | null; unit: string; unitCost: number; stockQty: number }

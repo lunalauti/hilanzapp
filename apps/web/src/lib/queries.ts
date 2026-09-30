@@ -16,7 +16,14 @@ export const keys = {
   molds: ['molds'] as const,
 };
 
-export const useGroups = () => useQuery({ queryKey: keys.groups, queryFn: () => api.get<Group[]>('/groups') });
+export const useGroups = (includeArchived = false) =>
+  useQuery({ queryKey: [...keys.groups, includeArchived], queryFn: () => api.get<Group[]>(`/groups${includeArchived ? '?incluir_archivados=1' : ''}`) });
+
+export const useGroupCategories = () => useQuery({ queryKey: ['group-categories'], queryFn: () => api.get<import('./types').GroupCategory[]>('/group-categories') });
+export function useInvalidateGroupCategories() {
+  const qc = useQueryClient();
+  return () => { void qc.invalidateQueries({ queryKey: ['group-categories'] }); void qc.invalidateQueries({ queryKey: keys.groups }); };
+}
 export const useGroupDancers = (id: string) => useQuery({ queryKey: keys.groupDancers(id), queryFn: () => api.get<GroupDancer[]>(`/groups/${id}/dancers`), enabled: Boolean(id) });
 export const useProduction = (id: string) => useQuery({ queryKey: keys.production(id), queryFn: () => api.get<Production>(`/groups/${id}/production`) });
 export const useDancer = (id: string) => useQuery({ queryKey: keys.dancer(id), queryFn: () => api.get<Dancer>(`/dancers/${id}`), enabled: Boolean(id) });

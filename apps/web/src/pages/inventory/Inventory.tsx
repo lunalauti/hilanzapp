@@ -7,6 +7,7 @@ import { EmptyState, ErrorState, Loading } from '../../components/ui/States';
 import { useToast } from '../../components/ui/Toast';
 import { ApiError } from '../../lib/api';
 import { api } from '../../lib/apiClient';
+import { openPdf } from '../../lib/files';
 import { formatMoney, formatQty, plural } from '../../lib/format';
 import { useCosts, useDesigns, useGroups, useInvalidateInventory, useMaterials, useStats } from '../../lib/queries';
 import type { Material, MaterialCostRow } from '../../lib/types';
@@ -35,6 +36,8 @@ export function Inventory() {
   const [deduct, setDeduct] = useState(true);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
+  const [exportingMaterials, setExportingMaterials] = useState(false);
+  const [exportingLabor, setExportingLabor] = useState(false);
 
   if (materials.isLoading || groups.isLoading) return <Loading rows={4} />;
   if (materials.error) return <ErrorState error={materials.error} onRetry={() => void materials.refetch()} />;
@@ -45,6 +48,20 @@ export function Inventory() {
   const top = [...rows].filter((r) => r.cost > 0).sort((a, b) => b.cost - a.cost);
   const bars = [...top.slice(0, 3), ...(top.length > 3 ? [{ name: 'Otros', cost: top.slice(3).reduce((s, r) => s + r.cost, 0) }] : [])];
   const maxNeed = [...(c?.consumption ?? [])].sort((a, b) => (rows.find((r) => r.materialId === b.materialId)?.need ?? 0) - (rows.find((r) => r.materialId === a.materialId)?.need ?? 0))[0];
+
+  async function exportMaterialsList() {
+    setExportingMaterials(true);
+    try { openPdf(await api.getBlob(`/groups/${groupId}/materials-list/pdf${designId ? `?design_id=${designId}` : ''}`), 'lista-materiales.pdf'); }
+    catch { toast.show('No pudimos generar el PDF'); }
+    finally { setExportingMaterials(false); }
+  }
+
+  async function exportLaborBudget() {
+    setExportingLabor(true);
+    try { openPdf(await api.getBlob(`/groups/${groupId}/labor-budget/pdf${designId ? `?design_id=${designId}` : ''}`), 'presupuesto-confeccion.pdf'); }
+    catch { toast.show('No pudimos generar el PDF'); }
+    finally { setExportingLabor(false); }
+  }
 
   async function confirmProduction() {
     setBusy(true); setProblem(null);
@@ -104,6 +121,14 @@ export function Inventory() {
         </div>
         {c && c.unassignedUnits > 0 && <div className="hz-notice warning"><i className="bi bi-info-circle" />{plural(c.unassignedUnits, 'prenda no tiene', 'prendas no tienen')} un diseño asignado y no {c.unassignedUnits === 1 ? 'entra' : 'entran'} en el cálculo.</div>}
         {costs.error && <ErrorState error={costs.error} onRetry={() => void costs.refetch()} />}
+        <div className="d-flex flex-wrap gap-2 mt-3">
+          <button type="button" className="hz-btn" disabled={!c || c.totalUnits === 0 || exportingMaterials} onClick={() => void exportMaterialsList()}>
+            <i className="bi bi-file-earmark-pdf" />{exportingMaterials ? 'Generando…' : 'Lista de materiales'}
+          </button>
+          <button type="button" className="hz-btn" disabled={!c || c.totalUnits === 0 || exportingLabor} onClick={() => void exportLaborBudget()}>
+            <i className="bi bi-file-earmark-pdf" />{exportingLabor ? 'Generando…' : 'Presupuesto de confección'}
+          </button>
+        </div>
       </div>
 
       {empty ? (
@@ -154,6 +179,18 @@ export function Inventory() {
                 </>
               ) : <Loading rows={1} />}
             </section>
+
+            {c && c.perGarment.length > 0 && (
+              <section className="hz-card hz-panel" aria-label="Mano de obra por prenda">
+                <span className="hz-label">Mano de obra por prenda</span>
+                {[...c.perGarment].sort((a, b) => b.laborCost - a.laborCost).map((g) => (
+                  <div key={`${g.designId}${g.moldTypeId}`} className="d-flex justify-content-between align-items-center gap-2">
+                    <span className="small text-secondary d-flex align-items-center gap-2">{g.moldName}{g.hasPattern === false && <NoPatternBadge />} · {g.designName} · {plural(g.units, 'prenda', 'prendas')}</span>
+                    <strong>{formatMoney(g.laborCost)}</strong>
+                  </div>
+                ))}
+              </section>
+            )}
 
             {bars.length > 0 && (
               <section className="hz-card hz-panel" aria-label="Costo por material">

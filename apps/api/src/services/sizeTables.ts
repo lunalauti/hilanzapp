@@ -14,7 +14,10 @@ export function gridView(t: repo.FullTable) {
     measures: [...measures.values()],
     sizes: sizes.map((s) => ({
       id: s.id, label: s.label, descriptor: s.descriptor, sort: s.sort,
-      values: Object.fromEntries(s.size_table_values.filter((v) => v.measure_definitions).map((v) => [v.measure_definitions!.key, { value: Number(v.value_cm), origin: v.origin }])),
+      values: Object.fromEntries(s.size_table_values.filter((v) => v.measure_definitions).map((v) => [
+        v.measure_definitions!.key,
+        { value: Number(v.value_cm), origin: v.origin, min: v.min_cm === null ? null : Number(v.min_cm), max: v.max_cm === null ? null : Number(v.max_cm) },
+      ])),
     })),
   };
 }
@@ -64,7 +67,9 @@ export async function duplicateTable(db: SupabaseClient, ownerId: string, source
   });
 }
 
-export async function applyChanges(db: SupabaseClient, ownerId: string, tableId: string, changes: { sizeLabel: string; measureKey: string; value: number | null }[]) {
+export async function applyChanges(db: SupabaseClient, ownerId: string, tableId: string, changes: {
+  sizeLabel: string; measureKey: string; value?: number | null; minCm?: number | null; maxCm?: number | null;
+}[]) {
   await requireTable(db, tableId);
   const [sizeIds, defs] = await Promise.all([repo.sizeIdsByLabel(db, tableId), definitions.definitionIdsByKey(db)]);
   const upserts: Parameters<typeof repo.upsertValues>[1] = [];
@@ -74,8 +79,19 @@ export async function applyChanges(db: SupabaseClient, ownerId: string, tableId:
     const definitionId = defs.get(c.measureKey);
     if (!sizeId) throw new AppError(422, 'UNKNOWN_SIZE', `El talle ${c.sizeLabel} no existe en esta tabla`);
     if (!definitionId) throw new AppError(422, 'UNKNOWN_MEASURE', `La medida "${c.measureKey}" no existe`);
-    if (c.value === null) removals.push({ sizeId, definitionId });
-    else upserts.push({ owner_id: ownerId, size_id: sizeId, definition_id: definitionId, value_cm: c.value, origin: 'user' });
+    if (c.minCm != null && c.maxCm != null) {
+      if (c.minCm > c.maxCm) throw new AppError(422, 'VALIDATION_ERROR', 'El mínimo no puede ser mayor al máximo');
+      const midpoint = Math.round(((c.minCm + c.maxCm) / 2) * 100) / 100;
+      upserts.push({ owner_id: ownerId, size_id: sizeId, definition_id: definitionId, value_cm: midpoint, min_cm: c.minCm, max_cm: c.maxCm, origin: 'user' });
+    } else if (c.minCm === null && c.maxCm === null && c.value == null) {
+      removals.push({ sizeId, definitionId });
+    } else if (c.minCm === null && c.maxCm === null) {
+      upserts.push({ owner_id: ownerId, size_id: sizeId, definition_id: definitionId, value_cm: c.value!, min_cm: null, max_cm: null, origin: 'user' });
+    } else if (c.value === null) {
+      removals.push({ sizeId, definitionId });
+    } else if (c.value != null) {
+      upserts.push({ owner_id: ownerId, size_id: sizeId, definition_id: definitionId, value_cm: c.value, origin: 'user' });
+    }
   }
   await repo.upsertValues(db, upserts);
   for (const r of removals) await repo.deleteValue(db, r.sizeId, r.definitionId);

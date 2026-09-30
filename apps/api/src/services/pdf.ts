@@ -36,6 +36,8 @@ export interface ProductionPdfData {
 
 const fmt = (n: number | null) => (n === null ? '—' : String(n).replace('.', ','));
 export const formatDate = (iso: string) => { const [y, m, d] = iso.slice(0, 10).split('-'); return `${d}/${m}/${y}`; };
+const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+export const formatMoney = (n: number) => money.format(Math.round(n));
 
 function newDoc(title: string) {
   const doc = new PDFDocument({ size: 'A4', margin: MARGIN, bufferPages: true, info: { Title: title, Producer: 'Hilanzapp' } });
@@ -328,4 +330,103 @@ export function renderMissing(d: MissingPdfData): Promise<Buffer> {
     doc.lineWidth(0.8).strokeColor(LINE).rect(MARGIN, y + 20, W, room - 20).stroke();
   }
   return finish(doc, () => `Hilanzapp · ${d.groupName} · Faltantes`);
+}
+
+export interface MaterialsListPdfData {
+  groupName: string; generatedAt: string;
+  garments: { moldName: string; dancerCount: number; materials: { name: string; description: string | null; unit: string; perUnit: number; total: number; approx: boolean }[] }[];
+}
+
+/** Lista de materiales sin precios, para pasarle al proveedor (inspirada en la hoja "SYNAP 2025"). */
+export function renderMaterialsList(d: MaterialsListPdfData): Promise<Buffer> {
+  const doc = newDoc(`Lista de materiales · ${d.groupName}`);
+  const W = doc.page.width - 2 * MARGIN;
+  const right = doc.page.width - MARGIN;
+  let y = MARGIN;
+  doc.font('bold').fontSize(8).fillColor(MUTED).text('LISTA DE MATERIALES', MARGIN, y);
+  doc.font('bold').fontSize(26).fillColor(INK).text(`Grupo ${d.groupName}`, MARGIN, y + 14, { width: W - 150 });
+  doc.font('sans').fontSize(8).fillColor(MUTED).text(`Impreso ${formatDate(d.generatedAt)}`, right - 140, y + 4, { width: 140, align: 'right' });
+  y += 58;
+  doc.lineWidth(1.5).strokeColor(INK).moveTo(MARGIN, y).lineTo(right, y).stroke();
+  y += 14;
+
+  const ensure = (h: number) => { if (y + h > doc.page.height - MARGIN - 20) { doc.addPage(); y = MARGIN; } };
+  if (d.garments.length === 0) doc.font('sans').fontSize(12).fillColor(MUTED).text('No hay prendas para esta producción.', MARGIN, y);
+  for (const g of d.garments) {
+    ensure(46 + (g.materials.length || 1) * 18 + 46);
+    doc.font('bold').fontSize(14).fillColor(INK).text(g.moldName, MARGIN, y, { continued: true });
+    doc.font('sans').fontSize(10).fillColor(MUTED).text(`   ${g.dancerCount} ${g.dancerCount === 1 ? 'bailarina' : 'bailarinas'}`);
+    y += 24;
+    if (g.materials.length === 0) {
+      doc.font('sans').fontSize(10).fillColor(MUTED).text('Cargá el consumo de materiales para esta prenda', MARGIN, y);
+      y += 20;
+    } else {
+      for (const m of g.materials) {
+        doc.font('sans').fontSize(10).fillColor(INK).text(m.description ? `${m.name} (${m.description})` : m.name, MARGIN, y, { continued: true, width: W });
+        doc.font('sans').fontSize(10).fillColor(MUTED).text(`   ${fmt(m.perUnit)} ${m.unit} c/u`);
+        y += 16;
+        doc.font('sans').fontSize(9).fillColor(MUTED).text(`Total: ${fmt(m.total)} ${m.unit}${m.approx ? ' aprox.' : ''}`, MARGIN, y);
+        y += 18;
+      }
+    }
+    doc.font('sans').fontSize(9).fillColor(INK).text('Conos de hilo color: ____________', MARGIN, y);
+    y += 16;
+    doc.font('sans').fontSize(9).fillColor(INK).text('Observaciones: ____________________________________', MARGIN, y);
+    y += 20;
+    doc.lineWidth(0.5).strokeColor(LINE).moveTo(MARGIN, y - 4).lineTo(right, y - 4).stroke();
+    y += 10;
+  }
+  return finish(doc, () => `Hilanzapp · ${d.groupName} · Lista de materiales`);
+}
+
+export interface LaborBudgetPdfData {
+  groupName: string; generatedAt: string; designName: string | null;
+  garments: { moldName: string; units: number; laborCostUnit: number; laborCostTotal: number }[];
+  total: number;
+}
+
+/** Presupuesto de confección para el cliente: solo mano de obra, sin datos de materiales. */
+export function renderLaborBudget(d: LaborBudgetPdfData): Promise<Buffer> {
+  const doc = newDoc(`Presupuesto de confección · ${d.groupName}`);
+  const W = doc.page.width - 2 * MARGIN;
+  const right = doc.page.width - MARGIN;
+  let y = MARGIN;
+  doc.font('bold').fontSize(8).fillColor(MUTED).text('PRESUPUESTO DE CONFECCIÓN', MARGIN, y);
+  doc.font('bold').fontSize(26).fillColor(INK).text(`Grupo ${d.groupName}`, MARGIN, y + 14, { width: W - 150 });
+  doc.font('sans').fontSize(10).fillColor(MUTED).text(d.designName ?? 'Todos los diseños', MARGIN, y + 48, { width: W - 150 });
+  doc.font('sans').fontSize(8).fillColor(MUTED).text(`Impreso ${formatDate(d.generatedAt)}`, right - 140, y + 4, { width: 140, align: 'right' });
+  y += 76;
+  doc.lineWidth(1.5).strokeColor(INK).moveTo(MARGIN, y).lineTo(right, y).stroke();
+  y += 12;
+
+  const cols = { prenda: MARGIN, cant: MARGIN + W * 0.46, unit: MARGIN + W * 0.64, sub: MARGIN + W * 0.82 };
+  doc.font('bold').fontSize(9).fillColor(MUTED)
+    .text('PRENDA', cols.prenda, y, { width: cols.cant - cols.prenda, lineBreak: false })
+    .text('CANT.', cols.cant, y, { width: cols.unit - cols.cant, align: 'right', lineBreak: false })
+    .text('COSTO UNIT.', cols.unit, y, { width: cols.sub - cols.unit, align: 'right', lineBreak: false })
+    .text('SUBTOTAL', cols.sub, y, { width: right - cols.sub, align: 'right', lineBreak: false });
+  y += 16;
+  doc.lineWidth(0.8).strokeColor(LINE).moveTo(MARGIN, y).lineTo(right, y).stroke();
+  y += 8;
+
+  if (d.garments.length === 0) {
+    doc.font('sans').fontSize(11).fillColor(MUTED).text('No hay mano de obra cargada para esta producción.', MARGIN, y);
+    y += 24;
+  }
+  for (const g of d.garments) {
+    if (y + 20 > doc.page.height - MARGIN - 60) { doc.addPage(); y = MARGIN; }
+    doc.font('sans').fontSize(10).fillColor(INK)
+      .text(g.moldName, cols.prenda, y, { width: cols.cant - cols.prenda, lineBreak: false })
+      .text(String(g.units), cols.cant, y, { width: cols.unit - cols.cant, align: 'right', lineBreak: false })
+      .text(formatMoney(g.laborCostUnit), cols.unit, y, { width: cols.sub - cols.unit, align: 'right', lineBreak: false })
+      .text(formatMoney(g.laborCostTotal), cols.sub, y, { width: right - cols.sub, align: 'right', lineBreak: false });
+    y += 18;
+  }
+  y += 4;
+  doc.lineWidth(1.2).strokeColor(INK).moveTo(MARGIN, y).lineTo(right, y).stroke();
+  y += 10;
+  doc.font('bold').fontSize(12).fillColor(INK)
+    .text('TOTAL', cols.prenda, y, { width: cols.sub - cols.prenda, align: 'right', lineBreak: false })
+    .text(formatMoney(d.total), cols.sub, y, { width: right - cols.sub, align: 'right', lineBreak: false });
+  return finish(doc, () => `Hilanzapp · ${d.groupName} · Presupuesto de confección`);
 }

@@ -14,12 +14,14 @@ import { plural } from '../lib/format';
 
 export function GroupLayout() {
   const { groupId = '' } = useParams();
-  const { data: groups, isLoading, error, refetch } = useGroups();
+  // Incluye archivados: si el grupo que se está viendo se archiva, la pantalla sigue mostrándolo (con la opción de desarchivar).
+  const { data: groups, isLoading, error, refetch } = useGroups(true);
   const group = groups?.find((g) => g.id === groupId);
   const [renaming, setRenaming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [pdf, setPdf] = useState(false);
+  const [archiving, setArchiving] = useState(false);
   const navigate = useNavigate();
   const qc = useQueryClient();
   const toast = useToast();
@@ -41,11 +43,23 @@ export function GroupLayout() {
     }
   }
 
+  async function toggleArchive() {
+    setArchiving(true);
+    try {
+      await api.patch(`/groups/${groupId}`, { archived: !group!.archived_at });
+      await qc.invalidateQueries({ queryKey: keys.groups });
+      toast.show(group!.archived_at ? `${group!.name} volvió a estar activo` : `${group!.name} archivado`);
+      if (!group!.archived_at) navigate('/');
+    } finally {
+      setArchiving(false);
+    }
+  }
+
   return (
     <>
       <PageHeader
         crumbs={[{ label: 'Grupos', to: '/' }, { label: group.name }]}
-        title={group.name}
+        title={<>{group.name}{group.archived_at && <span className="hz-archived-badge">Archivado</span>}</>}
         subtitle={`${plural(group.dancerCount, 'bailarina', 'bailarinas')} · ${group.complete} ${group.complete === 1 ? 'completa' : 'completas'}`}
         actions={
           <ActionMenu
@@ -53,6 +67,7 @@ export function GroupLayout() {
             actions={[
               { label: 'Hojas de molde en PDF', icon: 'bi-file-earmark-pdf', onSelect: () => setPdf(true) },
               { label: 'Renombrar grupo', icon: 'bi-pencil', onSelect: () => setRenaming(true) },
+              { label: group.archived_at ? 'Desarchivar grupo' : 'Archivar grupo', icon: group.archived_at ? 'bi-box-arrow-up' : 'bi-archive', onSelect: () => void toggleArchive() },
               { label: 'Eliminar grupo', icon: 'bi-trash3', danger: true, onSelect: () => setDeleting(true) },
             ]}
           />
